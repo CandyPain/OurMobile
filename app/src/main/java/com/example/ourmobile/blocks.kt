@@ -50,33 +50,16 @@ fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
             .wrapContentSize(align = Alignment.TopCenter)
             .padding(top = 20.dp)
     ) {
-        if (showNewScreen) {
+        if (showNewScreen)
+        {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             ) {
-                for (i in 1..3) {
-                    Button(
-                        onClick = {
-                            if (selectedButton == i) {
-                                selectedButton = -1
-                            } else {
-                                selectedButton = i
-                            }
-                        },
-                        modifier = Modifier
-                            .padding(vertical = 8.dp)
-                    ) {
-                        Text("Button $i")
-                    }
-                    if (selectedButton == i) {
-                        repeat(3) {
-                            Text("Text block $it", modifier = Modifier.padding(start = 16.dp))
-                        }
-                    }
-                }
+                MakeAVariable()
+                AssignmentAVariable()
                 Button(
                     onClick = onCloseClicked,
                     modifier = Modifier.padding(top = 16.dp)

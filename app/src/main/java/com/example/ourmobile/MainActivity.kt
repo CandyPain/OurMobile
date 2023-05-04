@@ -27,17 +27,25 @@ import androidx.compose.animation.core.*
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.runtime.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.TextField
 
 @Composable
-fun MyButton() {
+fun MyButton()
+{
     var showNewScreen by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
             .wrapContentSize(align = Alignment.TopCenter)
             .padding(top = 20.dp)
-    ) {
+    ){
         AnimatedVisibility(
             visible = showNewScreen,
             enter = slideInVertically(
@@ -70,13 +78,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            OurMobileTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    MyButton()
-                }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            ){
+                MyButton()
+                BlockList()
             }
         }
     }
@@ -97,3 +104,126 @@ fun GreetingPreview() {
         Greeting("Android")
     }
 }
+
+val itemsList = mutableStateListOf("")
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun VariableItem()
+{
+    val VariableType = remember{mutableStateOf("")}
+    val VariableName = remember{mutableStateOf("")}
+    Card(
+        modifier = Modifier.width(500.dp).padding(10.dp),
+        shape = RoundedCornerShape(15.dp),
+    ){
+        Box(){
+            Row()
+            {
+                TextField(
+                    modifier = Modifier.width(200.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
+                    value = VariableType.value,
+                    onValueChange = {newText -> VariableType.value = newText}
+                )
+                Text(
+                    text = "   ",
+                    fontSize = 20.sp
+                )
+                TextField(
+                    modifier = Modifier.width(200.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
+                    value = VariableName.value,
+                    onValueChange = {newText -> VariableName.value = newText}
+                )
+                Button(
+                    onClick = {}
+                )
+                {
+                }
+            }
+        }
+    }
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun VariableAssignment()
+{
+    val VariableName = remember{mutableStateOf("")}
+    val VariableValue = remember{mutableStateOf("")}
+    Card(
+        modifier = Modifier.width(500.dp).padding(10.dp),
+        shape = RoundedCornerShape(15.dp),
+    ){
+        Box(){
+            Row()
+            {
+                TextField(
+                    modifier = Modifier.width(200.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
+                    value = VariableName.value,
+                    onValueChange = {newText -> VariableName.value = newText}
+                )
+                Text(
+                    text = " = ",
+                    fontSize = 20.sp
+                )
+                TextField(
+                    modifier = Modifier.width(200.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
+                    value = VariableValue.value,
+                    onValueChange = {newText -> VariableValue.value = newText}
+                )
+                Button(
+                    onClick = {}
+                )
+                {
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun MakeAVariable()
+{
+    Button(
+        onClick = {itemsList.add("1")}
+    )
+    {
+        Text("MakeAVariable", fontSize = 22.sp)
+    }
+}
+@Composable
+fun AssignmentAVariable()
+{
+    Button(
+        onClick = {itemsList.add("2")}
+    )
+    {
+        Text("AssignmentAVariable", fontSize = 22.sp)
+    }
+}
+@Composable
+fun BlockList()
+{
+    Column{
+        LazyColumn()
+        {
+            itemsIndexed(itemsList)
+            {
+                index, item ->
+                if(item == "1")
+                {
+                    VariableItem()
+                }
+                if(item == "2")
+                {
+                    VariableAssignment()
+                }
+            }
+        }
+    }
+}
+
+
