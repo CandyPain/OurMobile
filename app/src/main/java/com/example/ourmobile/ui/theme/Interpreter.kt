@@ -77,12 +77,12 @@ class Expression {
     }
 }
 
-class Interpreter(private val hashMap: HashMap<String, Int>){
-    val commandList = mutableListOf<String>()
+class Interpreter(private val commandList: MutableList<String>){
+    val hashMap = HashMap<String, Int>()
     val outputList = mutableListOf<Int?>()
     val expressionHandler = Expression();
 
-    public fun interprete(commandList: MutableList<String>): MutableList<Int?>{
+    public fun interprete(): MutableList<Int?>{
         val varRegex = Regex("^var \\w+")
         val expressionRegex = Regex("^\\w+ = .+")
         for(command in commandList){
@@ -91,7 +91,7 @@ class Interpreter(private val hashMap: HashMap<String, Int>){
             }
             else if(expressionRegex.matches(command)){
                 val parts = command.split("=")
-                hashMap.put(parts[0].substring(0, parts[0].length - 1), expressionHandler.evaluateReversePolishNotation(expressionHandler.toReversePolishNotation(parts[1].substring(0))))
+                hashMap.put(parts[0].substring(0, parts[0].length - 1), expressionHandler.evaluateReversePolishNotation(expressionHandler.toReversePolishNotation(parts[1].substring(1), hashMap)))
             }
             else{
                 var cout: Int?
