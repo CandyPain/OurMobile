@@ -2,10 +2,13 @@ package com.example.ourmobile
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -13,6 +16,10 @@ import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.*
 import kotlin.math.roundToInt
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+
+var myGlobalNumber by mutableStateOf(0)
 
 @OptIn(ExperimentalMaterial3Api::class)
 /*
@@ -159,7 +166,8 @@ fun VariableItem()
             .padding(10.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
-                    onDragStart = { isDragging.value = true
+                    onDragStart = {
+                        isDragging.value = true
                     },
                     onDragEnd = { isDragging.value = false },
                     onDragCancel = { /* не нужно ничего делать */ },
@@ -218,16 +226,24 @@ fun VariableAssignment(onCloseClicked: () -> Unit) {
             .padding(10.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
-                    onDragStart = { isDragging.value = true
-                        },
+                    onDragStart = {
+                        myGlobalNumber = 2;
+                        isDragging.value = true
+                        onCloseClicked()
+                    },
                     onDragEnd = { isDragging.value = false },
-                    onDragCancel = { /* не нужно ничего делать */ },
+                    onDragCancel = { },
                     onDrag = { change, dragAmount ->
                         offsetX.value += dragAmount.x
                         offsetY.value += dragAmount.y
                         change.consumeAllChanges()
                     }
                 )
+            }
+            .clickable {
+                myGlobalNumber = 2;
+                onCloseClicked()
+
             },
         shape = RoundedCornerShape(15.dp),
     ) {
@@ -266,6 +282,141 @@ fun VariableAssignment(onCloseClicked: () -> Unit) {
     }
 }
 
+//Кард для создания переменной
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TypeVariable(onCloseClicked: () -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    val variableName = remember { mutableStateOf("") }
+    val selectedType = remember { mutableStateOf("") }
+
+    // Сохраненный тип переменной
+    selectedType.value = "int"
+    // Сохраненное имя переменной
+    variableName.value = "NewVariable"
+
+    Card(
+        modifier = Modifier
+            .width(500.dp)
+            .padding(10.dp)
+            .clickable {
+                myGlobalNumber = 1;
+                onCloseClicked()
+            },
+        shape = RoundedCornerShape(15.dp)
+
+    )
+    {
+        Column {
+            Row()
+            {
+                IconButton(onClick = { expanded = true })
+                {
+                    Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+                }
+                Text(
+                    text = selectedType.value,
+                    modifier = Modifier.padding(15.dp),
+                    fontSize = 15.sp
+                )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = "int") },
+                        onClick = {
+                            selectedType.value = "int"
+                            // Изменять значение внешнего класса (типа переменной) здесь (при изменении дроп меню) именно через selectedType.value
+                            expanded = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "double") },
+                        onClick = {
+                            selectedType.value = "double"
+                            // Изменять значение внешнего класса (типа переменной) здесь (при изменении дроп меню) именно через selectedType.value
+                            expanded = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "string") },
+                        onClick = {
+                            selectedType.value = "string"
+                            // Изменять значение внешнего класса (типа переменной) здесь (при изменении дроп меню) именно через selectedType.value
+                            expanded = false
+                        })
+                }
+                Text(text = "   ", fontSize = 15.sp)
+                TextField(
+                    modifier = Modifier.width(200.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = variableName.value,
+                    onValueChange = { newText ->
+                        variableName.value = newText
+                        // Изменять значение внешнего класса (имени переменной) здесь (при изменении текст филда) именно через variableName.value
+                    }
+                )
+                Button(
+                    modifier = Modifier.padding(5.dp),
+                    onClick = {
+                        // Действие для удаления блока
+                    }
+                )
+                {
+                    Text(text = "Del", fontSize = 15.sp)
+                }
+            }
+        }
+    }
+}
+
+//Кард для ифа
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun IfBlock(onCloseClicked: () -> Unit) {
+    val condition = remember { mutableStateOf("") }
+
+    //Сохраненное условие ифа
+    condition.value = ""
+
+    Card(
+        modifier = Modifier
+            .width(380.dp)
+            .padding(10.dp)
+            .clickable {
+                myGlobalNumber = 3;
+                onCloseClicked();
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Column {
+            Row()
+            {
+                Text(text = "If ", modifier = Modifier.padding(15.dp), fontSize = 15.sp)
+                TextField(
+                    modifier = Modifier.width(200.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = condition.value,
+                    onValueChange = { newText ->
+                        condition.value = newText
+                        // Изменять значение внешнего класса (условия ифа) здесь (при изменении текст филда) именно через condition.value
+                    }
+                )
+                Button(
+                    modifier = Modifier.padding(5.dp),
+                    onClick = {
+                        // Действие для удаления блока
+                    }
+                )
+                {
+                    Text(text = "Del", fontSize = 15.sp)
+                }
+            }
+            Text(text = "Then begin", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+        }
+    }
+}
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
@@ -284,23 +435,53 @@ fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             ) {
-                for (i in 1..3) {
                     Button(
                         onClick = {
-                            if (selectedButton == i) {
+                            if (selectedButton == 1) {
                                 selectedButton = -1
                             } else {
-                                selectedButton = i
+                                selectedButton = 1
                             }
                         },
                         modifier = Modifier
                             .padding(vertical = 8.dp)
                     ) {
-                        Text("Button $i")
+                        Text("Переменные")
                     }
-                    if (selectedButton == i) {
-                        VariableAssignment(onCloseClicked = onCloseClicked)
-                    }
+                if (selectedButton == 1) {
+                    TypeVariable(onCloseClicked = onCloseClicked)
+                    VariableAssignment(onCloseClicked = onCloseClicked)
+                }
+                Button(
+                    onClick = {
+                        if (selectedButton == 2) {
+                            selectedButton = -1
+                        } else {
+                            selectedButton = 2
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                ) {
+                    Text("Условия")
+                }
+                if (selectedButton == 2) {
+                    IfBlock(onCloseClicked = onCloseClicked)
+                }
+                Button(
+                    onClick = {
+                        if (selectedButton == 3) {
+                            selectedButton = -1
+                        } else {
+                            selectedButton = 3
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                ) {
+                    Text("Циклы")
+                }
+                if (selectedButton == 3) {
                 }
                 Button(
 
