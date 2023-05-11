@@ -19,7 +19,7 @@ import kotlin.math.roundToInt
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 
-var myGlobalNumber by mutableStateOf(0)
+var myGlobalNumber by mutableStateOf(0);
 
 @OptIn(ExperimentalMaterial3Api::class)
 /*

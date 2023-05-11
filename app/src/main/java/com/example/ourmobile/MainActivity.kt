@@ -17,22 +17,37 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.ViewModel
 import com.example.ourmobile.ui.theme.OurMobileTheme
 import kotlin.math.roundToInt
 
-
+var cardIdCounter = 0
 //1- TypeVarible
 //2- VariableAssignment
 //3 - IfBlock
+
+class CardClass(
+    var offsetX: MutableState<Float> = mutableStateOf(0f),
+    var offsetY: MutableState<Float> = mutableStateOf(0f),
+    var thisID: Int,
+    var height: Int,
+    var width: Int,
+    var isDragging: MutableState<Boolean> = mutableStateOf(false),
+    var childId: MutableState<Int> = mutableStateOf(0),
+)
+
 data class VariableAssignmentClass(
     var offsetX: MutableState<Float> = mutableStateOf(0f),
     var offsetY: MutableState<Float> = mutableStateOf(0f),
     var isDragging: MutableState<Boolean> = mutableStateOf(false),
     var variableName: MutableState<String> = mutableStateOf(""),
-    var variableValue: MutableState<String> = mutableStateOf("")
+    var variableValue: MutableState<String> = mutableStateOf(""),
+    var thisID: Int,
+    var childId: MutableState<Int> = mutableStateOf(0),
+
 )
 
 
@@ -41,6 +56,8 @@ data class IfBlockClass(
     var offsetY: MutableState<Float> = mutableStateOf(0f),
     var isDragging: MutableState<Boolean> = mutableStateOf(false),
     var conditionValue: MutableState<String> = mutableStateOf(""),
+    var thisID: Int,
+    var childId: MutableState<Int> = mutableStateOf(0),
 )
 
 data class TypeVaribleClass(
@@ -50,26 +67,35 @@ data class TypeVaribleClass(
     var expanded:  MutableState<Boolean> = mutableStateOf(false),
     var variableName: MutableState<String> = mutableStateOf(""),
     var selectedType: MutableState<String> = mutableStateOf(""),
+    var thisID: Int,
+    var childId: MutableState<Int> = mutableStateOf(0),
 )
 
 
 @Composable
-fun MyScreen() {
+fun MyScreen(pixelsPerDp: Float) {
     var showNewScreen by remember { mutableStateOf(false) }
     val TypeVaribleList = remember { mutableListOf<TypeVaribleClass>() }
     val VariableAssignmentList = remember { mutableListOf<VariableAssignmentClass>() }
     val IfBlockList = remember { mutableListOf<IfBlockClass>() }
+    val CardList = remember { mutableListOf<CardClass>() }
 
     // методы для добавления новой карточки в список
     fun TypeVaribleListAddCard() {
-        TypeVaribleList.add(TypeVaribleClass())
+        TypeVaribleList.add(TypeVaribleClass(thisID = cardIdCounter))
+        CardList.add(CardClass(childId = TypeVaribleList.last().childId,isDragging = TypeVaribleList.last().isDragging, offsetX = TypeVaribleList.last().offsetX, offsetY = TypeVaribleList.last().offsetY,thisID = cardIdCounter, width = 500, height = 160))
+        cardIdCounter++;
     }
 
     fun VariableAssignmentListAddCard() {
-        VariableAssignmentList.add(VariableAssignmentClass())
+        VariableAssignmentList.add(VariableAssignmentClass(thisID = cardIdCounter))
+        CardList.add(CardClass(childId = VariableAssignmentList.last().childId,isDragging = VariableAssignmentList.last().isDragging, offsetX = VariableAssignmentList.last().offsetX, offsetY = VariableAssignmentList.last().offsetY,thisID = cardIdCounter,  width = 500, height = 160))
+        cardIdCounter++;
     }
     fun IfBlockListAddCard() {
-        IfBlockList.add(IfBlockClass())
+        IfBlockList.add(IfBlockClass(thisID = cardIdCounter))
+        CardList.add(CardClass(childId = IfBlockList.last().childId,isDragging = IfBlockList.last().isDragging, offsetX = IfBlockList.last().offsetX, offsetY = IfBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 260))
+        cardIdCounter++;
     }
     Box(
         modifier = Modifier
@@ -117,6 +143,8 @@ fun MyScreen() {
             ) {
                 Text("Добавить блоки")
             }
+
+            //отрисовка
             for (card in TypeVaribleList) {
                 TypeVariableReal(
                     offsetX = card.offsetX,
@@ -146,6 +174,31 @@ fun MyScreen() {
 
                 )
             }
+            val MagnitRange = 200;
+            var cardHeightInPixels = 0
+            var HasChild = false;
+            //Магниты
+            if(CardList.all { it.isDragging.value == false }) {
+                for (i in 0 until CardList.size)
+                {
+                    HasChild = false;
+                    for (j in 0 until CardList.size)
+                    {
+                        if (i != j &&CardList[i].childId.value == 0&& CardList[i].offsetY.value < CardList[j].offsetY.value && CardList[j].offsetY.value -  (CardList[i].offsetY.value + CardList[i].height) < MagnitRange) {
+                            CardList[j].offsetY.value -= CardList[j].offsetY.value -  (CardList[i].offsetY.value + CardList[i].height)
+                            CardList[j].offsetX.value = CardList[i].offsetX.value;
+                            CardList[i].childId.value = CardList[j].thisID;
+                            HasChild = true;
+                        }
+                    }
+                    if(HasChild == false)
+                    {
+                        CardList[i].childId.value = 0;
+                    }
+                }
+            }
+
+
         }
     }
 }
@@ -159,9 +212,8 @@ fun MyScreen() {
         isDragging: MutableState<Boolean>,
         expanded: MutableState<Boolean>,
         variableName: MutableState<String>,
-        selectedType: MutableState<String>
+        selectedType: MutableState<String>,
     ) {
-
         // Сохраненный тип переменной
         if (selectedType.value == "") {
             selectedType.value = "int"
@@ -175,6 +227,7 @@ fun MyScreen() {
             modifier = Modifier
                 .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
                 .width(500.dp)
+                .height(80.dp)
                 .padding(10.dp)
                 .pointerInput(Unit) {
                     detectDragGestures(
@@ -270,6 +323,7 @@ fun MyScreen() {
             modifier = Modifier
                 .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
                 .width(500.dp)
+                .height(80.dp)
                 .padding(10.dp)
                 .pointerInput(Unit) {
                     detectDragGestures(
@@ -322,6 +376,12 @@ fun MyScreen() {
         }
     }
 
+@Composable
+fun dpToPx(dp: Float): Int {
+    val resources = LocalContext.current.resources
+    val metrics = resources.displayMetrics
+    return (dp * (metrics.densityDpi / 160f)).toInt()
+}
 //Кард для ифа
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -382,15 +442,17 @@ fun IfBlockReal(
 }
 
     class MainActivity : ComponentActivity() {
+        var pixelsPerDp: Float = 0f
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
+            pixelsPerDp = resources.displayMetrics.density
             setContent {
                 OurMobileTheme {
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        MyScreen()
+                        MyScreen(pixelsPerDp)
                     }
                 }
             }
