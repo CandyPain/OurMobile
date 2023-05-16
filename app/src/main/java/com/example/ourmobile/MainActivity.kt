@@ -9,6 +9,8 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -39,6 +41,9 @@ var NeedClear = needClear(-1,0)
 //1- TypeVarible
 //2- VariableAssignment
 //3 - IfBlock
+//4 - ForBlock
+//5 - Cin
+//6 - Cout
 
 class CardClass(
     var offsetX: MutableState<Float> = mutableStateOf(0f),
@@ -67,7 +72,22 @@ data class IfBlockClass(
     var offsetX: MutableState<Float> = mutableStateOf(0f),
     var offsetY: MutableState<Float> = mutableStateOf(0f),
     var isDragging: MutableState<Boolean> = mutableStateOf(false),
-    var conditionValue: MutableState<String> = mutableStateOf(""),
+    var thisID: Int,
+    var childId: MutableState<Int> = mutableStateOf(-1),
+    var conditionFirst: MutableState<String> = mutableStateOf(""),
+    var conditionSecond: MutableState<String> = mutableStateOf(""),
+    var selectedSign: MutableState<String> = mutableStateOf(""),
+    var expanded: MutableState<Boolean> = mutableStateOf(false),
+
+)
+
+data class ForBlockClass(
+    var offsetX: MutableState<Float> = mutableStateOf(0f),
+    var offsetY: MutableState<Float> = mutableStateOf(0f),
+    var isDragging: MutableState<Boolean> = mutableStateOf(false),
+    var initExpression: MutableState<String> = mutableStateOf(""),
+    var condExpression: MutableState<String> = mutableStateOf(""),
+    var loopExpression: MutableState<String> = mutableStateOf(""),
     var thisID: Int,
     var childId: MutableState<Int> = mutableStateOf(-1),
 )
@@ -83,14 +103,44 @@ data class TypeVaribleClass(
     var childId: MutableState<Int> = mutableStateOf(-1),
 )
 
+data class CinBlockClass(
+    var offsetX: MutableState<Float> = mutableStateOf(0f),
+    var offsetY: MutableState<Float> = mutableStateOf(0f),
+    var isDragging: MutableState<Boolean> = mutableStateOf(false),
+    var variableName: MutableState<String> = mutableStateOf(""),
+    var thisID: Int,
+    var childId: MutableState<Int> = mutableStateOf(-1),
+)
+
+data class CoutBlockClass(
+    var offsetX: MutableState<Float> = mutableStateOf(0f),
+    var offsetY: MutableState<Float> = mutableStateOf(0f),
+    var isDragging: MutableState<Boolean> = mutableStateOf(false),
+    var variableName: MutableState<String> = mutableStateOf(""),
+    var thisID: Int,
+    var childId: MutableState<Int> = mutableStateOf(-1),
+)
+
+data class EndBeginBlockClass(
+    var offsetX: MutableState<Float> = mutableStateOf(0f),
+    var offsetY: MutableState<Float> = mutableStateOf(0f),
+    var thisID: Int,
+    var isDragging: MutableState<Boolean> = mutableStateOf(false),
+    var childId: MutableState<Int> = mutableStateOf(-1),
+)
+val TypeVaribleList = mutableListOf<TypeVaribleClass>()
+val VariableAssignmentList = mutableListOf<VariableAssignmentClass>()
+val IfBlockList = mutableListOf<IfBlockClass>()
+val CardList = mutableListOf<CardClass>()
+val ForBlockList = mutableListOf<ForBlockClass>()
+val CinBlockList = mutableListOf<CinBlockClass>()
+val CoutBlockList = mutableListOf<CoutBlockClass>()
+val EndBeginBlockList = mutableListOf<EndBeginBlockClass>()
 
 @Composable
 fun MyScreen(pixelsPerDp: Float) {
     var showNewScreen by remember { mutableStateOf(false) }
-    val TypeVaribleList = remember { mutableListOf<TypeVaribleClass>() }
-    val VariableAssignmentList = remember { mutableListOf<VariableAssignmentClass>() }
-    val IfBlockList = remember { mutableListOf<IfBlockClass>() }
-    val CardList = remember { mutableListOf<CardClass>() }
+    var FirstTime by remember { mutableStateOf(true) }
 
     // методы для добавления новой карточки в список
     fun TypeVaribleListAddCard() {
@@ -107,6 +157,23 @@ fun MyScreen(pixelsPerDp: Float) {
     fun IfBlockListAddCard() {
         IfBlockList.add(IfBlockClass(thisID = cardIdCounter))
         CardList.add(CardClass(childId = IfBlockList.last().childId,isDragging = IfBlockList.last().isDragging, offsetX = IfBlockList.last().offsetX, offsetY = IfBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 130.dp))
+        cardIdCounter++;
+    }
+    fun ForBlockListAddCard() {
+        ForBlockList.add(ForBlockClass(thisID = cardIdCounter))
+        CardList.add(CardClass(childId = ForBlockList.last().childId,isDragging = ForBlockList.last().isDragging, offsetX = ForBlockList.last().offsetX, offsetY = ForBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 150.dp))
+        cardIdCounter++;
+    }
+
+    fun CinBlockListAddCard() {
+        CinBlockList.add(CinBlockClass(thisID = cardIdCounter))
+        CardList.add(CardClass(childId = CinBlockList.last().childId,isDragging = CinBlockList.last().isDragging, offsetX = CinBlockList.last().offsetX, offsetY = CinBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
+        cardIdCounter++;
+    }
+
+    fun CoutBlockListAddCard() {
+        CoutBlockList.add(CoutBlockClass(thisID = cardIdCounter))
+        CardList.add(CardClass(childId = CoutBlockList.last().childId,isDragging = CoutBlockList.last().isDragging, offsetX = CoutBlockList.last().offsetX, offsetY = CoutBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
         cardIdCounter++;
     }
     Box(
@@ -147,6 +214,40 @@ fun MyScreen(pixelsPerDp: Float) {
                 IfBlockListAddCard()
                 myGlobalNumber = 0;
             }
+            if(myGlobalNumber == 4)
+            {
+                ForBlockListAddCard()
+                myGlobalNumber = 0;
+            }
+            if(myGlobalNumber == 5)
+            {
+                CinBlockListAddCard()
+                myGlobalNumber = 0;
+            }
+            if(myGlobalNumber == 6)
+            {
+                CoutBlockListAddCard()
+                myGlobalNumber = 0;
+            }
+            if(FirstTime == true) {
+                EndBeginBlockList.add(EndBeginBlockClass(thisID = cardIdCounter))
+                CardList.add(
+                    CardClass(
+                        childId = EndBeginBlockList.last().childId,
+                        isDragging = EndBeginBlockList.last().isDragging,
+                        offsetX = EndBeginBlockList.last().offsetX,
+                        offsetY = EndBeginBlockList.last().offsetY,
+                        thisID = -2,
+                        width = 500,
+                        height = 80.dp
+                    )
+                )
+                cardIdCounter++
+                EndBeginBlockList.add(EndBeginBlockClass(thisID = cardIdCounter))
+                CardList.add(CardClass(childId = EndBeginBlockList.last().childId,isDragging = EndBeginBlockList.last().isDragging, offsetX = EndBeginBlockList.last().offsetX, offsetY = EndBeginBlockList.last().offsetY,thisID = -3,width = 500, height = 80.dp))
+                FirstTime = false
+                cardIdCounter++
+            }
             Button(
                 onClick = {
 
@@ -155,7 +256,6 @@ fun MyScreen(pixelsPerDp: Float) {
             ) {
                 Text("Добавить блоки")
             }
-
             //отрисовка
             for (card in TypeVaribleList) {
                 TypeVariableReal(
@@ -170,6 +270,18 @@ fun MyScreen(pixelsPerDp: Float) {
                 )
 
             }
+            for(card in EndBeginBlockList)
+            {
+                if(card.thisID == 0)
+                {
+                    BeginBlock(offsetX = card.offsetX, offsetY = card.offsetY, isDragging = card.isDragging, thisID = card.thisID, CardList = CardList)
+                }
+                else
+                {
+                    EndBlock(offsetX = card.offsetX, offsetY = card.offsetY, isDragging = card.isDragging, thisID = card.thisID, CardList = CardList)
+                }
+            }
+
             for (card in VariableAssignmentList) {
                 VariableAssignmentReal(
                     offsetX = card.offsetX,
@@ -186,12 +298,50 @@ fun MyScreen(pixelsPerDp: Float) {
                     offsetX = card.offsetX,
                     offsetY = card.offsetY,
                     isDragging = card.isDragging,
-                    condition = card.conditionValue,
+                    conditionFirst = card.conditionFirst,
+                    conditionSecond = card.conditionSecond,
+                    expanded = card.expanded,
+                    selectedSign = card.selectedSign,
                     thisID = card.thisID,
                     CardList = CardList,
 
                 )
             }
+            for (card in ForBlockList) {
+                ForBlockReal(
+                    offsetX = card.offsetX,
+                    offsetY = card.offsetY,
+                    isDragging = card.isDragging,
+                    initExpression = card.initExpression,
+                    condExpression = card.condExpression,
+                    loopExpression = card.loopExpression,
+                    thisID = card.thisID,
+                    CardList = CardList,
+
+                    )
+            }
+            for (card in CinBlockList) {
+                CinBlockReal(
+                    offsetX = card.offsetX,
+                    offsetY = card.offsetY,
+                    isDragging = card.isDragging,
+                    variableName = card.variableName,
+                    thisID = card.thisID,
+                    CardList = CardList,
+                    )
+            }
+            for (card in CoutBlockList) {
+                CoutBlockReal(
+                    offsetX = card.offsetX,
+                    offsetY = card.offsetY,
+                    isDragging = card.isDragging,
+                    variableName = card.variableName,
+                    thisID = card.thisID,
+                    CardList = CardList,
+                )
+            }
+
+
             if(NeedClear.IdToClear != -1)
             {
                 if(NeedClear.WhatList == 1)
@@ -231,6 +381,105 @@ fun MyScreen(pixelsPerDp: Float) {
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BeginBlock(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(500.dp)
+            .height(80.dp)
+            .padding(2.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value;
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp)
+
+    )
+    {
+        Box()
+        {
+            Text(
+                text = "Main begin"
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EndBlock(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(500.dp)
+            .height(80.dp)
+            .padding(2.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value;
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp)
+
+    )
+    {
+        Box()
+        {
+            Text(
+                text = "Main End"
+            )
+        }
+    }
+}
+
+
 
     //Кард для создания переменной
     @OptIn(ExperimentalMaterial3Api::class)
@@ -272,10 +521,9 @@ fun MyScreen(pixelsPerDp: Float) {
                             offsetY.value += dragAmount.y
                             change.consumeAllChanges()
                             var i = CardList[thisID].childId.value;
-                            while(i != -1)
-                            {
-                                CardList[i].offsetY.value+=dragAmount.y
-                                CardList[i].offsetX.value+=dragAmount.x
+                            while (i != -1) {
+                                CardList[i].offsetY.value += dragAmount.y
+                                CardList[i].offsetX.value += dragAmount.x
                                 i = CardList[i].childId.value
                             }
                         }
@@ -344,6 +592,228 @@ fun MyScreen(pixelsPerDp: Float) {
     }
 
 
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ForBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+    initExpression: MutableState<String>,
+    condExpression: MutableState<String>,
+    loopExpression: MutableState<String>,
+) {
+
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(500.dp)
+            .padding(2.dp)
+            .height(150.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value;
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Column {
+            Row()
+            {
+                Text(text = "For ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+                TextField(
+                    modifier = Modifier.width(100.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = initExpression.value,
+                    onValueChange = { newText ->
+                        initExpression.value = newText
+                        // Изменять значение внешнего класса (пре-объявление переменной) здесь (при изменении текст филда) именно через initExpression.value
+                    }
+                )
+                Text(text = " ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+                TextField(
+                    modifier = Modifier.width(100.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = condExpression.value,
+                    onValueChange = { newText ->
+                        condExpression.value = newText
+                        // Изменять значение внешнего класса (условие цикла) здесь (при изменении текст филда) именно через condExpression.value
+                    }
+                )
+                Text(text = " ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+                TextField(
+                    modifier = Modifier.width(100.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = loopExpression.value,
+                    onValueChange = { newText ->
+                        loopExpression.value = newText
+                        // Изменять значение внешнего класса (действие цикла) здесь (при изменении текст филда) именно через loopExpression.value
+                    }
+                )
+                Button(
+                    modifier = Modifier.padding(5.dp),
+                    onClick = {
+                        // Действие для удаления блока
+                    }
+                )
+                {
+                    Text(text = "Del", fontSize = 15.sp)
+                }
+            }
+            Text(text = "Do begin", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+        }
+    }
+}
+
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CinBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    variableName: MutableState<String>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(400.dp)
+            .padding(2.dp)
+            .height(80.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value;
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Row()
+        {
+            Text(text = "Cin ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+            TextField(
+                modifier = Modifier.width(200.dp),
+                textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                value = variableName.value,
+                onValueChange = { newText ->
+                    variableName.value = newText
+                    // Изменять значение внешнего класса (значение имени переменной) здесь (при изменении текст филда) именно через variableName.value
+                }
+            )
+            Button(
+                modifier = Modifier.padding(5.dp),
+                onClick = {
+                    // Действие для удаления блока
+                }
+            )
+            {
+                Text(text = "Del", fontSize = 15.sp)
+            }
+        }
+    }
+}
+
+
+// Кард для вывода значения переменной
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CoutBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    variableName: MutableState<String>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+) {
+
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(400.dp)
+            .height(80.dp)
+            .padding(2.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value;
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Row()
+        {
+            Text(text = "Cout ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+            TextField(
+                modifier = Modifier.width(200.dp),
+                textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                value = variableName.value,
+                onValueChange = { newText ->
+                    variableName.value = newText
+                    // Изменять значение внешнего класса (значение имени переменной) здесь (при изменении текст филда) именно через variableName.value
+                }
+            )
+            Button(
+                modifier = Modifier.padding(5.dp),
+                onClick = {
+                    // Действие для удаления блока
+                }
+            )
+            {
+                Text(text = "Del", fontSize = 15.sp)
+            }
+        }
+    }
+}
+
+
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun VariableAssignmentReal(
@@ -373,10 +843,9 @@ fun MyScreen(pixelsPerDp: Float) {
                             offsetY.value += dragAmount.y
                             change.consumeAllChanges()
                             var i = CardList[thisID].childId.value;
-                            while(i != -1)
-                            {
-                                CardList[i].offsetY.value+=dragAmount.y
-                                CardList[i].offsetX.value+=dragAmount.x
+                            while (i != -1) {
+                                CardList[i].offsetY.value += dragAmount.y
+                                CardList[i].offsetX.value += dragAmount.x
                                 i = CardList[i].childId.value
                             }
                         }
@@ -419,6 +888,9 @@ fun MyScreen(pixelsPerDp: Float) {
         }
     }
 
+
+
+
 //Кард для ифа
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -426,7 +898,10 @@ fun IfBlockReal(
     offsetX: MutableState<Float>,
     offsetY: MutableState<Float>,
     isDragging: MutableState<Boolean>,
-    condition: MutableState<String>,
+    conditionFirst: MutableState<String>,
+    conditionSecond: MutableState<String>,
+    expanded: MutableState<Boolean>,
+    selectedSign: MutableState<String>,
     thisID: Int,
     CardList: MutableList<CardClass>,
 ) {
@@ -434,8 +909,9 @@ fun IfBlockReal(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(380.dp)
+            .width(500.dp)
             .padding(2.dp)
+            .height(130.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
@@ -448,10 +924,9 @@ fun IfBlockReal(
                         offsetY.value += dragAmount.y
                         change.consumeAllChanges()
                         var i = CardList[thisID].childId.value;
-                        while(i != -1)
-                        {
-                            CardList[i].offsetY.value+=dragAmount.y
-                            CardList[i].offsetX.value+=dragAmount.x
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
                             i = CardList[i].childId.value
                         }
                     }
@@ -466,16 +941,75 @@ fun IfBlockReal(
                 TextField(
                     modifier = Modifier.width(200.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
-                    value = condition.value,
+                    value = conditionFirst.value,
                     onValueChange = { newText ->
-                        condition.value = newText
-                        // Изменять значение внешнего класса (условия ифа) здесь (при изменении текст филда) именно через condition.value
+                        conditionFirst.value = newText
+// Изменять значение внешнего класса (условия ифа) здесь (при изменении текст филда) именно через condition.value
+                    }
+                )
+                IconButton(onClick = { expanded.value = true })
+                {
+                    Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+                }
+                Text(
+                    text = selectedSign.value,
+                    modifier = Modifier.padding(15.dp),
+                    fontSize = 15.sp
+                )
+                DropdownMenu(
+                    expanded = expanded.value,
+                    onDismissRequest = { expanded.value = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = "=") },
+                        onClick = {
+                            selectedSign.value = "="
+                            expanded.value = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "!=") },
+                        onClick = {
+                            selectedSign.value = "!="
+                            expanded.value = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = ">") },
+                        onClick = {
+                            selectedSign.value = ">"
+                            expanded.value = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = ">=") },
+                        onClick = {
+                            selectedSign.value = ">="
+                            expanded.value = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "<") },
+                        onClick = {
+                            selectedSign.value = "<"
+                            expanded.value = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "<=") },
+                        onClick = {
+                            selectedSign.value = "<="
+                            expanded.value = false
+                        })
+                }
+                TextField(
+                    modifier = Modifier.width(200.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = conditionSecond.value,
+                    onValueChange = { newText ->
+                        conditionSecond.value = newText
+// Изменять значение внешнего класса (условия ифа) здесь (при изменении текст филда) именно через condition.value
                     }
                 )
                 Button(
                     modifier = Modifier.padding(5.dp),
                     onClick = {
-                        // Действие для удаления блока
+// Действие для удаления блока
                     }
                 )
                 {
@@ -483,6 +1017,55 @@ fun IfBlockReal(
                 }
             }
             Text(text = "Then begin", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+        }
+    }
+}
+
+
+
+
+var messagesCout = mutableListOf<String>()
+var valuesCout = mutableListOf<Int>()
+var messagesCin: String = ""
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ConsoleScreen()
+{
+    Card(
+
+    )
+    {
+        Column()
+        {
+            /*
+                Button(
+                    onClick = //
+                )
+                {
+                    Text(text = "OK")
+                }
+            */
+            LazyColumn()
+            {
+                itemsIndexed(messagesCout)
+                {
+                        index, item ->
+                    Text(
+                        text = item,
+                        fontSize = 18.sp,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
+            TextField(
+                modifier = Modifier
+                    .width(200.dp)
+                    .padding(10.dp),
+                textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
+                value = "",
+                onValueChange = { newText -> messagesCin = newText }
+            )
         }
     }
 }

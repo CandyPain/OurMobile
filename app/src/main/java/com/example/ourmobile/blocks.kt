@@ -373,18 +373,17 @@ fun TypeVariable(onCloseClicked: () -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IfBlock(onCloseClicked: () -> Unit) {
-    val condition = remember { mutableStateOf("") }
-
-    //Сохраненное условие ифа
-    condition.value = ""
-
+    var expanded by remember { mutableStateOf(false) }
+    val conditionFirst= remember { mutableStateOf("") }
+    val conditionSecond = remember { mutableStateOf("") }
+    var selectedSign by remember { mutableStateOf("") }
     Card(
         modifier = Modifier
-            .width(380.dp)
+            .width(500.dp)
             .padding(10.dp)
             .clickable {
                 myGlobalNumber = 3;
-                onCloseClicked();
+                onCloseClicked()
             },
         shape = RoundedCornerShape(15.dp),
     ) {
@@ -395,10 +394,144 @@ fun IfBlock(onCloseClicked: () -> Unit) {
                 TextField(
                     modifier = Modifier.width(200.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
-                    value = condition.value,
+                    value = conditionFirst.value,
                     onValueChange = { newText ->
-                        condition.value = newText
-                        // Изменять значение внешнего класса (условия ифа) здесь (при изменении текст филда) именно через condition.value
+                        conditionFirst.value = newText
+// Изменять значение внешнего класса (условия ифа) здесь (при изменении текст филда) именно через condition.value
+                    }
+                )
+                IconButton(onClick = { expanded= true })
+                {
+                    Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+                }
+                Text(
+                    text = selectedSign,
+                    modifier = Modifier.padding(15.dp),
+                    fontSize = 15.sp
+                )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = "=") },
+                        onClick = {
+                            selectedSign = "="
+                            expanded = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "!=") },
+                        onClick = {
+                            selectedSign = "!="
+                            expanded = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = ">") },
+                        onClick = {
+                            selectedSign= ">"
+                            expanded = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = ">=") },
+                        onClick = {
+                            selectedSign = ">="
+                            expanded = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "<") },
+                        onClick = {
+                            selectedSign = "<"
+                            expanded = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "<=") },
+                        onClick = {
+                            selectedSign = "<="
+                            expanded = false
+                        })
+                }
+                TextField(
+                    modifier = Modifier.width(200.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = conditionSecond.value,
+                    onValueChange = { newText ->
+                        conditionSecond.value = newText
+// Изменять значение внешнего класса (условия ифа) здесь (при изменении текст филда) именно через condition.value
+                    }
+                )
+                Button(
+                    modifier = Modifier.padding(5.dp),
+                    onClick = {
+// Действие для удаления блока
+                    }
+                )
+                {
+                    Text(text = "Del", fontSize = 15.sp)
+                }
+            }
+            Text(text = "Then begin", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+        }
+    }
+}
+
+
+
+//Кард для фора
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ForBlock(onCloseClicked: () -> Unit) {
+    val initExpression = remember { mutableStateOf("") }
+    val condExpression = remember { mutableStateOf("") }
+    val loopExpression = remember { mutableStateOf("") }
+
+    // Сохраненное пре-объявление переменной
+    initExpression.value = ""
+    // Сохраненное условие цикла
+    condExpression.value = ""
+    // Сохраненное действие цикла
+    loopExpression.value = ""
+
+    Card(
+        modifier = Modifier
+            .width(500.dp)
+            .padding(10.dp)
+            .clickable {
+                myGlobalNumber = 4;
+                onCloseClicked();
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Column {
+            Row()
+            {
+                Text(text = "For ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+                TextField(
+                    modifier = Modifier.width(100.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = initExpression.value,
+                    onValueChange = { newText ->
+                        initExpression.value = newText
+                        // Изменять значение внешнего класса (пре-объявление переменной) здесь (при изменении текст филда) именно через initExpression.value
+                    }
+                )
+                Text(text = " ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+                TextField(
+                    modifier = Modifier.width(100.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = condExpression.value,
+                    onValueChange = { newText ->
+                        condExpression.value = newText
+                        // Изменять значение внешнего класса (условие цикла) здесь (при изменении текст филда) именно через condExpression.value
+                    }
+                )
+                Text(text = " ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+                TextField(
+                    modifier = Modifier.width(100.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = loopExpression.value,
+                    onValueChange = { newText ->
+                        loopExpression.value = newText
+                        // Изменять значение внешнего класса (действие цикла) здесь (при изменении текст филда) именно через loopExpression.value
                     }
                 )
                 Button(
@@ -411,11 +544,99 @@ fun IfBlock(onCloseClicked: () -> Unit) {
                     Text(text = "Del", fontSize = 15.sp)
                 }
             }
-            Text(text = "Then begin", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+            Text(text = "Do begin", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
         }
     }
 }
 
+// Кард для ввода значения переменной
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CinBlock(onCloseClicked: () -> Unit) {
+    val variableName = remember { mutableStateOf("") }
+
+    // Сохраненное значение имени переменной
+    variableName.value = ""
+
+    Card(
+        modifier = Modifier
+            .width(400.dp)
+            .padding(10.dp)
+            .height(80.dp)
+            .clickable {
+                myGlobalNumber = 5;
+                onCloseClicked();
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Row()
+        {
+            Text(text = "Cin ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+            TextField(
+                modifier = Modifier.width(200.dp),
+                textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                value = variableName.value,
+                onValueChange = { newText ->
+                    variableName.value = newText
+                    // Изменять значение внешнего класса (значение имени переменной) здесь (при изменении текст филда) именно через variableName.value
+                }
+            )
+            Button(
+                modifier = Modifier.padding(5.dp),
+                onClick = {
+                    // Действие для удаления блока
+                }
+            )
+            {
+                Text(text = "Del", fontSize = 15.sp)
+            }
+        }
+    }
+}
+
+// Кард для вывода значения переменной
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CoutBlock(onCloseClicked: () -> Unit) {
+    val variableName = remember { mutableStateOf("") }
+
+    // Сохраненное значение имени переменной
+    variableName.value = ""
+
+    Card(
+        modifier = Modifier
+            .width(400.dp)
+            .padding(10.dp)
+            .clickable {
+                myGlobalNumber = 6;
+                onCloseClicked();
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Row()
+        {
+            Text(text = "Cout ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+            TextField(
+                modifier = Modifier.width(200.dp),
+                textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                value = variableName.value,
+                onValueChange = { newText ->
+                    variableName.value = newText
+                    // Изменять значение внешнего класса (значение имени переменной) здесь (при изменении текст филда) именно через variableName.value
+                }
+            )
+            Button(
+                modifier = Modifier.padding(5.dp),
+                onClick = {
+                    // Действие для удаления блока
+                }
+            )
+            {
+                Text(text = "Del", fontSize = 15.sp)
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -451,6 +672,8 @@ fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
                 if (selectedButton == 1) {
                     TypeVariable(onCloseClicked = onCloseClicked)
                     VariableAssignment(onCloseClicked = onCloseClicked)
+                    CinBlock(onCloseClicked = onCloseClicked)
+                    CoutBlock(onCloseClicked = onCloseClicked)
                 }
                 Button(
                     onClick = {
@@ -482,6 +705,7 @@ fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
                     Text("Циклы")
                 }
                 if (selectedButton == 3) {
+                    ForBlock(onCloseClicked = onCloseClicked)
                 }
                 Button(
 
