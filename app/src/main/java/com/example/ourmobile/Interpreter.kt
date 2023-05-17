@@ -1,10 +1,14 @@
+import com.example.ourmobile.ExpressionToken
 import java.util.HashMap
 
 class Expression {
-    public fun toReversePolishNotation(expression: String, variables: Map<String, Int>): String {
+    public fun toReversePolishNotation(expression: String, variables: Map<String, Any>): String {
         val stack = mutableListOf<String>()
         val output = mutableListOf<String>()
         val operators = setOf("+", "-", "*", "/")
+        val arrayRegex = Regex("\\w+\\[.+]")
+        val arrayNameRegex = Regex("\\w+(?=\\[)")
+        val arrayExpressionRegex = Regex("(?<=(\\[)).+(?=])")
 
         expression.split(" ").forEach { token ->
             if (token in operators) {
@@ -20,8 +24,15 @@ class Expression {
                 }
                 stack.removeLast()
             } else {
-                if(token.toIntOrNull()!=null){
+                if(token.toDoubleOrNull()!=null){
                     output.add(token)
+                }else if(token.matches(arrayRegex)){
+                    val expression = Expression()
+                    var arrayIndex = expression.evaluateReversePolishNotation(expression.toReversePolishNotation(arrayExpressionRegex.find(token)!!.value,variables)).toInt().toString()
+                    var arrayName = arrayNameRegex.find(token)!!.value
+                    var arrayToken = arrayName+"["+arrayIndex+"]"
+                    val value = variables[arrayToken] ?: throw IllegalArgumentException("Unknown variable: $token")
+                    output.add(value.toString())
                 }else{
                     val value = variables[token] ?: throw IllegalArgumentException("Unknown variable: $token")
                     output.add(value.toString())
@@ -37,7 +48,7 @@ class Expression {
         return output.joinToString(" ")
     }
 
-    public fun evaluateReversePolishNotation(rpn: String): Int {
+    public fun evaluateReversePolishNotation(rpn: String): Double {
         val stack = mutableListOf<Double>()
 
         rpn.split(" ").forEach { token ->
@@ -65,7 +76,7 @@ class Expression {
             throw IllegalArgumentException("Invalid RPN expression: $rpn")
         }
 
-        return stack[0].toInt()
+        return stack[0].toDouble()
     }
 
     private fun precedence(operator: String): Int {
@@ -77,30 +88,3 @@ class Expression {
     }
 }
 
-class Interpreter(private val commandList: MutableList<String>){
-    val hashMap = HashMap<String, Int>()
-    val outputList = mutableListOf<Int?>()
-    val expressionHandler = Expression();
-
-    public fun interprete(): MutableList<Int?>{
-        val varRegex = Regex("^var \\w+")
-        val expressionRegex = Regex("^\\w+ = .+")
-        for(command in commandList){
-            if(varRegex.matches(command)){
-                hashMap.put(command.substring(4), 0)
-            }
-            else if(expressionRegex.matches(command)){
-                val parts = command.split("=")
-                hashMap.put(parts[0].substring(0, parts[0].length - 1), expressionHandler.evaluateReversePolishNotation(expressionHandler.toReversePolishNotation(parts[1].substring(1), hashMap)))
-            }
-            else{
-                var cout: Int?
-                if (hashMap.containsKey(command)) {
-                    cout = hashMap.get(command)
-                    outputList.add(cout)
-                }
-            }
-        }
-        return outputList;
-    }
-}

@@ -4,8 +4,8 @@ import java.util.HashMap
 import java.util.Stack
 import kotlin.reflect.KClass
 
-class CelestialElysiaInterpreter(val varHashMap: HashMap<String, Int>,
-                                 private val commandList: MutableList<String>) {
+class CelestialElysiaInterpreter(val varHashMap: HashMap<String, Any>,
+                                 val commandList: MutableList<String>) {
     val tokenHashMap = hashMapOf<String, KClass<out IToken>>(
         "<variable" to VariableToken::class,
         "<equals" to EqualsToken::class,
@@ -14,11 +14,13 @@ class CelestialElysiaInterpreter(val varHashMap: HashMap<String, Int>,
         "<if" to IfToken::class,
         "<endif" to EndIfToken::class,
         "<for" to ForToken::class,
-        "<endfor" to EndForToken::class
+        "<endfor" to EndForToken::class,
+        "<array" to ArrayToken::class
     )
-    var calloutList = mutableListOf<Int>()
-    var stack = ArrayDeque<Int>()
+    var calloutList = mutableListOf<String>()
+    var stack = ArrayDeque<Double>()
     var stringPoint: Int = 0
+    var forStack = ArrayDeque<Int>()
 
     fun interprete(){
         var tokenRegex = Regex("<\\w+")
