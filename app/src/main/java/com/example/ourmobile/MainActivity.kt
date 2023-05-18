@@ -128,6 +128,23 @@ data class EndBeginBlockClass(
     var isDragging: MutableState<Boolean> = mutableStateOf(false),
     var childId: MutableState<Int> = mutableStateOf(-1),
 )
+
+data class BeginBlockClass(
+    var offsetX: MutableState<Float> = mutableStateOf(0f),
+    var offsetY: MutableState<Float> = mutableStateOf(0f),
+    var thisID: Int,
+    var isDragging: MutableState<Boolean> = mutableStateOf(false),
+    var childId: MutableState<Int> = mutableStateOf(-1),
+)
+data class EndBlockClass(
+    var offsetX: MutableState<Float> = mutableStateOf(0f),
+    var offsetY: MutableState<Float> = mutableStateOf(0f),
+    var thisID: Int,
+    var isDragging: MutableState<Boolean> = mutableStateOf(false),
+    var childId: MutableState<Int> = mutableStateOf(-1),
+)
+
+
 val TypeVaribleList = mutableListOf<TypeVaribleClass>()
 val VariableAssignmentList = mutableListOf<VariableAssignmentClass>()
 val IfBlockList = mutableListOf<IfBlockClass>()
@@ -135,6 +152,8 @@ val CardList = mutableListOf<CardClass>()
 val ForBlockList = mutableListOf<ForBlockClass>()
 val CinBlockList = mutableListOf<CinBlockClass>()
 val CoutBlockList = mutableListOf<CoutBlockClass>()
+val BeginBlockList = mutableListOf<BeginBlockClass>()
+val EndBlockList = mutableListOf<EndBlockClass>()
 val EndBeginBlockList = mutableListOf<EndBeginBlockClass>()
 
 @Composable
@@ -158,10 +177,22 @@ fun MyScreen(pixelsPerDp: Float) {
         IfBlockList.add(IfBlockClass(thisID = cardIdCounter))
         CardList.add(CardClass(childId = IfBlockList.last().childId,isDragging = IfBlockList.last().isDragging, offsetX = IfBlockList.last().offsetX, offsetY = IfBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 130.dp))
         cardIdCounter++;
+        BeginBlockList.add(BeginBlockClass(thisID = cardIdCounter))
+        CardList.add(CardClass(childId = BeginBlockList.last().childId,isDragging = BeginBlockList.last().isDragging, offsetX = BeginBlockList.last().offsetX, offsetY = BeginBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
+        cardIdCounter++;
+        EndBlockList.add(EndBlockClass(thisID = cardIdCounter))
+        CardList.add(CardClass(childId = EndBlockList.last().childId,isDragging = EndBlockList.last().isDragging, offsetX = EndBlockList.last().offsetX, offsetY = EndBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
+        cardIdCounter++;
     }
     fun ForBlockListAddCard() {
         ForBlockList.add(ForBlockClass(thisID = cardIdCounter))
         CardList.add(CardClass(childId = ForBlockList.last().childId,isDragging = ForBlockList.last().isDragging, offsetX = ForBlockList.last().offsetX, offsetY = ForBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 150.dp))
+        cardIdCounter++;
+        BeginBlockList.add(BeginBlockClass(thisID = cardIdCounter))
+        CardList.add(CardClass(childId = BeginBlockList.last().childId,isDragging = BeginBlockList.last().isDragging, offsetX = BeginBlockList.last().offsetX, offsetY = BeginBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
+        cardIdCounter++;
+        EndBlockList.add(EndBlockClass(thisID = cardIdCounter))
+        CardList.add(CardClass(childId = EndBlockList.last().childId,isDragging = EndBlockList.last().isDragging, offsetX = EndBlockList.last().offsetX, offsetY = EndBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
         cardIdCounter++;
     }
 
@@ -176,208 +207,241 @@ fun MyScreen(pixelsPerDp: Float) {
         CardList.add(CardClass(childId = CoutBlockList.last().childId,isDragging = CoutBlockList.last().isDragging, offsetX = CoutBlockList.last().offsetX, offsetY = CoutBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
         cardIdCounter++;
     }
-    Box(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .wrapContentSize(align = Alignment.TopCenter)
-            .padding(top = 20.dp)
-    ) {
-        AnimatedVisibility(
-            visible = showNewScreen,
-            enter = slideInVertically(
-                initialOffsetY = { it },
-                animationSpec = tween(durationMillis = 500)
-            ),
-            exit = slideOutVertically(
-                targetOffsetY = { it },
-                animationSpec = tween(durationMillis = 500)
-            )
+    )
+    { item{
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .wrapContentSize(align = Alignment.TopCenter)
+                .padding(top = 20.dp)
         ) {
-            NewScreen(showNewScreen = showNewScreen) {
-                // Закрываем экран
-                showNewScreen = false
-            }
-        }
-
-        if (!showNewScreen) {
-            if (myGlobalNumber == 1) {
-                TypeVaribleListAddCard()
-                myGlobalNumber = 0;
-            }
-            if(myGlobalNumber == 2)
-            {
-                VariableAssignmentListAddCard()
-                myGlobalNumber = 0;
-            }
-            if(myGlobalNumber == 3)
-            {
-                IfBlockListAddCard()
-                myGlobalNumber = 0;
-            }
-            if(myGlobalNumber == 4)
-            {
-                ForBlockListAddCard()
-                myGlobalNumber = 0;
-            }
-            if(myGlobalNumber == 5)
-            {
-                CinBlockListAddCard()
-                myGlobalNumber = 0;
-            }
-            if(myGlobalNumber == 6)
-            {
-                CoutBlockListAddCard()
-                myGlobalNumber = 0;
-            }
-            if(FirstTime == true) {
-                EndBeginBlockList.add(EndBeginBlockClass(thisID = cardIdCounter))
-                CardList.add(
-                    CardClass(
-                        childId = EndBeginBlockList.last().childId,
-                        isDragging = EndBeginBlockList.last().isDragging,
-                        offsetX = EndBeginBlockList.last().offsetX,
-                        offsetY = EndBeginBlockList.last().offsetY,
-                        thisID = -2,
-                        width = 500,
-                        height = 80.dp
-                    )
+            AnimatedVisibility(
+                visible = showNewScreen,
+                enter = slideInVertically(
+                    initialOffsetY = { it },
+                    animationSpec = tween(durationMillis = 500)
+                ),
+                exit = slideOutVertically(
+                    targetOffsetY = { it },
+                    animationSpec = tween(durationMillis = 500)
                 )
-                cardIdCounter++
-                EndBeginBlockList.add(EndBeginBlockClass(thisID = cardIdCounter))
-                CardList.add(CardClass(childId = EndBeginBlockList.last().childId,isDragging = EndBeginBlockList.last().isDragging, offsetX = EndBeginBlockList.last().offsetX, offsetY = EndBeginBlockList.last().offsetY,thisID = -3,width = 500, height = 80.dp))
-                FirstTime = false
-                cardIdCounter++
-            }
-            Button(
-                onClick = {
-
-                    showNewScreen = true // показываем новый экран
-                },
             ) {
-                Text("Добавить блоки")
-            }
-            //отрисовка
-            for (card in TypeVaribleList) {
-                TypeVariableReal(
-                    offsetX = card.offsetX,
-                    offsetY = card.offsetY,
-                    isDragging = card.isDragging,
-                    variableName = card.variableName,
-                    expanded = card.expanded,
-                    selectedType = card.selectedType,
-                    thisID = card.thisID,
-                    CardList = CardList,
-                )
-
-            }
-            for(card in EndBeginBlockList)
-            {
-                if(card.thisID == 0)
-                {
-                    BeginBlock(offsetX = card.offsetX, offsetY = card.offsetY, isDragging = card.isDragging, thisID = card.thisID, CardList = CardList)
-                }
-                else
-                {
-                    EndBlock(offsetX = card.offsetX, offsetY = card.offsetY, isDragging = card.isDragging, thisID = card.thisID, CardList = CardList)
+                NewScreen(showNewScreen = showNewScreen) {
+                    // Закрываем экран
+                    showNewScreen = false
                 }
             }
 
-            for (card in VariableAssignmentList) {
-                VariableAssignmentReal(
-                    offsetX = card.offsetX,
-                    offsetY = card.offsetY,
-                    isDragging = card.isDragging,
-                    VariableName = card.variableName,
-                    VariableValue = card.variableValue,
-                    thisID = card.thisID,
-                    CardList = CardList,
-                )
-            }
-            for (card in IfBlockList) {
-                IfBlockReal(
-                    offsetX = card.offsetX,
-                    offsetY = card.offsetY,
-                    isDragging = card.isDragging,
-                    conditionFirst = card.conditionFirst,
-                    conditionSecond = card.conditionSecond,
-                    expanded = card.expanded,
-                    selectedSign = card.selectedSign,
-                    thisID = card.thisID,
-                    CardList = CardList,
-
-                )
-            }
-            for (card in ForBlockList) {
-                ForBlockReal(
-                    offsetX = card.offsetX,
-                    offsetY = card.offsetY,
-                    isDragging = card.isDragging,
-                    initExpression = card.initExpression,
-                    condExpression = card.condExpression,
-                    loopExpression = card.loopExpression,
-                    thisID = card.thisID,
-                    CardList = CardList,
-
+            if (!showNewScreen) {
+                if (myGlobalNumber == 1) {
+                    TypeVaribleListAddCard()
+                    myGlobalNumber = 0;
+                }
+                if (myGlobalNumber == 2) {
+                    VariableAssignmentListAddCard()
+                    myGlobalNumber = 0;
+                }
+                if (myGlobalNumber == 3) {
+                    IfBlockListAddCard()
+                    myGlobalNumber = 0;
+                }
+                if (myGlobalNumber == 4) {
+                    ForBlockListAddCard()
+                    myGlobalNumber = 0;
+                }
+                if (myGlobalNumber == 5) {
+                    CinBlockListAddCard()
+                    myGlobalNumber = 0;
+                }
+                if (myGlobalNumber == 6) {
+                    CoutBlockListAddCard()
+                    myGlobalNumber = 0;
+                }
+                if (FirstTime == true) {
+                    EndBeginBlockList.add(EndBeginBlockClass(thisID = cardIdCounter))
+                    CardList.add(
+                        CardClass(
+                            childId = EndBeginBlockList.last().childId,
+                            isDragging = EndBeginBlockList.last().isDragging,
+                            offsetX = EndBeginBlockList.last().offsetX,
+                            offsetY = EndBeginBlockList.last().offsetY,
+                            thisID = 0,
+                            width = 500,
+                            height = 80.dp
+                        )
                     )
-            }
-            for (card in CinBlockList) {
-                CinBlockReal(
-                    offsetX = card.offsetX,
-                    offsetY = card.offsetY,
-                    isDragging = card.isDragging,
-                    variableName = card.variableName,
-                    thisID = card.thisID,
-                    CardList = CardList,
+                    cardIdCounter++
+                    EndBeginBlockList.add(EndBeginBlockClass(thisID = cardIdCounter))
+                    CardList.add(
+                        CardClass(
+                            childId = EndBeginBlockList.last().childId,
+                            isDragging = EndBeginBlockList.last().isDragging,
+                            offsetX = EndBeginBlockList.last().offsetX,
+                            offsetY = EndBeginBlockList.last().offsetY,
+                            thisID = 1,
+                            width = 500,
+                            height = 80.dp
+                        )
                     )
-            }
-            for (card in CoutBlockList) {
-                CoutBlockReal(
-                    offsetX = card.offsetX,
-                    offsetY = card.offsetY,
-                    isDragging = card.isDragging,
-                    variableName = card.variableName,
-                    thisID = card.thisID,
-                    CardList = CardList,
-                )
-            }
-
-
-            if(NeedClear.IdToClear != -1)
-            {
-                if(NeedClear.WhatList == 1)
-                {
-                    TypeVaribleList.removeIf {it.thisID == NeedClear.IdToClear }
-                    CardList.removeIf {it.thisID == NeedClear.IdToClear  }
-                    NeedClear.IdToClear = -1;
+                    cardIdCounter++
+                    FirstTime = false
                 }
-            }
-            val MagnitRange = 80;
-            var cardHeightInPixels = 0
-            var HasChild = false;
-            //Магниты
-           // LocalDensity.current.run { MagnitRange.toDp().to }
-            if(CardList.all { it.isDragging.value == false }) {
-                for (i in 0 until CardList.size)
-                {
-                    HasChild = false;
-                    cardHeightInPixels = LocalDensity.current.run { CardList[i].height.toPx() }.toInt()
-                    for (j in 0 until CardList.size)
-                    {
-                        if (i != j && CardList[i].offsetY.value < CardList[j].offsetY.value && CardList[j].offsetY.value -  (CardList[i].offsetY.value + cardHeightInPixels) < MagnitRange) {
-                            CardList[j].offsetY.value -= CardList[j].offsetY.value -  (CardList[i].offsetY.value + cardHeightInPixels)
-                            CardList[j].offsetX.value = CardList[i].offsetX.value;
-                            CardList[i].childId.value = CardList[j].thisID;
-                            HasChild = true;
+                Button(
+                    onClick = {
+
+                        showNewScreen = true // показываем новый экран
+                    },
+                ) {
+                    Text("Добавить блоки")
+                }
+                //отрисовка
+                for (card in TypeVaribleList) {
+                    TypeVariableReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        variableName = card.variableName,
+                        expanded = card.expanded,
+                        selectedType = card.selectedType,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                    )
+
+                }
+                for (card in EndBeginBlockList) {
+                    if (card.thisID == 0) {
+                        BeginBlock(
+                            offsetX = card.offsetX,
+                            offsetY = card.offsetY,
+                            isDragging = card.isDragging,
+                            thisID = card.thisID,
+                            CardList = CardList
+                        )
+                    } else {
+                        EndBlock(
+                            offsetX = card.offsetX,
+                            offsetY = card.offsetY,
+                            isDragging = card.isDragging,
+                            thisID = card.thisID,
+                            CardList = CardList
+                        )
+                    }
+                }
+
+                for (card in VariableAssignmentList) {
+                    VariableAssignmentReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        VariableName = card.variableName,
+                        VariableValue = card.variableValue,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                    )
+                }
+                for (card in IfBlockList) {
+                    IfBlockReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        conditionFirst = card.conditionFirst,
+                        conditionSecond = card.conditionSecond,
+                        expanded = card.expanded,
+                        selectedSign = card.selectedSign,
+                        thisID = card.thisID,
+                        CardList = CardList,
+
+                        )
+                }
+                for (card in ForBlockList) {
+                    ForBlockReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        initExpression = card.initExpression,
+                        condExpression = card.condExpression,
+                        loopExpression = card.loopExpression,
+                        thisID = card.thisID,
+                        CardList = CardList,
+
+                        )
+                }
+                for (card in CinBlockList) {
+                    CinBlockReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        variableName = card.variableName,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                    )
+                }
+                for (card in CoutBlockList) {
+                    CoutBlockReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        variableName = card.variableName,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                    )
+                }
+                for (card in BeginBlockList) {
+                    BeginBlockReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        thisID = card.thisID,
+                        CardList = CardList
+                    )
+                }
+                for (card in EndBlockList) {
+                    EndBlockReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        thisID = card.thisID,
+                        CardList = CardList
+                    )
+                }
+
+                if (NeedClear.IdToClear != -1) {
+                    if (NeedClear.WhatList == 1) {
+                        TypeVaribleList.removeIf { it.thisID == NeedClear.IdToClear }
+                        CardList.removeIf { it.thisID == NeedClear.IdToClear }
+                        NeedClear.IdToClear = -1;
+                    }
+                }
+                val MagnitRange = 80;
+                var cardHeightInPixels = 0
+                var HasChild = false;
+                //Магниты
+                // LocalDensity.current.run { MagnitRange.toDp().to }
+                if (CardList.all { it.isDragging.value == false }) {
+                    for (i in 0 until CardList.size) {
+                        HasChild = false;
+                        cardHeightInPixels =
+                            LocalDensity.current.run { CardList[i].height.toPx() }.toInt()
+                        for (j in 0 until CardList.size) {
+                            if (i != j && CardList[i].offsetY.value < CardList[j].offsetY.value && CardList[j].offsetY.value - (CardList[i].offsetY.value + cardHeightInPixels) < MagnitRange) {
+                                CardList[j].offsetY.value -= CardList[j].offsetY.value - (CardList[i].offsetY.value + cardHeightInPixels)
+                                CardList[j].offsetX.value = CardList[i].offsetX.value;
+                                CardList[i].childId.value = CardList[j].thisID;
+                                HasChild = true;
+                            }
+                        }
+                        if (HasChild == false) {
+                            CardList[i].childId.value = -1;
                         }
                     }
-                    if(HasChild == false)
-                    {
-                        CardList[i].childId.value = -1;
-                    }
                 }
+
+
             }
-
-
+        }
         }
     }
 }
@@ -425,6 +489,104 @@ fun BeginBlock(
         {
             Text(
                 text = "Main begin"
+            )
+        }
+    }
+}
+
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BeginBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(500.dp)
+            .height(80.dp)
+            .padding(2.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value;
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp)
+
+    )
+    {
+        Box()
+        {
+            Text(
+                text = "begin"
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EndBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(500.dp)
+            .height(80.dp)
+            .padding(2.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value;
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp)
+
+    )
+    {
+        Box()
+        {
+            Text(
+                text = "end"
             )
         }
     }
