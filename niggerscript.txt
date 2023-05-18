@@ -1,0 +1,18 @@
+<variable:a,int> //введение int/double/string переменной
+<equals:a,<expression:4 + 1>> //equals - присвоение переменной значения expression 4 + 1 
+<callout:<expression:a>> //вывод на консоль переменной а (представлено как выражения)
+<if:<expression:a>,<expression:b>,==,1> //условный оператор if(a==b), 1 - id
+...
+<endif:1> //endif - закрывает if с id 1
+<if:<expression:a>,<expression:b>,==,2>
+...
+<else:2> //else - относится к if с id 2
+...
+<endif:2>
+<for:8,3> //for - повторяется 8 раз, id 3
+...
+<endfor:3> //endfor - закрывает for с id 3
+<array:abc,5,int> //array - название abc, длина 5
+//можно сделать так:
+<equals:abc[1 + 2],<expression:4 + 1>>
+//в целом обращение к элементам происходит как в других языках

@@ -31,9 +31,9 @@ class EqualsToken : IToken{
     override var regex = Regex("(?<=(^<equals:)).+,<.+>(?=>$)")
     var tokenRegex = Regex("<\\w+")
     override var returnType = "void"
-    val arrayRegex = Regex("\\w+\\[.+]")
-    val arrayNameRegex = Regex("\\w+(?=\\[)")
-    val arrayExpressionRegex = Regex("(?<=(\\[)).+(?=])")
+    val arrayRegex = Regex("^\\w+\\[.+]$")
+    val arrayNameRegex = Regex("^\\w+(?=\\[)")
+    val arrayExpressionRegex = Regex("(?<=(\\[)).+(?=]$)")
     override fun command(input:String, program:CelestialElysiaInterpreter){
         var varName: String?
         var processedInput: String?

@@ -6,9 +6,9 @@ class Expression {
         val stack = mutableListOf<String>()
         val output = mutableListOf<String>()
         val operators = setOf("+", "-", "*", "/")
-        val arrayRegex = Regex("\\w+\\[.+]")
-        val arrayNameRegex = Regex("\\w+(?=\\[)")
-        val arrayExpressionRegex = Regex("(?<=(\\[)).+(?=])")
+        val arrayRegex = Regex("^\\w+\\[.+]$")
+        val arrayNameRegex = Regex("^\\w+(?=\\[)")
+        val arrayExpressionRegex = Regex("(?<=(\\[)).+(?=]$)")
 
         expression.split(" ").forEach { token ->
             if (token in operators) {
