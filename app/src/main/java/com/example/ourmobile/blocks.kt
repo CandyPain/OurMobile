@@ -30,9 +30,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ourmobile.CardClass
+import com.example.ourmobile.NeedClear
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BeginBlock(
     offsetX: MutableState<Float>,
@@ -80,7 +81,100 @@ fun BeginBlock(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BeginBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(500.dp)
+            .height(80.dp)
+            .padding(2.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value;
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp)
+
+    )
+    {
+        Box()
+        {
+            Text(
+                text = "begin"
+            )
+        }
+    }
+}
+
+@Composable
+fun EndBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(500.dp)
+            .height(80.dp)
+            .padding(2.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value;
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp)
+
+    )
+    {
+        Box()
+        {
+            Text(
+                text = "end"
+            )
+        }
+    }
+}
+
 @Composable
 fun EndBlock(
     offsetX: MutableState<Float>,
@@ -128,8 +222,6 @@ fun EndBlock(
         }
     }
 }
-
-
 
 //Кард для создания переменной
 @OptIn(ExperimentalMaterial3Api::class)
@@ -241,8 +333,6 @@ fun TypeVariableReal(
     }
 }
 
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ForBlockReal(
@@ -332,8 +422,6 @@ fun ForBlockReal(
     }
 }
 
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CinBlockReal(
@@ -396,7 +484,6 @@ fun CinBlockReal(
         }
     }
 }
-
 
 // Кард для вывода значения переменной
 @OptIn(ExperimentalMaterial3Api::class)
@@ -462,7 +549,6 @@ fun CoutBlockReal(
         }
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -537,9 +623,6 @@ fun VariableAssignmentReal(
         }
     }
 }
-
-
-
 
 //Кард для ифа
 @OptIn(ExperimentalMaterial3Api::class)

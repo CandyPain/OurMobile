@@ -24,7 +24,7 @@ var messagesCin: String = ""
 fun ConsoleScreen()
 {
     Card(
-
+        //visible
     )
     {
         Column()
