@@ -1,9 +1,15 @@
 package com.example.ourmobile
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -24,9 +30,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,9 +55,10 @@ fun BeginBlock(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(500.dp)
-            .height(80.dp)
+            .width(300.dp)
+            .height(60.dp)
             .padding(2.dp)
+            .background(Color.LightGray,)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
@@ -59,7 +70,7 @@ fun BeginBlock(
                         offsetX.value += dragAmount.x
                         offsetY.value += dragAmount.y
                         change.consumeAllChanges()
-                        var i = CardList[thisID].childId.value;
+                        var i = CardList[thisID].childId.value
                         while (i != -1) {
                             CardList[i].offsetY.value += dragAmount.y
                             CardList[i].offsetX.value += dragAmount.x
@@ -68,14 +79,17 @@ fun BeginBlock(
                     }
                 )
             },
-        shape = RoundedCornerShape(15.dp)
-
-    )
-    {
-        Box()
-        {
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
             Text(
-                text = "Main begin"
+                text = "Main begin",
+                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
             )
         }
     }
@@ -92,8 +106,8 @@ fun BeginBlockReal(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(500.dp)
-            .height(80.dp)
+            .width(200.dp)
+            .height(45.dp)
             .padding(2.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
@@ -106,7 +120,7 @@ fun BeginBlockReal(
                         offsetX.value += dragAmount.x
                         offsetY.value += dragAmount.y
                         change.consumeAllChanges()
-                        var i = CardList[thisID].childId.value;
+                        var i = CardList[thisID].childId.value
                         while (i != -1) {
                             CardList[i].offsetY.value += dragAmount.y
                             CardList[i].offsetX.value += dragAmount.x
@@ -116,13 +130,17 @@ fun BeginBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp)
-
-    )
-    {
-        Box()
-        {
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
             Text(
-                text = "begin"
+                text = "Begin",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold
             )
         }
     }
@@ -139,8 +157,8 @@ fun EndBlockReal(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(500.dp)
-            .height(80.dp)
+            .width(200.dp)
+            .height(45.dp)
             .padding(2.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
@@ -153,7 +171,7 @@ fun EndBlockReal(
                         offsetX.value += dragAmount.x
                         offsetY.value += dragAmount.y
                         change.consumeAllChanges()
-                        var i = CardList[thisID].childId.value;
+                        var i = CardList[thisID].childId.value
                         while (i != -1) {
                             CardList[i].offsetY.value += dragAmount.y
                             CardList[i].offsetX.value += dragAmount.x
@@ -163,13 +181,17 @@ fun EndBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp)
-
-    )
-    {
-        Box()
-        {
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
             Text(
-                text = "end"
+                text = "End",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold
             )
         }
     }
@@ -182,14 +204,14 @@ fun EndBlock(
     isDragging: MutableState<Boolean>,
     thisID: Int,
     CardList: MutableList<CardClass>,
-
-    ) {
+) {
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(500.dp)
-            .height(80.dp)
+            .width(300.dp)
+            .height(60.dp)
             .padding(2.dp)
+            .background(Color.LightGray,)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
@@ -201,7 +223,7 @@ fun EndBlock(
                         offsetX.value += dragAmount.x
                         offsetY.value += dragAmount.y
                         change.consumeAllChanges()
-                        var i = CardList[thisID].childId.value;
+                        var i = CardList[thisID].childId.value
                         while (i != -1) {
                             CardList[i].offsetY.value += dragAmount.y
                             CardList[i].offsetX.value += dragAmount.x
@@ -210,14 +232,17 @@ fun EndBlock(
                     }
                 )
             },
-        shape = RoundedCornerShape(15.dp)
-
-    )
-    {
-        Box()
-        {
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
             Text(
-                text = "Main End"
+                text = "Main End",
+                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
             )
         }
     }
@@ -349,9 +374,9 @@ fun ForBlockReal(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(500.dp)
+            .width(250.dp)
             .padding(2.dp)
-            .height(150.dp)
+            .height(200.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
@@ -374,50 +399,52 @@ fun ForBlockReal(
             },
         shape = RoundedCornerShape(15.dp),
     ) {
-        Column {
-            Row()
-            {
-                Text(text = "For ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+        Column(Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "For", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.width(8.dp))
                 TextField(
-                    modifier = Modifier.width(100.dp),
+                    modifier = Modifier.width(200.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
                     value = initExpression.value,
                     onValueChange = { newText ->
                         initExpression.value = newText
-                        // Изменять значение внешнего класса (пре-объявление переменной) здесь (при изменении текст филда) именно через initExpression.value
                     }
                 )
-                Text(text = " ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "to", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.width(8.dp))
                 TextField(
-                    modifier = Modifier.width(100.dp),
+                    modifier = Modifier.width(200.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
                     value = condExpression.value,
                     onValueChange = { newText ->
                         condExpression.value = newText
-                        // Изменять значение внешнего класса (условие цикла) здесь (при изменении текст филда) именно через condExpression.value
                     }
                 )
-                Text(text = " ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "step", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.width(8.dp))
                 TextField(
-                    modifier = Modifier.width(100.dp),
+                    modifier = Modifier.width(200.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
                     value = loopExpression.value,
                     onValueChange = { newText ->
                         loopExpression.value = newText
-                        // Изменять значение внешнего класса (действие цикла) здесь (при изменении текст филда) именно через loopExpression.value
                     }
                 )
-                Button(
-                    modifier = Modifier.padding(5.dp),
-                    onClick = {
-                        // Действие для удаления блока
-                    }
-                )
-                {
-                    Text(text = "Del", fontSize = 15.sp)
-                }
+
             }
-            Text(text = "Do begin", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+            Text(
+                text = "Do begin",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 16.dp)
+            )
         }
     }
 }
@@ -435,7 +462,7 @@ fun CinBlockReal(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(400.dp)
+            .width(300.dp)
             .padding(2.dp)
             .height(80.dp)
             .pointerInput(Unit) {
@@ -449,7 +476,7 @@ fun CinBlockReal(
                         offsetX.value += dragAmount.x
                         offsetY.value += dragAmount.y
                         change.consumeAllChanges()
-                        var i = CardList[thisID].childId.value;
+                        var i = CardList[thisID].childId.value
                         while (i != -1) {
                             CardList[i].offsetY.value += dragAmount.y
                             CardList[i].offsetX.value += dragAmount.x
@@ -460,11 +487,18 @@ fun CinBlockReal(
             },
         shape = RoundedCornerShape(15.dp),
     ) {
-        Row()
-        {
-            Text(text = "Cin ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+        Row(
+            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Cin",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(end = 8.dp)
+            )
             TextField(
-                modifier = Modifier.width(200.dp),
+                modifier = Modifier.weight(1f),
                 textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
                 value = variableName.value,
                 onValueChange = { newText ->
@@ -472,15 +506,6 @@ fun CinBlockReal(
                     // Изменять значение внешнего класса (значение имени переменной) здесь (при изменении текст филда) именно через variableName.value
                 }
             )
-            Button(
-                modifier = Modifier.padding(5.dp),
-                onClick = {
-                    // Действие для удаления блока
-                }
-            )
-            {
-                Text(text = "Del", fontSize = 15.sp)
-            }
         }
     }
 }
@@ -500,7 +525,7 @@ fun CoutBlockReal(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(400.dp)
+            .width(300.dp)
             .height(80.dp)
             .padding(2.dp)
             .pointerInput(Unit) {
@@ -525,11 +550,17 @@ fun CoutBlockReal(
             },
         shape = RoundedCornerShape(15.dp),
     ) {
-        Row()
+        Row(            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically)
         {
-            Text(text = "Cout ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+            Text(
+                text = "Cout",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(end = 8.dp)
+            )
             TextField(
-                modifier = Modifier.width(200.dp),
+                modifier = Modifier.weight(1f),
                 textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
                 value = variableName.value,
                 onValueChange = { newText ->
@@ -537,15 +568,7 @@ fun CoutBlockReal(
                     // Изменять значение внешнего класса (значение имени переменной) здесь (при изменении текст филда) именно через variableName.value
                 }
             )
-            Button(
-                modifier = Modifier.padding(5.dp),
-                onClick = {
-                    // Действие для удаления блока
-                }
-            )
-            {
-                Text(text = "Del", fontSize = 15.sp)
-            }
+
         }
     }
 }
@@ -589,12 +612,14 @@ fun VariableAssignmentReal(
             },
         shape = RoundedCornerShape(15.dp),
     ) {
-        Box(
-        ) {
-            Row() {
+        Box() {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 TextField(
                     modifier = Modifier
-                        .width(200.dp)
+                        .weight(1f)
                         .padding(10.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
                     value = VariableName.value,
@@ -607,18 +632,12 @@ fun VariableAssignmentReal(
                 )
                 TextField(
                     modifier = Modifier
-                        .width(200.dp)
+                        .weight(1f)
                         .padding(10.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
                     value = VariableValue.value,
                     onValueChange = { newText -> VariableValue.value = newText }
                 )
-                Button(
-                    onClick = {},
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    Text(text = "Save")
-                }
             }
         }
     }
@@ -638,13 +657,12 @@ fun IfBlockReal(
     thisID: Int,
     CardList: MutableList<CardClass>,
 ) {
-
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
             .width(500.dp)
-            .padding(2.dp)
-            .height(130.dp)
+            .height(150.dp)
+            .padding(8.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
@@ -656,7 +674,7 @@ fun IfBlockReal(
                         offsetX.value += dragAmount.x
                         offsetY.value += dragAmount.y
                         change.consumeAllChanges()
-                        var i = CardList[thisID].childId.value;
+                        var i = CardList[thisID].childId.value
                         while (i != -1) {
                             CardList[i].offsetY.value += dragAmount.y
                             CardList[i].offsetX.value += dragAmount.x
@@ -667,27 +685,34 @@ fun IfBlockReal(
             },
         shape = RoundedCornerShape(15.dp),
     ) {
-        Column {
-            Row()
-            {
-                Text(text = "If ", modifier = Modifier.padding(15.dp), fontSize = 15.sp)
+        Column(
+            Modifier.padding(16.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "If",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
                 TextField(
-                    modifier = Modifier.width(200.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
                     value = conditionFirst.value,
                     onValueChange = { newText ->
                         conditionFirst.value = newText
-// Изменять значение внешнего класса (условия ифа) здесь (при изменении текст филда) именно через condition.value
                     }
                 )
-                IconButton(onClick = { expanded.value = true })
-                {
+                IconButton(onClick = { expanded.value = true }) {
                     Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
                 }
                 Text(
                     text = selectedSign.value,
-                    modifier = Modifier.padding(15.dp),
-                    fontSize = 15.sp
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 8.dp)
                 )
                 DropdownMenu(
                     expanded = expanded.value,
@@ -731,25 +756,22 @@ fun IfBlockReal(
                         })
                 }
                 TextField(
-                    modifier = Modifier.width(200.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 8.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
                     value = conditionSecond.value,
                     onValueChange = { newText ->
                         conditionSecond.value = newText
-// Изменять значение внешнего класса (условия ифа) здесь (при изменении текст филда) именно через condition.value
                     }
                 )
-                Button(
-                    modifier = Modifier.padding(5.dp),
-                    onClick = {
-// Действие для удаления блока
-                    }
-                )
-                {
-                    Text(text = "Del", fontSize = 15.sp)
-                }
             }
-            Text(text = "Then begin", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+            Text(
+                text = "Then begin",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
     }
 }

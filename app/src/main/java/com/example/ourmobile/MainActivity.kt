@@ -161,36 +161,36 @@ fun MyScreen(pixelsPerDp: Float) {
     }
     fun IfBlockListAddCard() {
         IfBlockList.add(IfBlockClass(thisID = cardIdCounter))
-        CardList.add(CardClass(childId = IfBlockList.last().childId,isDragging = IfBlockList.last().isDragging, offsetX = IfBlockList.last().offsetX, offsetY = IfBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 130.dp))
+        CardList.add(CardClass(childId = IfBlockList.last().childId,isDragging = IfBlockList.last().isDragging, offsetX = IfBlockList.last().offsetX, offsetY = IfBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 150.dp))
         cardIdCounter++;
-        BeginBlockList.add(BeginBlockClass(thisID = cardIdCounter))
-        CardList.add(CardClass(childId = BeginBlockList.last().childId,isDragging = BeginBlockList.last().isDragging, offsetX = BeginBlockList.last().offsetX, offsetY = BeginBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
-        cardIdCounter++;
+        //BeginBlockList.add(BeginBlockClass(thisID = cardIdCounter))
+        //CardList.add(CardClass(childId = BeginBlockList.last().childId,isDragging = BeginBlockList.last().isDragging, offsetX = BeginBlockList.last().offsetX, offsetY = BeginBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
+        //cardIdCounter++;
         EndBlockList.add(EndBlockClass(thisID = cardIdCounter))
-        CardList.add(CardClass(childId = EndBlockList.last().childId,isDragging = EndBlockList.last().isDragging, offsetX = EndBlockList.last().offsetX, offsetY = EndBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
+        CardList.add(CardClass(childId = EndBlockList.last().childId,isDragging = EndBlockList.last().isDragging, offsetX = EndBlockList.last().offsetX, offsetY = EndBlockList.last().offsetY,thisID = cardIdCounter,width = 200, height = 45.dp))
         cardIdCounter++;
     }
     fun ForBlockListAddCard() {
         ForBlockList.add(ForBlockClass(thisID = cardIdCounter))
-        CardList.add(CardClass(childId = ForBlockList.last().childId,isDragging = ForBlockList.last().isDragging, offsetX = ForBlockList.last().offsetX, offsetY = ForBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 150.dp))
+        CardList.add(CardClass(childId = ForBlockList.last().childId,isDragging = ForBlockList.last().isDragging, offsetX = ForBlockList.last().offsetX, offsetY = ForBlockList.last().offsetY,thisID = cardIdCounter,width = 250, height = 200.dp))
         cardIdCounter++;
-        BeginBlockList.add(BeginBlockClass(thisID = cardIdCounter))
-        CardList.add(CardClass(childId = BeginBlockList.last().childId,isDragging = BeginBlockList.last().isDragging, offsetX = BeginBlockList.last().offsetX, offsetY = BeginBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
-        cardIdCounter++;
+        //BeginBlockList.add(BeginBlockClass(thisID = cardIdCounter))
+        //CardList.add(CardClass(childId = BeginBlockList.last().childId,isDragging = BeginBlockList.last().isDragging, offsetX = BeginBlockList.last().offsetX, offsetY = BeginBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
+        //cardIdCounter++;
         EndBlockList.add(EndBlockClass(thisID = cardIdCounter))
-        CardList.add(CardClass(childId = EndBlockList.last().childId,isDragging = EndBlockList.last().isDragging, offsetX = EndBlockList.last().offsetX, offsetY = EndBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
+        CardList.add(CardClass(childId = EndBlockList.last().childId,isDragging = EndBlockList.last().isDragging, offsetX = EndBlockList.last().offsetX, offsetY = EndBlockList.last().offsetY,thisID = cardIdCounter,width = 200, height = 45.dp))
         cardIdCounter++;
     }
 
     fun CinBlockListAddCard() {
         CinBlockList.add(CinBlockClass(thisID = cardIdCounter))
-        CardList.add(CardClass(childId = CinBlockList.last().childId,isDragging = CinBlockList.last().isDragging, offsetX = CinBlockList.last().offsetX, offsetY = CinBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
+        CardList.add(CardClass(childId = CinBlockList.last().childId,isDragging = CinBlockList.last().isDragging, offsetX = CinBlockList.last().offsetX, offsetY = CinBlockList.last().offsetY,thisID = cardIdCounter,width = 300, height = 80.dp))
         cardIdCounter++;
     }
 
     fun CoutBlockListAddCard() {
         CoutBlockList.add(CoutBlockClass(thisID = cardIdCounter))
-        CardList.add(CardClass(childId = CoutBlockList.last().childId,isDragging = CoutBlockList.last().isDragging, offsetX = CoutBlockList.last().offsetX, offsetY = CoutBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
+        CardList.add(CardClass(childId = CoutBlockList.last().childId,isDragging = CoutBlockList.last().isDragging, offsetX = CoutBlockList.last().offsetX, offsetY = CoutBlockList.last().offsetY,thisID = cardIdCounter,width = 300, height = 80.dp))
         cardIdCounter++;
     }
         Box(
@@ -250,8 +250,8 @@ fun MyScreen(pixelsPerDp: Float) {
                             offsetX = EndBeginBlockList.last().offsetX,
                             offsetY = EndBeginBlockList.last().offsetY,
                             thisID = 0,
-                            width = 500,
-                            height = 80.dp
+                            width = 300,
+                            height = 60.dp
                         )
                     )
                     cardIdCounter++
@@ -263,8 +263,8 @@ fun MyScreen(pixelsPerDp: Float) {
                             offsetX = EndBeginBlockList.last().offsetX,
                             offsetY = EndBeginBlockList.last().offsetY,
                             thisID = 1,
-                            width = 500,
-                            height = 80.dp
+                            width = 300,
+                            height = 60.dp
                         )
                     )
                     cardIdCounter++
@@ -398,6 +398,7 @@ fun MyScreen(pixelsPerDp: Float) {
                 }
                 val MagnitRange = 80;
                 var cardHeightInPixels = 0
+                var center = 0f;
                 var HasChild = false;
                 //Магниты
                 // LocalDensity.current.run { MagnitRange.toDp().to }
@@ -409,7 +410,8 @@ fun MyScreen(pixelsPerDp: Float) {
                         for (j in 0 until CardList.size) {
                             if (i != j && CardList[i].offsetY.value < CardList[j].offsetY.value && CardList[j].offsetY.value - (CardList[i].offsetY.value + cardHeightInPixels) < MagnitRange) {
                                 CardList[j].offsetY.value -= CardList[j].offsetY.value - (CardList[i].offsetY.value + cardHeightInPixels)
-                                CardList[j].offsetX.value = CardList[i].offsetX.value;
+                                center = CardList[i].offsetX.value + (CardList[i].width/2)
+                                CardList[j].offsetX.value = center - (CardList[j].width/2)
                                 CardList[i].childId.value = CardList[j].thisID;
                                 HasChild = true;
                             }
@@ -425,51 +427,7 @@ fun MyScreen(pixelsPerDp: Float) {
         }
     }
 
-var messagesCout = mutableListOf<String>()
-var valuesCout = mutableListOf<Int>()
-var messagesCin: String = ""
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ConsoleScreen()
-{
-    Card(
-
-    )
-    {
-        Column()
-        {
-            /*
-                Button(
-                    onClick = //
-                )
-                {
-                    Text(text = "OK")
-                }
-            */
-            LazyColumn()
-            {
-                itemsIndexed(messagesCout)
-                {
-                        index, item ->
-                    Text(
-                        text = item,
-                        fontSize = 18.sp,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-            }
-            TextField(
-                modifier = Modifier
-                    .width(200.dp)
-                    .padding(10.dp),
-                textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
-                value = "",
-                onValueChange = { newText -> messagesCin = newText }
-            )
-        }
-    }
-}
 
     class MainActivity : ComponentActivity() {
         var pixelsPerDp: Float = 0f
