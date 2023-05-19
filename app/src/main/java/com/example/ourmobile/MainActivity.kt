@@ -36,7 +36,7 @@ class CardClass(
     var offsetY: MutableState<Float> = mutableStateOf(0f),
     var thisID: Int,
     var height: Dp,
-    var width: Int,
+    var width: Dp,
     var isDragging: MutableState<Boolean> = mutableStateOf(false),
     var childId: MutableState<Int> = mutableStateOf(-1),
 
@@ -150,47 +150,47 @@ fun MyScreen(pixelsPerDp: Float) {
     // методы для добавления новой карточки в список
     fun TypeVaribleListAddCard() {
         TypeVaribleList.add(TypeVaribleClass(thisID = cardIdCounter))
-        CardList.add(CardClass(childId = TypeVaribleList.last().childId,isDragging = TypeVaribleList.last().isDragging, offsetX = TypeVaribleList.last().offsetX, offsetY = TypeVaribleList.last().offsetY,thisID = cardIdCounter, width = 500, height = 80.dp))
+        CardList.add(CardClass(childId = TypeVaribleList.last().childId,isDragging = TypeVaribleList.last().isDragging, offsetX = TypeVaribleList.last().offsetX, offsetY = TypeVaribleList.last().offsetY,thisID = cardIdCounter, width = 500.dp, height = 80.dp))
         cardIdCounter++;
     }
 
     fun VariableAssignmentListAddCard() {
         VariableAssignmentList.add(VariableAssignmentClass(thisID = cardIdCounter))
-        CardList.add(CardClass(childId = VariableAssignmentList.last().childId,isDragging = VariableAssignmentList.last().isDragging, offsetX = VariableAssignmentList.last().offsetX, offsetY = VariableAssignmentList.last().offsetY,thisID = cardIdCounter,  width = 500, height = 80.dp))
+        CardList.add(CardClass(childId = VariableAssignmentList.last().childId,isDragging = VariableAssignmentList.last().isDragging, offsetX = VariableAssignmentList.last().offsetX, offsetY = VariableAssignmentList.last().offsetY,thisID = cardIdCounter,  width = 500.dp, height = 80.dp))
         cardIdCounter++;
     }
     fun IfBlockListAddCard() {
         IfBlockList.add(IfBlockClass(thisID = cardIdCounter))
-        CardList.add(CardClass(childId = IfBlockList.last().childId,isDragging = IfBlockList.last().isDragging, offsetX = IfBlockList.last().offsetX, offsetY = IfBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 150.dp))
+        CardList.add(CardClass(childId = IfBlockList.last().childId,isDragging = IfBlockList.last().isDragging, offsetX = IfBlockList.last().offsetX, offsetY = IfBlockList.last().offsetY,thisID = cardIdCounter,width = 500.dp, height = 150.dp))
         cardIdCounter++;
         //BeginBlockList.add(BeginBlockClass(thisID = cardIdCounter))
         //CardList.add(CardClass(childId = BeginBlockList.last().childId,isDragging = BeginBlockList.last().isDragging, offsetX = BeginBlockList.last().offsetX, offsetY = BeginBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
         //cardIdCounter++;
         EndBlockList.add(EndBlockClass(thisID = cardIdCounter))
-        CardList.add(CardClass(childId = EndBlockList.last().childId,isDragging = EndBlockList.last().isDragging, offsetX = EndBlockList.last().offsetX, offsetY = EndBlockList.last().offsetY,thisID = cardIdCounter,width = 200, height = 45.dp))
+        CardList.add(CardClass(childId = EndBlockList.last().childId,isDragging = EndBlockList.last().isDragging, offsetX = EndBlockList.last().offsetX, offsetY = EndBlockList.last().offsetY,thisID = cardIdCounter,width = 200.dp, height = 45.dp))
         cardIdCounter++;
     }
     fun ForBlockListAddCard() {
         ForBlockList.add(ForBlockClass(thisID = cardIdCounter))
-        CardList.add(CardClass(childId = ForBlockList.last().childId,isDragging = ForBlockList.last().isDragging, offsetX = ForBlockList.last().offsetX, offsetY = ForBlockList.last().offsetY,thisID = cardIdCounter,width = 250, height = 200.dp))
+        CardList.add(CardClass(childId = ForBlockList.last().childId,isDragging = ForBlockList.last().isDragging, offsetX = ForBlockList.last().offsetX, offsetY = ForBlockList.last().offsetY,thisID = cardIdCounter,width = 250.dp, height = 200.dp))
         cardIdCounter++;
         //BeginBlockList.add(BeginBlockClass(thisID = cardIdCounter))
         //CardList.add(CardClass(childId = BeginBlockList.last().childId,isDragging = BeginBlockList.last().isDragging, offsetX = BeginBlockList.last().offsetX, offsetY = BeginBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
         //cardIdCounter++;
         EndBlockList.add(EndBlockClass(thisID = cardIdCounter))
-        CardList.add(CardClass(childId = EndBlockList.last().childId,isDragging = EndBlockList.last().isDragging, offsetX = EndBlockList.last().offsetX, offsetY = EndBlockList.last().offsetY,thisID = cardIdCounter,width = 200, height = 45.dp))
+        CardList.add(CardClass(childId = EndBlockList.last().childId,isDragging = EndBlockList.last().isDragging, offsetX = EndBlockList.last().offsetX, offsetY = EndBlockList.last().offsetY,thisID = cardIdCounter,width = 200.dp, height = 45.dp))
         cardIdCounter++;
     }
 
     fun CinBlockListAddCard() {
         CinBlockList.add(CinBlockClass(thisID = cardIdCounter))
-        CardList.add(CardClass(childId = CinBlockList.last().childId,isDragging = CinBlockList.last().isDragging, offsetX = CinBlockList.last().offsetX, offsetY = CinBlockList.last().offsetY,thisID = cardIdCounter,width = 300, height = 80.dp))
+        CardList.add(CardClass(childId = CinBlockList.last().childId,isDragging = CinBlockList.last().isDragging, offsetX = CinBlockList.last().offsetX, offsetY = CinBlockList.last().offsetY,thisID = cardIdCounter,width = 300.dp, height = 80.dp))
         cardIdCounter++;
     }
 
     fun CoutBlockListAddCard() {
         CoutBlockList.add(CoutBlockClass(thisID = cardIdCounter))
-        CardList.add(CardClass(childId = CoutBlockList.last().childId,isDragging = CoutBlockList.last().isDragging, offsetX = CoutBlockList.last().offsetX, offsetY = CoutBlockList.last().offsetY,thisID = cardIdCounter,width = 300, height = 80.dp))
+        CardList.add(CardClass(childId = CoutBlockList.last().childId,isDragging = CoutBlockList.last().isDragging, offsetX = CoutBlockList.last().offsetX, offsetY = CoutBlockList.last().offsetY,thisID = cardIdCounter,width = 300.dp, height = 80.dp))
         cardIdCounter++;
     }
         Box(
@@ -250,7 +250,7 @@ fun MyScreen(pixelsPerDp: Float) {
                             offsetX = EndBeginBlockList.last().offsetX,
                             offsetY = EndBeginBlockList.last().offsetY,
                             thisID = 0,
-                            width = 300,
+                            width = 300.dp,
                             height = 60.dp
                         )
                     )
@@ -263,7 +263,7 @@ fun MyScreen(pixelsPerDp: Float) {
                             offsetX = EndBeginBlockList.last().offsetX,
                             offsetY = EndBeginBlockList.last().offsetY,
                             thisID = 1,
-                            width = 300,
+                            width = 300.dp,
                             height = 60.dp
                         )
                     )
@@ -398,6 +398,7 @@ fun MyScreen(pixelsPerDp: Float) {
                 }
                 val MagnitRange = 80;
                 var cardHeightInPixels = 0
+                var cardWidthInPixels = 0
                 var center = 0f;
                 var HasChild = false;
                 //Магниты
@@ -407,11 +408,14 @@ fun MyScreen(pixelsPerDp: Float) {
                         HasChild = false;
                         cardHeightInPixels =
                             LocalDensity.current.run { CardList[i].height.toPx() }.toInt()
+                        cardWidthInPixels =
+                            LocalDensity.current.run { CardList[i].width.toPx() }.toInt()
                         for (j in 0 until CardList.size) {
                             if (i != j && CardList[i].offsetY.value < CardList[j].offsetY.value && CardList[j].offsetY.value - (CardList[i].offsetY.value + cardHeightInPixels) < MagnitRange) {
                                 CardList[j].offsetY.value -= CardList[j].offsetY.value - (CardList[i].offsetY.value + cardHeightInPixels)
-                                center = CardList[i].offsetX.value + (CardList[i].width/2)
-                                CardList[j].offsetX.value = center - (CardList[j].width/2)
+                                center = CardList[i].offsetX.value + (cardWidthInPixels/2)
+                                cardWidthInPixels = LocalDensity.current.run { CardList[j].width.toPx() }.toInt()
+                                CardList[j].offsetX.value = center - (cardWidthInPixels/2)
                                 CardList[i].childId.value = CardList[j].thisID;
                                 HasChild = true;
                             }
