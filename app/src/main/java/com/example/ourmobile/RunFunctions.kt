@@ -110,7 +110,7 @@ fun createCommandList(): MutableList<String> {
                 }
             }
         }
-
+        /*
         if (!hasChild) {
             for (i in 0 until ForBlockList.size) {
                 if (ForBlockList[i].thisID == childId) {
@@ -128,7 +128,7 @@ fun createCommandList(): MutableList<String> {
                 }
             }
         }
-
+        */
         if (!hasChild) {
             for (i in 0 until IfBlockList.size) {
                 if (IfBlockList[i].thisID == childId) {
@@ -137,7 +137,7 @@ fun createCommandList(): MutableList<String> {
                     var expStringSec = spaceRemove(IfBlockList[i].conditionSecond.value)
                     expStringFir = normalizationOfExpression(expStringFir)
                     expStringSec = normalizationOfExpression(expStringSec)
-                    commandList.add("<if:<expression:$expStringFir,<expression:$expStringSec>," + IfBlockList[i].selectedSign.value + ",$numOfEnd>")
+                    commandList.add("<if:<expression:$expStringFir>,<expression:$expStringSec>," + IfBlockList[i].selectedSign.value + ",$numOfEnd>")
                     endList.add("<endif:$numOfEnd>")
                     ++numOfEnd
                     childId = IfBlockList[i].childId.value
