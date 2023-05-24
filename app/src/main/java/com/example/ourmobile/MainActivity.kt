@@ -1,5 +1,6 @@
 package com.example.ourmobile
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,13 +12,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
@@ -165,12 +170,14 @@ val EndBeginBlockList = mutableListOf<EndBeginBlockClass>()
 
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyScreen(pixelsPerDp: Float) {
     var showNewScreen by remember { mutableStateOf(false) }
     var ConsoleIsVisible by remember { mutableStateOf(false) }
     var FirstTime by remember { mutableStateOf(true) }
     var delete by remember { mutableStateOf(false) }
+    var fromConsole by remember { mutableStateOf("") }
 
     // методы для добавления новой карточки в список
     fun TypeVaribleListAddCard() {
@@ -319,6 +326,7 @@ fun MyScreen(pixelsPerDp: Float) {
                     }
                     if (FirstTime == true) {
                         EndBeginBlockList.add(EndBeginBlockClass(thisID = cardIdCounter))
+                        EndBeginBlockList[0].offsetY.value = 300f;
                         CardList.add(
                             CardClass(
                                 childId = EndBeginBlockList.last().childId,
@@ -332,6 +340,7 @@ fun MyScreen(pixelsPerDp: Float) {
                         )
                         cardIdCounter++
                         EndBeginBlockList.add(EndBeginBlockClass(thisID = cardIdCounter))
+                        EndBeginBlockList[1].offsetY.value = 700f;
                         CardList.add(
                             CardClass(
                                 childId = EndBeginBlockList.last().childId,
@@ -368,6 +377,20 @@ fun MyScreen(pixelsPerDp: Float) {
                                     Icon(Icons.Filled.PlayArrow, contentDescription = null)
                                 }
                                 IconButton(onClick = {
+                                    if(ConsoleIsVisible == true)
+                                    {
+                                        for(card in CardList)
+                                        {
+                                            card.offsetY.value -= 600f;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        for(card in CardList)
+                                        {
+                                            card.offsetY.value += 600f;
+                                        }
+                                    }
                                     ConsoleIsVisible = !ConsoleIsVisible
                                 })
                                 {
@@ -379,21 +402,70 @@ fun MyScreen(pixelsPerDp: Float) {
                                 {
                                     Icon(Icons.Filled.Delete, contentDescription = null)
                                 }
+                                IconButton(onClick = {
+                                    DeleteAll()
+                                })
+                                {
+                                    Icon(Icons.Filled.Send, contentDescription = null)
+                                }
                             }
-                            if (ConsoleIsVisible) {
+                            if(ConsoleIsVisible)
+                            {
                                 Card(
                                     modifier = Modifier
                                         .padding(16.dp)
                                         .width(500.dp)
-                                        .height(200.dp)
-                                        .background(color = Color.Black)
+                                        .height(200.dp),
+                                    shape = RectangleShape
                                 ) {
-                                    Column()
+                                    Box(
+                                        modifier = Modifier
+                                            .width(500.dp)
+                                            .height(200.dp)
+                                            .background(Color.Black)
+                                    )
                                     {
-                                        LazyColumn(
-                                        ) {
-                                            itemsIndexed(messagesCout) { index, item ->
-                                                Text(text = "$item")
+                                        Column(
+                                            modifier = Modifier
+                                                .width(500.dp)
+                                                .background(Color.Black)
+                                        )
+                                        {
+                                            LazyColumn(
+                                                modifier = Modifier
+                                                    .width(500.dp)
+                                                    .background(Color.Black)
+                                            ) {
+                                                itemsIndexed(messagesCout) { _, item ->
+                                                    Text(
+                                                        text = item,
+                                                        color = Color.White
+                                                    )
+                                                }
+                                            }
+                                            Row(
+
+                                            )
+                                            {
+                                                TextField(
+                                                    modifier = Modifier
+                                                        .width(300.dp),
+                                                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                                                    value = fromConsole,
+                                                    onValueChange = { newText ->
+                                                        fromConsole = newText
+                                                    },
+                                                    colors = TextFieldDefaults.textFieldColors(
+                                                        containerColor = Color.Black,
+                                                        textColor = Color.White
+                                                    )
+                                                )
+                                                IconButton(onClick = {
+                                                    //ToDo
+                                                })
+                                                {
+                                                    Icon(Icons.Filled.Check, tint = Color.Green,contentDescription = null)
+                                                }
                                             }
                                         }
                                     }
@@ -554,7 +626,7 @@ fun MyScreen(pixelsPerDp: Float) {
                                     cardWidthInPixels =
                                         LocalDensity.current.run { CardList[j].width.toPx() }
                                             .toInt()
-                                    CardList[j].offsetX.value = center - (cardWidthInPixels / 2)
+                                    CardList[j].offsetX.value = CardList[i].offsetX.value
                                     CardList[i].childId.value = CardList[j].thisID;
                                     HasChild = true;
                                 }
