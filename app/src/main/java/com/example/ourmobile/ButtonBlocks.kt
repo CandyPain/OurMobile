@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.*
 import kotlin.math.roundToInt
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.text.font.FontWeight
 
 var myGlobalNumber by mutableStateOf(0);
 
@@ -369,6 +371,90 @@ fun TypeVariable(onCloseClicked: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ArrayVariable(onCloseClicked: () -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    val variableName = remember { mutableStateOf("") }
+    val selectedType = remember { mutableStateOf("") }
+    val count = remember { mutableStateOf("") }
+
+    // Сохраненный тип переменной
+    selectedType.value = "int"
+    // Сохраненное имя переменной
+    variableName.value = "NewVariable"
+
+    Card(
+        modifier = Modifier
+            .width(500.dp)
+            .height(120.dp)
+            .padding(10.dp)
+            .clickable {
+                myGlobalNumber = 7;
+                onCloseClicked()
+            },
+        shape = RoundedCornerShape(15.dp)
+
+    )
+    {
+        Column {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+                }
+                Text(text = "Array", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.width(8.dp))
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = "int") },
+                        onClick = {
+                            selectedType.value = "int"
+                            expanded = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "double") },
+                        onClick = {
+                            selectedType.value = "double"
+                            expanded = false
+                        })
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(text = "Name:", fontSize = 15.sp)
+                Spacer(modifier = Modifier.width(8.dp))
+                TextField(
+                    modifier = Modifier.width(200.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = variableName.value,
+                    onValueChange = { newText ->
+                        variableName.value = newText
+                    }
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(text = "Count:", fontSize = 15.sp)
+                Spacer(modifier = Modifier.width(8.dp))
+                TextField(
+                    modifier = Modifier.width(100.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = count.value,
+                    onValueChange = { /* Handle count value change */ }
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                IconButton(
+                    onClick = {
+                        //NeedClear.IdToClear = thisID
+                        //NeedClear.WhatList = 1
+                    }
+                ) {
+                    Icon(Icons.Filled.Close, contentDescription = null)
+                }
+            }
+        }
+    }
+}
+
 //Кард для ифа
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -706,6 +792,22 @@ fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
                 }
                 if (selectedButton == 3) {
                     ForBlock(onCloseClicked = onCloseClicked)
+                }
+                Button(
+                    onClick = {
+                        if (selectedButton == 4) {
+                            selectedButton = -1
+                        } else {
+                            selectedButton = 4
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                ) {
+                    Text("Остальное")
+                }
+                if (selectedButton == 4) {
+                    ArrayVariable(onCloseClicked = onCloseClicked)
                 }
                 Button(
 

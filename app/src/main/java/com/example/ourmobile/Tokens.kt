@@ -76,7 +76,7 @@ class ExpressionToken : IToken{
 
         val expression = Expression()
         val expressionValue = expression.evaluateReversePolishNotation(expression.toReversePolishNotation(expressionString!!, program.varHashMap))
-        program.stack.add(expressionValue)
+        program.stack.addFirst(expressionValue)
     }
 }
 class CallOutToken : IToken{
