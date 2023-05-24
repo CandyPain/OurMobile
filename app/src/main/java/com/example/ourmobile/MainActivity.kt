@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
@@ -160,11 +161,16 @@ val BeginBlockList = mutableListOf<BeginBlockClass>()
 val EndBlockList = mutableListOf<EndBlockClass>()
 val EndBeginBlockList = mutableListOf<EndBeginBlockClass>()
 
+
+
+
+
 @Composable
 fun MyScreen(pixelsPerDp: Float) {
     var showNewScreen by remember { mutableStateOf(false) }
     var ConsoleIsVisible by remember { mutableStateOf(false) }
     var FirstTime by remember { mutableStateOf(true) }
+    var delete by remember { mutableStateOf(false) }
 
     // методы для добавления новой карточки в список
     fun TypeVaribleListAddCard() {
@@ -174,7 +180,7 @@ fun MyScreen(pixelsPerDp: Float) {
     }
     fun ArrayVaribleListAddCard() {
         ArrayVaribleList.add(ArrayVaribleClass(thisID = cardIdCounter))
-        CardList.add(CardClass(childId = ArrayVaribleList.last().childId,isDragging = ArrayVaribleList.last().isDragging, offsetX = ArrayVaribleList.last().offsetX, offsetY = ArrayVaribleList.last().offsetY,thisID = cardIdCounter, width = 500.dp, height = 200.dp))
+        CardList.add(CardClass(childId = ArrayVaribleList.last().childId,isDragging = ArrayVaribleList.last().isDragging, offsetX = ArrayVaribleList.last().offsetX, offsetY = ArrayVaribleList.last().offsetY,thisID = cardIdCounter, width = 250.dp, height = 200.dp))
         cardIdCounter++;
     }
 
@@ -216,6 +222,44 @@ fun MyScreen(pixelsPerDp: Float) {
         CoutBlockList.add(CoutBlockClass(thisID = cardIdCounter))
         CardList.add(CardClass(childId = CoutBlockList.last().childId,isDragging = CoutBlockList.last().isDragging, offsetX = CoutBlockList.last().offsetX, offsetY = CoutBlockList.last().offsetY,thisID = cardIdCounter,width = 300.dp, height = 80.dp))
         cardIdCounter++;
+    }
+    fun DeleteAll()
+    {
+        TypeVaribleList.clear()
+        ArrayVaribleList.clear()
+        VariableAssignmentList.clear()
+        IfBlockList.clear()
+        ForBlockList.clear()
+        CinBlockList.clear()
+        CoutBlockList.clear()
+        BeginBlockList.clear()
+        EndBlockList.clear()
+        CardList.clear();
+        CardList.add(
+            CardClass(
+                childId = EndBeginBlockList[0].childId,
+                isDragging = EndBeginBlockList[0].isDragging,
+                offsetX = EndBeginBlockList[0].offsetX,
+                offsetY = EndBeginBlockList[0].offsetY,
+                thisID = 0,
+                width = 300.dp,
+                height = 60.dp
+            )
+        )
+        CardList.add(
+            CardClass(
+                childId = EndBeginBlockList[1].childId,
+                isDragging = EndBeginBlockList[1].isDragging,
+                offsetX = EndBeginBlockList[1].offsetX,
+                offsetY = EndBeginBlockList[1].offsetY,
+                thisID = 1,
+                width = 300.dp,
+                height = 60.dp
+            )
+        )
+        cardIdCounter = 2;
+        ConsoleIsVisible = !ConsoleIsVisible
+        ConsoleIsVisible = !ConsoleIsVisible
     }
     LazyColumn(modifier = Modifier.fillMaxSize())
     {
@@ -302,46 +346,55 @@ fun MyScreen(pixelsPerDp: Float) {
                         cardIdCounter++
                         FirstTime = false
                     }
-                    Column()
+                    Box(modifier = Modifier.fillMaxWidth(),contentAlignment = Alignment.Center)
                     {
-                        Button(
-                            onClick = {
-
-                                showNewScreen = true // показываем новый экран
-                            },
-                        ) {
-                            Text("Добавить блоки")
-                        }
-                        Row()
+                        Column(verticalArrangement = Arrangement.Center)
                         {
-                            IconButton(onClick = {
-                                RunApp()
-                                ConsoleIsVisible = true
-                            })
-                            {
-                                Icon(Icons.Filled.PlayArrow, contentDescription = null)
-                            }
-                            IconButton(onClick = {
-                                ConsoleIsVisible = !ConsoleIsVisible
-                            })
-                            {
-                                Icon(Icons.Filled.List, contentDescription = null)
-                            }
-                        }
-                        if (ConsoleIsVisible) {
-                            Card(
-                                modifier = Modifier
-                                    .padding(16.dp)
-                                    .width(500.dp)
-                                    .height(200.dp)
-                                    .background(color = Color.Black)
+                            Button(
+                                onClick = {
+
+                                    showNewScreen = true // показываем новый экран
+                                },
                             ) {
-                                Column()
+                                Text("Добавить блоки")
+                            }
+                            Row()
+                            {
+                                IconButton(onClick = {
+                                    RunApp()
+                                    ConsoleIsVisible = true
+                                })
                                 {
-                                    LazyColumn(
-                                    ) {
-                                        itemsIndexed(messagesCout) { index, item ->
-                                            Text(text = "$item")
+                                    Icon(Icons.Filled.PlayArrow, contentDescription = null)
+                                }
+                                IconButton(onClick = {
+                                    ConsoleIsVisible = !ConsoleIsVisible
+                                })
+                                {
+                                    Icon(Icons.Filled.List, contentDescription = null)
+                                }
+                                IconButton(onClick = {
+                                    DeleteAll()
+                                })
+                                {
+                                    Icon(Icons.Filled.Delete, contentDescription = null)
+                                }
+                            }
+                            if (ConsoleIsVisible) {
+                                Card(
+                                    modifier = Modifier
+                                        .padding(16.dp)
+                                        .width(500.dp)
+                                        .height(200.dp)
+                                        .background(color = Color.Black)
+                                ) {
+                                    Column()
+                                    {
+                                        LazyColumn(
+                                        ) {
+                                            itemsIndexed(messagesCout) { index, item ->
+                                                Text(text = "$item")
+                                            }
                                         }
                                     }
                                 }
