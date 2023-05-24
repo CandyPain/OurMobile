@@ -45,10 +45,16 @@ class Expression {
                     val value = variables[arrayToken] ?: throw IllegalArgumentException("Unknown variable: $token")
                     output.add(value.toString())
                      */
-
                     val array = variables.get(arrayName)
-                    if (array is Array<*>) {
-                        val value = array[arrayIndex]
+
+                    if(array is IntArray){
+                        val typedArray = array as IntArray
+                        val value = typedArray[arrayIndex]
+                        output.add(value.toString())
+                    }
+                    else{
+                        val typedArray = array as DoubleArray
+                        val value = typedArray[arrayIndex]
                         output.add(value.toString())
                     }
                 }else if(token.matches(functionRegex)){

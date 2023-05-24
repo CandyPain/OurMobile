@@ -11,6 +11,7 @@ class CelestialElysiaInterpreter(var varHashMap: HashMap<String, Any>,
         "<equals" to EqualsToken::class,
         "<expression" to ExpressionToken::class,
         "<stringexpression" to StringExpressionToken::class,
+        "<anyexpression" to StringExpressionToken::class,
         "<callout" to CallOutToken::class,
         "<if" to IfToken::class,
         "<endif" to EndIfToken::class,
@@ -29,7 +30,7 @@ class CelestialElysiaInterpreter(var varHashMap: HashMap<String, Any>,
         "<callin" to CallInToken::class
     )
 
-    var baseVarHashMap: HashMap<String, Any> = varHashMap.toMap() as HashMap
+    var baseVarHashMap: HashMap<String, Any> = hashMapOf<String, Any>()
     var functionHashMap = HashMap<String, CelestialElysiaInterpreter>()
 
     var calloutList = mutableListOf<String>()
@@ -37,6 +38,7 @@ class CelestialElysiaInterpreter(var varHashMap: HashMap<String, Any>,
     var stringStack = ArrayDeque<String>()
     var stringPoint: Int = 0
     var forStack = ArrayDeque<Int>()
+    var FFAstack = ArrayDeque<Any>()
 
     var returnValue: Any = 0
 
