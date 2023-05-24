@@ -1,9 +1,7 @@
 package com.example.ourmobile
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -40,8 +37,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ourmobile.CardClass
-import com.example.ourmobile.NeedClear
 import kotlin.math.roundToInt
 
 @Composable
@@ -880,6 +875,220 @@ fun IfBlockReal(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 8.dp)
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ReturnBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+    ReturnString:MutableState<String>
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(200.dp)
+            .height(45.dp)
+            .padding(2.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Row()
+            {
+                Text(
+                    text = "return",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                TextField(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 8.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = ReturnString.value,
+                    onValueChange = { newText ->
+                        ReturnString.value = newText
+                    }
+                )
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DoFunctionBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+    FunctionName:MutableState<String>,
+    FunctionParams:MutableState<String>,
+) {
+    if(FunctionParams.value == "")
+    {
+        FunctionParams.value = "<>";
+    }
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(350.dp)
+            .height(90.dp)
+            .padding(2.dp)
+            .background(Color.LightGray,)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Row()
+            {
+
+                Text(
+                    text = "Do Function name ",
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                )
+                TextField(modifier = Modifier
+                    .width(50.dp) ,
+                    value = FunctionName.value, onValueChange = { newText ->
+                        FunctionName.value = newText
+                    })
+                Text(
+                    text = "     ",
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                )
+                TextField(value = FunctionParams.value, onValueChange = { newText ->
+                    FunctionParams.value = newText
+                })
+            }
+        }
+    }
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FunctionBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+    FunctionName:MutableState<String>,
+    FunctionParams:MutableState<String>,
+) {
+    if(FunctionParams.value == "")
+    {
+        FunctionParams.value = "<>";
+    }
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(350.dp)
+            .height(90.dp)
+            .padding(2.dp)
+            .background(Color.LightGray,)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Row()
+            {
+
+                Text(
+                    text = "Function name ",
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                )
+                TextField(modifier = Modifier
+                    .width(50.dp) ,
+                    value = FunctionName.value, onValueChange = { newText ->
+                    FunctionName.value = newText
+                })
+                Text(
+                    text = "     ",
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                )
+                TextField(value = FunctionParams.value, onValueChange = { newText ->
+                    FunctionParams.value = newText
+                })
+            }
         }
     }
 }

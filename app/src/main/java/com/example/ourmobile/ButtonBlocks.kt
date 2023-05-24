@@ -2,6 +2,7 @@ package com.example.ourmobile
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
@@ -13,13 +14,13 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
 import kotlin.math.roundToInt
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.text.font.FontWeight
 
 var myGlobalNumber by mutableStateOf(0);
 
@@ -726,6 +727,107 @@ fun CoutBlock(onCloseClicked: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun FunctionBlock(onCloseClicked: () -> Unit
+) {
+    val FunctionName = remember { mutableStateOf("") }
+    val FunctionParams = remember { mutableStateOf("") }
+    if(FunctionParams.value == "")
+    {
+        FunctionParams.value = "<>";
+    }
+    Card(
+        modifier = Modifier
+            .width(300.dp)
+            .height(60.dp)
+            .padding(2.dp)
+            .background(Color.LightGray,)
+            .clickable {
+                myGlobalNumber = 8;
+                onCloseClicked();
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Row()
+            {
+
+                Text(
+                    text = "Function",
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                )
+                TextField(value = FunctionName.value, onValueChange = { newText ->
+                    FunctionName.value = newText
+                })
+                Text(
+                    text = "     ",
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                )
+                TextField(value = FunctionParams.value, onValueChange = { newText ->
+                    FunctionParams.value = newText
+                })
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DoFunctionBlock(onCloseClicked: () -> Unit
+) {
+    val FunctionName = remember { mutableStateOf("") }
+    val FunctionParams = remember { mutableStateOf("") }
+    if(FunctionParams.value == "")
+    {
+        FunctionParams.value = "<>";
+    }
+    Card(
+        modifier = Modifier
+            .width(300.dp)
+            .height(60.dp)
+            .padding(2.dp)
+            .background(Color.LightGray,)
+            .clickable {
+                myGlobalNumber = 9;
+                onCloseClicked();
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Row()
+            {
+
+                Text(
+                    text = "Do Function",
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                )
+                TextField(value = FunctionName.value, onValueChange = { newText ->
+                    FunctionName.value = newText
+                })
+                Text(
+                    text = "     ",
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                )
+                TextField(value = FunctionParams.value, onValueChange = { newText ->
+                    FunctionParams.value = newText
+                })
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
     var selectedButton by remember { mutableStateOf(-1) }
 
@@ -808,6 +910,8 @@ fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
                 }
                 if (selectedButton == 4) {
                     ArrayVariable(onCloseClicked = onCloseClicked)
+                    FunctionBlock(onCloseClicked = onCloseClicked)
+                    DoFunctionBlock(onCloseClicked = onCloseClicked)
                 }
                 Button(
 
@@ -826,3 +930,4 @@ fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
         }
     }
 }
+
