@@ -195,8 +195,9 @@ class CallOutToken : IToken{
 
         tokenObject.command(processedInput,program)
 
-
-        program.calloutList.add(program.FFAstack.removeFirst().toString())
+        var stringValue = program.FFAstack.removeFirst().toString()
+        program.calloutList.add(stringValue!!)
+        messagesCout.add(stringValue!!)
     }
     override var returnType = "void"
 }
