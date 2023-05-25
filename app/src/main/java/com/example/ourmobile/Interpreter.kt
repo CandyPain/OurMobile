@@ -11,15 +11,20 @@ class Expression {
         val output = mutableListOf<String>()
         val operators = setOf("+", "-", "*", "/")
 
+        val tokenRegex = Regex("([A-Za-z]+\\w*(\\[.+\\])|[+\\-\\/*)(]|\\w+<.+>|\\w+)")
+
         val arrayRegex = Regex("^\\w+\\[.+]$")
         val arrayNameRegex = Regex("^\\w+(?=\\[)")
         val arrayExpressionRegex = Regex("(?<=(\\[)).+(?=]$)")
 
-        val functionRegex = Regex("^\\w+\\(.+\\)$")
-        val functionNameRegex = Regex("^\\w+(?=\\()")
-        val arrayArgumentsRegex = Regex("(?<=(\\w\\()).+(?=\\)$)")
+        val functionRegex = Regex("^\\w+<.+>$")
+        val functionNameRegex = Regex("^\\w+(?=<)")
+        val arrayArgumentsRegex = Regex("(?<=(\\w<)).+(?=>$)")
 
-        expression.split(" ").forEach { token ->
+        var matches = tokenRegex.findAll(expression)
+
+        for(match in matches) {
+            var token = match.value
             if (token in operators) {
                 while (stack.isNotEmpty() && stack.last() in operators && precedence(stack.last()) >= precedence(token)) {
                     output.add(stack.removeLast())
@@ -67,10 +72,11 @@ class Expression {
                         val name = nameAndValue[0]
                         var value = nameAndValue[1]
 
-                        val expressionToken = EqualsToken()
+                        val expressionToken = ExpressionToken()
 
                         if(functionProgram!!.varHashMap[name]!!::class.java.simpleName=="Integer" ||
                             functionProgram!!.varHashMap[name]!!::class.java.simpleName=="Double") {
+
                             expressionToken.command("<expression:" + value + ">", program)
                             functionProgram!!.varHashMap.put(name, program.stack.removeFirst())
                         }
