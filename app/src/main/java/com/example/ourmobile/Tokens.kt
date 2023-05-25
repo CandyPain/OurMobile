@@ -542,8 +542,8 @@ class StructToken : IToken{
         val variables = arguments[1].split(",")
 
         var structHashMap = hashMapOf<String, Any>()
-        for(n in variables){
-            val nameAndValue = n.split(":")
+        for(variable in variables){
+            val nameAndValue = variable.split(":")
             val name = nameAndValue[0]
             var type = nameAndValue[1]
 
@@ -563,4 +563,54 @@ class StructToken : IToken{
 class StructObjectToken : IToken{
     override var regex = Regex("(?<=(^<structobject:)).+(?=>$)")
     override var returnType = "void"
+    override fun command(input:String, program:CelestialElysiaInterpreter) {
+        val processedInput: String?
+        val match = regex.find(input)
+        processedInput = match?.value
+
+        val arguments = processedInput!!.split(",")
+        val name = arguments[0]
+        val type = arguments[1]
+
+        var mapCopy = program.varHashMap[type] as HashMap<String, Any>
+        var newMap = mapCopy.toMap()
+
+        program.varHashMap.put(name, newMap)
+    }
+}
+class CallFunctionToken : IToken{
+    override var regex = Regex("(?<=(^<callfunction:)).+(?=>$)")
+    override var returnType = "void"
+
+    val functionRegex = Regex("^\\w+<.+>$")
+    val functionNameRegex = Regex("^\\w+(?=<)")
+    val arrayArgumentsRegex = Regex("(?<=(\\w<)).+(?=>$)")
+    override fun command(input:String, program:CelestialElysiaInterpreter) {
+        val processedInput: String?
+        val match = regex.find(input)
+        processedInput = match?.value
+
+        var functionName = functionNameRegex.find(processedInput!!)!!.value
+        var functionProgram = program.functionHashMap[functionName]
+        var functionArguments = arrayArgumentsRegex.find(processedInput!!)!!.value.split("|")
+
+        for(n in functionArguments){
+            val nameAndValue = n.split(":")
+            val name = nameAndValue[0]
+            var value = nameAndValue[1]
+
+            val expressionToken = ExpressionToken()
+
+            if(functionProgram!!.varHashMap[name]!!::class.java.simpleName=="Integer" ||
+                functionProgram!!.varHashMap[name]!!::class.java.simpleName=="Double") {
+
+                expressionToken.command("<expression:" + value + ">", program)
+                functionProgram!!.varHashMap.put(name, program.stack.removeFirst())
+            }
+            else{
+                functionProgram!!.varHashMap.put(name,program.varHashMap[value]!!)
+            }
+        }
+        functionProgram!!.interprete()
+    }
 }

@@ -28,10 +28,12 @@ class CelestialElysiaInterpreter(var varHashMap: HashMap<String, Any>,
         "<function" to FunctionToken::class,
         "<endfunction" to EndFunctionToken::class,
         "<return" to ReturnToken::class,
-        "<callin" to CallInToken::class
+        "<callin" to CallInToken::class,
+        "<struct" to StructToken::class,
+        "<structobject" to StructObjectToken::class,
+        "<callfucntion" to CallFunctionToken::class
     )
-
-    var baseVarHashMap: HashMap<String, Any> = hashMapOf<String, Any>()
+    
     var functionHashMap = HashMap<String, CelestialElysiaInterpreter>()
 
     var calloutList = mutableListOf<String>()
@@ -41,12 +43,16 @@ class CelestialElysiaInterpreter(var varHashMap: HashMap<String, Any>,
     var forStack = ArrayDeque<Int>()
     var FFAstack = ArrayDeque<Any>()
 
+    var variableVisibilityStack = ArrayDeque<kotlin.collections.MutableList<String>>()
+
     var returnValue: Any = 0
 
     var inputValue: String = "0"
     fun interprete(){
+        variableVisibilityStack.clear()
+        variableVisibilityStack.addFirst(mutableListOf<String>())
+
         var tokenRegex = Regex("<\\w+")
-        varHashMap = baseVarHashMap
         while(stringPoint<commandList.size){
             var tokenName = tokenRegex.find(commandList[stringPoint])!!.value
             var tokenType = tokenHashMap.get(tokenName)
