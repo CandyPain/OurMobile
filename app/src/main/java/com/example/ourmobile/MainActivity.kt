@@ -160,6 +160,8 @@ data class FunctionBlockClass(
     var childId: MutableState<Int> = mutableStateOf(-1),
     var FunctionName:MutableState<String> = mutableStateOf(""),
     var FunctionParams:MutableState<String> = mutableStateOf(""),
+    var selectedType: MutableState<String> = mutableStateOf(""),
+    var expanded: MutableState<Boolean> = mutableStateOf(false),
 )
 
 data class DoFunctionBlockClass(
@@ -292,7 +294,7 @@ fun MyScreen(pixelsPerDp: Float) {
     {
         FunctionBlockList.add(FunctionBlockClass(thisID = cardIdCounter))
         FunctionBlockList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = FunctionBlockList.last().childId,isDragging =  FunctionBlockList.last().isDragging, offsetX =  FunctionBlockList.last().offsetX, offsetY =  FunctionBlockList.last().offsetY,thisID = cardIdCounter,width = 350.dp, height = 90.dp))
+        CardList.add(CardClass(childId = FunctionBlockList.last().childId,isDragging =  FunctionBlockList.last().isDragging, offsetX =  FunctionBlockList.last().offsetX, offsetY =  FunctionBlockList.last().offsetY,thisID = cardIdCounter,width = 500.dp, height = 90.dp))
         cardIdCounter++;
         ReturnBlockList.add(ReturnBlockClass(thisID = cardIdCounter))
         ReturnBlockList.last().offsetY.value = 300f;
@@ -691,6 +693,8 @@ fun MyScreen(pixelsPerDp: Float) {
                             CardList = CardList,
                             FunctionName = card.FunctionName,
                             FunctionParams = card.FunctionParams,
+                            expanded = card.expanded,
+                            selectedType = card.selectedType
                         )
                     }
                     for (card in DoFunctionBlockList) {

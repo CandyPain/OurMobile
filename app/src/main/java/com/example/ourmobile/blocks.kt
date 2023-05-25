@@ -1029,15 +1029,21 @@ fun FunctionBlockReal(
     CardList: MutableList<CardClass>,
     FunctionName:MutableState<String>,
     FunctionParams:MutableState<String>,
+    expanded: MutableState<Boolean>,
+    selectedType: MutableState<String>,
 ) {
     if(FunctionParams.value == "")
     {
         FunctionParams.value = "<>";
     }
+    if(selectedType.value == "")
+    {
+        selectedType.value = "int"
+    }
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(350.dp)
+            .width(500.dp)
             .height(90.dp)
             .padding(2.dp)
             .background(Color.LightGray,)
@@ -1071,7 +1077,38 @@ fun FunctionBlockReal(
         ) {
             Row()
             {
-
+                IconButton(onClick = { expanded.value = true }) {
+                    Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+                }
+                Text(
+                    text = selectedType.value,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+                DropdownMenu(
+                    expanded = expanded.value,
+                    onDismissRequest = { expanded.value = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = "int") },
+                        onClick = {
+                            selectedType.value = "int"
+                            expanded.value = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "double") },
+                        onClick = {
+                            selectedType.value = "double"
+                            expanded.value = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "string") },
+                        onClick = {
+                            selectedType.value = "string"
+                            expanded.value = false
+                        })
+                }
                 Text(
                     text = "Function name ",
                     style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
