@@ -4,7 +4,6 @@ import com.example.ourmobile.ExpressionToken
 import com.example.ourmobile.IToken
 import java.util.HashMap
 
-//TODO: сделать поддержку нормальных массивов и выражений со строками
 class Expression {
     public fun toReversePolishNotation(expressionString: String, variables: Map<String, Any>, program:CelestialElysiaInterpreter): String {
         val stack = mutableListOf<String>()

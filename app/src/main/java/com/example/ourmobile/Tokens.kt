@@ -29,6 +29,7 @@ class VariableToken : IToken{
             else -> 0
         }
         program.varHashMap.put(arguments[0], variableType)
+        program.variableVisibilityStack.get(0).add(arguments[0])
     }
 }
 class EqualsToken : IToken{
@@ -57,7 +58,7 @@ class EqualsToken : IToken{
 
         val variableValue = program.varHashMap.get(varName)
 
-        program.variableVisibilityStack.get(0).add(varName)
+
 
         if(arguments[0].matches(arrayRegex)){
             val expression = Expression()
@@ -247,6 +248,12 @@ class ElseToken : IToken{
 class EndIfToken : IToken{
     override var regex = Regex("^<endif")
     override var returnType = "void"
+    override fun command(input:String, program:CelestialElysiaInterpreter){
+        var variableList = program.variableVisibilityStack.removeFirst()
+        for(variable in variableList){
+            program.varHashMap.remove(variable)
+        }
+    }
 }
 
 class ForToken : IToken {
@@ -283,6 +290,10 @@ class EndForToken : IToken{
         }
         else{
             program.forStack.removeFirst()
+            var variableList = program.variableVisibilityStack.removeFirst()
+            for(variable in variableList){
+                program.varHashMap.remove(variable)
+            }
         }
     }
 }
@@ -403,6 +414,10 @@ class EndExtendedForToken : IToken {
 
         if(!boolValue) {
             program.stringPoint = currentString
+            var variableList = program.variableVisibilityStack.removeFirst()
+            for(variable in variableList){
+                program.varHashMap.remove(variable)
+            }
         }
     }
 }
@@ -430,6 +445,7 @@ class WhileToken : IToken{
                 }
             }
         }
+
     }
 }
 class EndWhileToken : IToken{
@@ -441,6 +457,11 @@ class EndWhileToken : IToken{
         val processedInput: String?
         val match = regex.find(input)
         processedInput = match?.value
+
+        var variableList = program.variableVisibilityStack.removeFirst()
+        for(variable in variableList){
+            program.varHashMap.remove(variable)
+        }
 
         for(n in 0..program.stringPoint){
             if(program.commandList[n].matches(whileRegex)
@@ -555,8 +576,12 @@ class CallInToken : IToken{
         val match = regex.find(input)
         processedInput = match?.value
 
+        while(pendingCin){
+
+        }
+
         val equalsToken = EqualsToken()
-        equalsToken.command("<equals:"+processedInput+program.inputValue+">", program)
+        equalsToken.command("<equals:"+processedInput+",<expression:"+messagesCin+">>", program)
     }
 }
 class StructToken : IToken{
