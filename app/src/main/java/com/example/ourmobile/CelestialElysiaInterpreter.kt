@@ -31,7 +31,9 @@ class CelestialElysiaInterpreter(var varHashMap: HashMap<String, Any>,
         "<callin" to CallInToken::class,
         "<struct" to StructToken::class,
         "<structobject" to StructObjectToken::class,
-        "<callfucntion" to CallFunctionToken::class
+        "<callfucntion" to CallFunctionToken::class,
+        "<continue" to ContinueToken::class,
+        "<break" to BreakToken::class
     )
     
     var functionHashMap = HashMap<String, CelestialElysiaInterpreter>()

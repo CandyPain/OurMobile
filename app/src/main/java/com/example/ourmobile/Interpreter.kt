@@ -12,7 +12,7 @@ class Expression {
 
         val expression = expressionString.replace("\\s".toRegex(), "")
 
-        val tokenRegex = Regex("(((?<=[+\\-\\/*]))-\\d+(\\.\\d+)?|[A-Za-z]+\\w*(\\[.+\\])|[+\\-\\/*)(]|\\w+<.+>|[a-zA-Z]\\w*\\.[a-zA-Z]\\w*|\\w+(\\.\\d+)?)")
+        val tokenRegex = Regex("(((?<=[+\\-\\/*]))-\\d+(\\.\\d+)?|[A-Za-z]+\\w*(\\[.+\\])|[+\\-\\/*)(]|\\w+<.+>|[a-zA-Z]\\w*\\.[a-zA-Z]\\w*\\[.+\\]|[a-zA-Z]\\w*\\.[a-zA-Z]\\w*|\\w+(\\.\\d+)?)")
 
         val arrayRegex = Regex("^\\w+\\[.+]$")
         val arrayNameRegex = Regex("^\\w+(?=\\[)")
@@ -20,11 +20,12 @@ class Expression {
 
         val functionRegex = Regex("^\\w+<.+>$")
         val functionNameRegex = Regex("^\\w+(?=<)")
-        val arrayArgumentsRegex = Regex("(?<=(\\w<)).+(?=>$)")
+        val functionArgumentsRegex = Regex("(?<=(\\w<)).+(?=>$)")
 
-        val structRegex = Regex("^\\w+\\.\\w+$")
+        val structRegex = Regex("^\\w+\\.\\w+(\\[.+\\])?$")
         val structNameRegex = Regex("^\\w+(?=\\.)")
-        val structVarRegex = Regex("(?<=(\\.))\\w+$")
+        val structVarRegex = Regex("(?<=(\\.))\\w+")
+        val structArrayRegex = Regex("^\\w+\\.\\w+\\[.+]$")
 
         var matches = tokenRegex.findAll(expression)
 
@@ -70,7 +71,7 @@ class Expression {
                 }else if(token.matches(functionRegex)){
                     var functionName = functionNameRegex.find(token)!!.value
                     var functionProgram = program.functionHashMap[functionName]
-                    var functionArguments = arrayArgumentsRegex.find(token)!!.value.split("|")
+                    var functionArguments = functionArgumentsRegex.find(token)!!.value.split("|")
 
                     for(n in functionArguments){
                         val nameAndValue = n.split(":")
@@ -94,11 +95,35 @@ class Expression {
                     functionProgram!!.interprete()
                     output.add(functionProgram.returnValue.toString())
                 }else if(token.matches(structRegex)){
-                    var structName = structNameRegex.find(token)!!.value
-                    var structVarName = structVarRegex.find(token)!!.value
+                    if(token.matches(structArrayRegex)){
+                        //println("nigger")
+                        var structName = structNameRegex.find(token)!!.value
+                        var structVarName = structVarRegex.find(token)!!.value
 
-                    var structHashMap = variables.get(structName) as HashMap<String, Any>
-                    output.add(structHashMap[structVarName].toString())
+                        var structHashMap = variables.get(structName) as HashMap<String, Any>
+                        var array = structHashMap.get(structVarName)
+
+                        val expression = Expression()
+                        var arrayIndex = expression.evaluateReversePolishNotation(expression.toReversePolishNotation(arrayExpressionRegex.find(token)!!.value,variables, program)).toInt()
+
+                        if(array is IntArray){
+                            val typedArray = array as IntArray
+                            val value = typedArray[arrayIndex]
+                            output.add(value.toString())
+                        }
+                        else{
+                            val typedArray = array as DoubleArray
+                            val value = typedArray[arrayIndex]
+                            output.add(value.toString())
+                        }
+                    }else {
+                        //println("nigger")
+                        var structName = structNameRegex.find(token)!!.value
+                        var structVarName = structVarRegex.find(token)!!.value
+
+                        var structHashMap = variables.get(structName) as HashMap<String, Any>
+                        output.add(structHashMap[structVarName].toString())
+                    }
                 }
                 else{
                     val value = variables[token] ?: throw IllegalArgumentException("Unknown variable: $token")

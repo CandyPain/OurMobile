@@ -670,3 +670,33 @@ class CallFunctionToken : IToken{
         functionProgram!!.interprete()
     }
 }
+class ContinueToken : IToken {
+    override var regex = Regex("(?<=(^<continue:)).+(?=>$)")
+    override var returnType = "void"
+
+    var cycleRegex = Regex("<(endfor|endextendedfor|endwhile).+")
+    override fun command(input:String, program:CelestialElysiaInterpreter) {
+        for(n in program.stringPoint..program.commandList.size-1){
+            if(program.commandList[n]!!.matches(cycleRegex)){
+                program.stringPoint = n - 1
+                break
+            }
+        }
+    }
+
+}
+class BreakToken : IToken {
+    override var regex = Regex("(?<=(^<break:)).+(?=>$)")
+    override var returnType = "void"
+
+    var cycleRegex = Regex("<(endfor|endextendedfor|endwhile).+")
+    override fun command(input:String, program:CelestialElysiaInterpreter) {
+        for(n in program.stringPoint..program.commandList.size-1){
+            if(program.commandList[n]!!.matches(cycleRegex)){
+                program.stringPoint = n
+                break
+            }
+        }
+    }
+
+}
