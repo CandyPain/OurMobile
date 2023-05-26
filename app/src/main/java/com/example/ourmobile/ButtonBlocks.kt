@@ -939,6 +939,60 @@ fun StructVarBlock(onCloseClicked: () -> Unit) {
         }
     }
 }
+@Composable
+fun BreakBlock(onCloseClicked: () -> Unit){
+    Card(
+        modifier = Modifier
+            .width(200.dp)
+            .height(45.dp)
+            .padding(2.dp)
+            .clickable {
+                myGlobalNumber = 12;
+                onCloseClicked();
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Break",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+@Composable
+fun ContinueBlock(onCloseClicked: () -> Unit){
+    Card(
+        modifier = Modifier
+            .width(200.dp)
+            .height(45.dp)
+            .padding(2.dp)
+            .clickable {
+                myGlobalNumber = 13;
+                onCloseClicked();
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Continue",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -1008,6 +1062,8 @@ fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
                 }
                 if (selectedButton == 3) {
                     ForBlock(onCloseClicked = onCloseClicked)
+                    BreakBlock(onCloseClicked = onCloseClicked)
+                    ContinueBlock (onCloseClicked = onCloseClicked)
                 }
                 Button(
                     onClick = {

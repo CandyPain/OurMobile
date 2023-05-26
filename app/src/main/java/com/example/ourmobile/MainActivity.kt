@@ -225,6 +225,26 @@ data class ReturnBlockClass(
     var ReturnString:MutableState<String> = mutableStateOf(""),
     var bordersize: MutableState<Dp> = mutableStateOf(0.dp),
 )
+
+data class BreakBlockClass(
+    var offsetX: MutableState<Float> = mutableStateOf(0f),
+    var offsetY: MutableState<Float> = mutableStateOf(0f),
+    var thisID: Int,
+    var isDragging: MutableState<Boolean> = mutableStateOf(false),
+    var childId: MutableState<Int> = mutableStateOf(-1),
+
+    var bordersize: MutableState<Dp> = mutableStateOf(0.dp),
+)
+data class ContinueBlockClass(
+    var offsetX: MutableState<Float> = mutableStateOf(0f),
+    var offsetY: MutableState<Float> = mutableStateOf(0f),
+    var thisID: Int,
+    var isDragging: MutableState<Boolean> = mutableStateOf(false),
+    var childId: MutableState<Int> = mutableStateOf(-1),
+
+    var bordersize: MutableState<Dp> = mutableStateOf(0.dp),
+)
+
 data class TablePair(
     var key:MutableState<String> = mutableStateOf(""),
     var value:MutableState<String> = mutableStateOf(""),
@@ -247,6 +267,8 @@ var DoFunctionBlockList = mutableListOf<DoFunctionBlockClass>()
 var ReturnBlockList = mutableListOf<ReturnBlockClass>()
 var StructBlockList = mutableListOf<StructBlockClass>()
 var StructVarBlockList = mutableListOf<StructVarBlockClass>()
+var BreakBlockList = mutableListOf<BreakBlockClass>()
+var ContinueBlockList = mutableListOf<ContinueBlockClass>()
 var DebugList = mutableListOf<TablePair>()
 
 var SaveTypeVaribleList = mutableListOf<TypeVaribleClass>()
@@ -421,6 +443,22 @@ fun MyScreen(pixelsPerDp: Float) {
         CardList.add(CardClass(childId = StructVarBlockList.last().childId,isDragging =  StructVarBlockList.last().isDragging, offsetX =  StructVarBlockList.last().offsetX, offsetY =  StructVarBlockList.last().offsetY,thisID = cardIdCounter,width = 350.dp, height = 130.dp, bordersize = StructVarBlockList.last().bordersize))
         cardIdCounter++;
     }
+    fun BreakBlockListAddCard()
+    {
+        BreakBlockList.add(BreakBlockClass(thisID = cardIdCounter))
+        BreakBlockList.last().offsetY.value = 300f;
+        CardList.add(CardClass(childId = BreakBlockList.last().childId,isDragging =  BreakBlockList.last().isDragging, offsetX =  BreakBlockList.last().offsetX, offsetY =  BreakBlockList.last().offsetY,thisID = cardIdCounter,width = 200.dp, height = 45.dp, bordersize = BreakBlockList.last().bordersize))
+        cardIdCounter++;
+    }
+
+    fun ContinieBlockListAddCard()
+    {
+        ContinueBlockList.add(ContinueBlockClass(thisID = cardIdCounter))
+        ContinueBlockList.last().offsetY.value = 300f;
+        CardList.add(CardClass(childId = ContinueBlockList.last().childId,isDragging =  ContinueBlockList.last().isDragging, offsetX =  ContinueBlockList.last().offsetX, offsetY =  ContinueBlockList.last().offsetY,thisID = cardIdCounter,width = 200.dp, height = 45.dp, bordersize = ContinueBlockList.last().bordersize))
+        cardIdCounter++;
+    }
+
     @Composable
     fun ButtonInfoRow(icon: ImageVector, title: String, description: String) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -638,6 +676,16 @@ fun MyScreen(pixelsPerDp: Float) {
                     if(myGlobalNumber == 11)
                     {
                         StructVarBlockListAddCard()
+                        myGlobalNumber = 0;
+                    }
+                    if(myGlobalNumber == 12)
+                    {
+                        BreakBlockListAddCard()
+                        myGlobalNumber = 0;
+                    }
+                    if(myGlobalNumber == 13)
+                    {
+                        ContinieBlockListAddCard()
                         myGlobalNumber = 0;
                     }
                     if (FirstTime == true) {
@@ -1092,6 +1140,26 @@ fun MyScreen(pixelsPerDp: Float) {
                         thisID = card.thisID,
                         CardList = CardList,
                         ReturnString = card.ReturnString,
+                        bordersize = card.bordersize,
+                    )
+                }
+                for (card in BreakBlockList) {
+                    BreakBlockReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                        bordersize = card.bordersize,
+                    )
+                }
+                for (card in ContinueBlockList) {
+                    ContinueBlockReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        thisID = card.thisID,
+                        CardList = CardList,
                         bordersize = card.bordersize,
                     )
                 }
