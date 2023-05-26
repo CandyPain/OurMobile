@@ -145,7 +145,7 @@ fun createCommandList(): MutableList<String> {
                     if (ForBlockList[j].thisID == childId) {
                         hasChild = true
                         commandList.add(
-                            "extendedfor:" + makeFirstToken(ForBlockList[j].initExpression.value) + makeSecondToken(
+                            "<extendedfor:" + makeFirstToken(ForBlockList[j].initExpression.value) + makeSecondToken(
                                 ForBlockList[j].condExpression.value
                             ) + makeFirstToken(ForBlockList[j].loopExpression.value) + numOfEnd.toString() + ">"
                         )
@@ -316,7 +316,7 @@ fun createCommandList(): MutableList<String> {
                 if (ForBlockList[j].thisID == childId) {
                     hasChild = true
                     commandList.add(
-                        "extendedfor:" + makeFirstToken(ForBlockList[j].initExpression.value) + makeSecondToken(
+                        "<extendedfor:" + makeFirstToken(ForBlockList[j].initExpression.value) + makeSecondToken(
                             ForBlockList[j].condExpression.value
                         ) + makeFirstToken(ForBlockList[j].loopExpression.value) + numOfEnd.toString() + ">"
                     )
@@ -547,35 +547,15 @@ fun normalizationOfExpression(expression: String): String {
 }
 
 fun makeFirstToken(exp: String): String {
-    val variableRegex = "([a-zA-Z][a-zA-Z0-9]*)"
-    val numberRegex = "((([-])?[1-9][0-9]*([.][0-9]*[1-9])?)|(([-])?[0][.][0-9]*[1-9])|([0]))"
-    val arrayRegex = "([a-zA-Z][a-zA-Z0-9]*\\[(([a-zA-Z][a-zA-Z0-9]*)|(([0])|([1-9][0-9]*)))\\])"
-    val stringRegex = "(\\/\\/[^\\/ ]*\\/\\/)"
-    val functionRegex =
-        "([a-zA-Z][a-zA-Z0-9]*\\((($variableRegex|$numberRegex|$arrayRegex|$stringRegex)([,]($variableRegex|$numberRegex|$arrayRegex|$stringRegex))*)?\\))"
-    val array =
-        "([a-zA-Z][a-zA-Z0-9]*\\[(((\\()|(\\))|$variableRegex|$numberRegex|$arrayRegex|$stringRegex|$functionRegex|[\\+\\-\\/\\*])+)\\])"
-    val operandRegex =
-        "(^[ ]*($variableRegex|$array)[ ]*[=][ ]*($variableRegex|$array|$numberRegex|$functionRegex|[\\+\\/\\*\\-]|(\\()|(\\)))+[ ]*$)"
-    val pattern = operandRegex.toRegex()
     var result = exp
+    result = spaceRemove(result)
+    result = normalizationOfExpression(result)
 
-    val matchLeft = "^[ ]*($variableRegex|$array)".toRegex().find(result)
+    val matchLeft = "^([^ ])+[=]".toRegex().find(result)
     var matchedLeft = matchLeft?.value.toString()
-    matchedLeft = "^[ ]*".toRegex().replaceFirst(matchedLeft, "")
-
-    if ("^$array$".toRegex().find(matchedLeft) != null) {
-        matchedLeft = normalizationElementOfArray(matchedLeft)
-    }
-
-    val matchRight =
-        "[=][ ]*($variableRegex|$array|$numberRegex|$functionRegex)[ ]*$".toRegex().find(result)
-    var matchedRight = matchRight?.value.toString()
-    matchedRight = "^[=][ ]*".toRegex().replaceFirst(matchedRight, "")
-    matchedRight = "[ ]*$".toRegex().replaceFirst(matchedRight, "")
-    matchedRight = normalizationOfExpression(matchedRight)
-
-    result = "<equals:$matchedLeft,<expression:$matchedRight>>;"
+    result = matchedLeft.toRegex().replaceFirst(result, "")
+    matchedLeft = "[=]$".toRegex().replaceFirst(matchedLeft, "")
+    result = "<equals:$matchedLeft,<expression:$result>>;"
     return result
 }
 
