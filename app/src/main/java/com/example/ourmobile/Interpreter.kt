@@ -12,7 +12,7 @@ class Expression {
 
         val expression = expressionString.replace("\\s".toRegex(), "")
 
-        val tokenRegex = Regex("(((?<=[+\\-\\/*]))-\\d+(\\.\\d+)?|[A-Za-z]+\\w*(\\[.+\\])|[+\\-\\/*)(]|\\w+<.+>|[a-zA-Z]\\w*\\.[a-zA-Z]\\w*\\[.+\\]|[a-zA-Z]\\w*\\.[a-zA-Z]\\w*|\\w+(\\.\\d+)?)")
+        val tokenRegex = Regex("(((?<=[+\\-\\/*]))-\\d+(\\.\\d+)?|[A-Za-z]+\\w*(\\[.+\\])|[+\\-\\/*)(]|\\w+<[\\w:+\\-\\/*\\|\\.]+>|[a-zA-Z]\\w*\\.[a-zA-Z]\\w*\\[.+\\]|[a-zA-Z]\\w*\\.[a-zA-Z]\\w*|\\w+(\\.\\d+)?)")
 
         val arrayRegex = Regex("^\\w+\\[.+]$")
         val arrayNameRegex = Regex("^\\w+(?=\\[)")
