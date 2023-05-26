@@ -2,6 +2,9 @@ package com.example.ourmobile
 
 import Expression
 import boolExpression
+import processArray
+import processFunction
+import processStruct
 import java.util.HashMap
 import kotlin.reflect.KClass
 
@@ -161,101 +164,36 @@ class StringExpressionToken : IToken{
     val tokenRegex = Regex("(//.+//|\\w+<.+>|[a-zA-Z]\\w*\\.[a-zA-Z]\\w*\\[.+\\]|[a-zA-Z]\\w*\\.[a-zA-Z]\\w*|[a-zA-Z]\\w*\\[.+\\]|\\w+|[A-Za-z]+\\w*(\\[.+\\])?)")
 
     val arrayRegex = Regex("^\\w+\\[.+\\]$")
-    val arrayNameRegex = Regex("^\\w+(?=\\[)")
-    val arrayExpressionRegex = Regex("(?<=(\\[)).+(?=]$)")
 
     val functionRegex = Regex("^\\w+<.+>$")
-    val functionNameRegex = Regex("^\\w+(?=<)")
-    val functionArgumentsRegex = Regex("(?<=(\\w<)).+(?=>$)")
 
     val structRegex = Regex("^\\w+\\.\\w+(\\[.+\\])?$")
-    val structNameRegex = Regex("^\\w+(?=\\.)")
-    val structVarRegex = Regex("(?<=(\\.))\\w+")
-    val structArrayRegex = Regex("^\\w+\\.\\w+\\[.+]$")
 
     override fun command(input:String, program:CelestialElysiaInterpreter){
         val processedInput: String?
         val match = regex.find(input)
         processedInput = match?.value
-        /*
-        val terms = processedInput!!.split("+").map { it.trim() }
         val stringBuilder = StringBuilder()
-
-        for (term in terms) {
-            val trimmedTerm = term.trim()
-            val value = program.varHashMap[trimmedTerm] ?: stringToken.find(trimmedTerm)!!.value
-            stringBuilder.append(value)
-        }
-         */
-        val stringBuilder = StringBuilder()
-        var matches = tokenRegex.findAll(processedInput!!)
-        for(match in matches) {
-            var token = match.value
+        val matches = tokenRegex.findAll(processedInput!!)
+        for(matched in matches) {
+            val token = matched.value
             var value: String
 
             if(token.matches(rawStringToken)){
                 value = stringToken.find(token)!!.value
             }
-            else if(token.matches(arrayRegex)){
-                val expression = Expression()
-                var arrayIndex = expression.evaluateReversePolishNotation(expression.toReversePolishNotation(arrayExpressionRegex.find(token)!!.value,program.varHashMap, program)).toInt()
-                var arrayName = arrayNameRegex.find(token)!!.value
-
-                val array = program.varHashMap.get(arrayName) as Array<String>
-                value = array[arrayIndex]
-            }
-            else if(token.matches(functionRegex)){
-                var functionName = functionNameRegex.find(token)!!.value
-                var functionProgram = program.functionHashMap[functionName]
-                var functionArguments = functionArgumentsRegex.find(token)!!.value.split("|")
-
-                for(n in functionArguments){
-                    val nameAndValue = n.split(":")
-                    val name = nameAndValue[0]
-                    var functionValue = nameAndValue[1]
-
-                    val expressionToken = ExpressionToken()
-
-                    if(functionProgram!!.varHashMap[name]!!::class.java.simpleName=="Integer") {
-                        expressionToken.command("<expression:" + functionValue + ">", program)
-                        functionProgram!!.varHashMap.put(name, program.stack.removeFirst().toInt())
-                    }
-                    else if(functionProgram!!.varHashMap[name]!!::class.java.simpleName=="Double"){
-                        expressionToken.command("<expression:" + functionValue + ">", program)
-                        functionProgram!!.varHashMap.put(name, program.stack.removeFirst())
-                    }
-                    else{
-                        functionProgram!!.varHashMap.put(name,program.varHashMap[functionValue]!!)
-                    }
+            else {
+                if(token.matches(arrayRegex)){
+                    value = processArray(token, program.varHashMap, program)
+                }else if(token.matches(functionRegex)){
+                    value = processFunction(token, program.varHashMap, program)
+                }else if(token.matches(structRegex)){
+                    value = processStruct(token, program.varHashMap, program)
                 }
-                functionProgram!!.interprete()
-                value = functionProgram.returnValue.toString()
-            }
-            else if(token.matches(structRegex)){
-                if(token.matches(structArrayRegex)){
-                    //println("nigger")
-                    var structName = structNameRegex.find(token)!!.value
-                    var structVarName = structVarRegex.find(token)!!.value
-
-                    var structHashMap = program.varHashMap.get(structName) as HashMap<String, Any>
-                    var array = structHashMap.get(structVarName) as Array<String>
-
-                    val expression = Expression()
-                    var arrayIndex = expression.evaluateReversePolishNotation(expression.toReversePolishNotation(arrayExpressionRegex.find(token)!!.value,program.varHashMap, program)).toInt()
-
-                    val typedArray = array as Array<String>
-                    value = typedArray[arrayIndex]
-                }else {
-                    //println("nigger")
-                    var structName = structNameRegex.find(token)!!.value
-                    var structVarName = structVarRegex.find(token)!!.value
-
-                    var structHashMap = program.varHashMap.get(structName) as HashMap<String, Any>
-                    value = structHashMap[structVarName].toString()
+                else{
+                    value = program.varHashMap[token].toString() ?: ""
                 }
-            }
-            else{
-                value = program.varHashMap[token].toString() ?: ""
+
             }
             stringBuilder.append(value)
         }
@@ -290,7 +228,6 @@ class CallOutToken : IToken{
         tokenObject.command(processedInput,program)
 
         var stringValue = program.FFAstack.removeFirst().toString()
-        //program.calloutList.add(stringValue!!)
         messagesCout.add(stringValue!!)
     }
     override var returnType = "void"
@@ -734,7 +671,6 @@ class CallFunctionToken : IToken{
     override var regex = Regex("(?<=(^<callfunction:)).+(?=>$)")
     override var returnType = "void"
 
-    val functionRegex = Regex("^\\w+<.+>$")
     val functionNameRegex = Regex("^\\w+(?=<)")
     val arrayArgumentsRegex = Regex("(?<=(\\w<)).+(?=>$)")
     override fun command(input:String, program:CelestialElysiaInterpreter) {
@@ -785,10 +721,10 @@ class BreakToken : IToken {
     override var regex = Regex("(?<=(^<break:)).+(?=>$)")
     override var returnType = "void"
 
-    var cycleRegex = Regex("<(endfor|endextendedfor|endwhile).+")
+    private val endCycleRegex = Regex("<(endfor|endextendedfor|endwhile).+")
     override fun command(input:String, program:CelestialElysiaInterpreter) {
         for(n in program.stringPoint..program.commandList.size-1){
-            if(program.commandList[n]!!.matches(cycleRegex)){
+            if(program.commandList[n]!!.matches(endCycleRegex)){
                 program.stringPoint = n
                 break
             }

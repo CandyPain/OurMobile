@@ -14,9 +14,9 @@ class Variables(
 
 var variablesList = mutableListOf<Variables>()
 var doRun: Boolean = true
-var messagesCout = mutableListOf<String>()
-var valuesCout = mutableListOf<Int>()
-var messagesCin: String = ""
+//var messagesCout = mutableListOf<String>()
+//var valuesCout = mutableListOf<Int>()
+//var messagesCin: String = ""
 var commandList = mutableListOf<String>()
 
 var pendingCin: Boolean = false
