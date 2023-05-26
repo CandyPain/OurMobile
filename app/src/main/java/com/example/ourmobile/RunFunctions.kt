@@ -13,26 +13,52 @@ class Functions(
     var usageOfParams: List<String>
 )
 
+class Structures(
+    var structName: String,
+    var usageOfParams: List<String>,
+    var usageOfTypes: List<String>
+)
+
 var variablesList = mutableListOf<Variables>()
 var funList = mutableListOf<Functions>()
+var structList = mutableListOf<Structures>()
 var doRun: Boolean = true
 var messagesCout = mutableListOf<String>()
 var messagesCin: String = ""
 var commandList = mutableListOf<String>()
+var commandListID = mutableListOf<Int>()
+
+var pendingCin: Boolean = false
+var currentCin: Boolean = false
+
 
 fun runApp() {
     variablesList.clear()
     messagesCout.clear()
     funList.clear()
+    structList.clear()
     doRun = true
     commandList = createCommandList()
-    if (doRun) {
-        val compiler = CelestialElysiaInterpreter(hashMapOf<String, Any>(), commandList)
+    var compiler = CelestialElysiaInterpreter(hashMapOf<String, Any>(), commandList)
+    if (doRun && GlobalDebugMod == false) {
         compiler.interprete()
-        messagesCout += compiler.calloutList
+        for (pair in DebugList) {
+            if (pair.key.value != "") {
+                if (compiler.varHashMap.get(pair.key.value) != null) {
+                    pair.value.value = compiler.varHashMap.get(pair.key.value).toString()
+                }
+            }
+        }
     }
+    if (doRun && GlobalDebugMod == true) {
+        compiler.interpret_debug()
+    }
+    messagesCout += compiler.calloutList
     for (i in 0 until messagesCout.size) {
         Log.d("MyTag", messagesCout[i])
+    }
+    for (i in 0 until commandList.size) {
+        Log.d("MyTag", commandList[i])
     }
 }
 
@@ -46,6 +72,20 @@ fun createCommandList(): MutableList<String> {
     var hasChild = true
     var childId: Int = -1
     var blockNumber: Int = 0
+
+    for (i in 0 until StructBlockList.size) {
+        val structName: String = StructBlockList[i].Name.value
+        var structArgument: String = StructBlockList[i].StrObject.value
+        structArgument = normalizationPrametres(structArgument)
+        commandList.add("<struct:" + structName + "," + structArgument + ">")
+        structList.add(
+            Structures(
+                structName,
+                makeParametresList(structArgument),
+                makeTypesList(structArgument)
+            )
+        )
+    }
 
     for (i in 0 until FunctionBlockList.size) {
         val functionName: String = FunctionBlockList[i].FunctionName.value
@@ -93,7 +133,7 @@ fun createCommandList(): MutableList<String> {
                                 "array<" + ArrayVaribleList[j].selectedType.value + ">",
                             )
                         )
-                        childId = TypeVaribleList[j].childId.value
+                        childId = ArrayVaribleList[j].childId.value
                     }
                 }
             }
@@ -108,12 +148,28 @@ fun createCommandList(): MutableList<String> {
                             val underType =
                                 returnUnderVariableType(VariableAssignmentList[j].variableName.value)
                             if (underType == "Array") {
-                                commandList.add("<equals:" + VariableAssignmentList[j].variableName.value + ",<anyexpression:" + VariableAssignmentList[j].variableValue + ">>")
+                                commandList.add(
+                                    "<equals:" + VariableAssignmentList[j].variableName.value + ",<anyexpression:" + normalizationOfExpression(
+                                        VariableAssignmentList[j].variableValue.value
+                                    ) + ">>"
+                                )
                             } else {
+                                var name = VariableAssignmentList[j].variableName.value
+                                if (underType == "ElementOfArray") {
+                                    name = normalizationElementOfArray(name)
+                                }
                                 if (type == "String") {
-                                    commandList.add("<equals:" + VariableAssignmentList[j].variableName.value + ",<stringexpression:" + VariableAssignmentList[j].variableValue + ">>")
+                                    commandList.add(
+                                        "<equals:" + name + ",<stringexpression:" + normalizationOfExpression(
+                                            VariableAssignmentList[j].variableValue.value
+                                        ) + ">>"
+                                    )
                                 } else {
-                                    commandList.add("<equals:" + VariableAssignmentList[j].variableName.value + ",<expression:" + VariableAssignmentList[j].variableValue + ">>")
+                                    commandList.add(
+                                        "<equals:" + name + ",<expression:" + normalizationOfExpression(
+                                            VariableAssignmentList[j].variableValue.value
+                                        ) + ">>"
+                                    )
                                 }
                             }
                         } else {
@@ -133,7 +189,7 @@ fun createCommandList(): MutableList<String> {
                                 IfBlockList[j].conditionSecond.value
                             ) + ">," + IfBlockList[j].selectedSign.value + "," + numOfEnd.toString() + ">"
                         )
-                        endList.add("endif:$numOfEnd")
+                        endList.add("<endif:$numOfEnd>")
                         ++numOfEnd
                         childId = IfBlockList[j].childId.value
                     }
@@ -149,7 +205,7 @@ fun createCommandList(): MutableList<String> {
                                 ForBlockList[j].condExpression.value
                             ) + makeFirstToken(ForBlockList[j].loopExpression.value) + numOfEnd.toString() + ">"
                         )
-                        endList.add("endextendedfor:$numOfEnd")
+                        endList.add("<endextendedfor:$numOfEnd>")
                         ++numOfEnd
                         childId = ForBlockList[j].childId.value
                     }
@@ -176,7 +232,7 @@ fun createCommandList(): MutableList<String> {
                 for (j in 0 until CinBlockList.size) {
                     if (CinBlockList[j].thisID == childId) {
                         hasChild = true
-                        commandList.add("<callin:<expression:" + CinBlockList[j].variableName + ">>")
+                        commandList.add("<callin:" + CinBlockList[j].variableName.value + ">")
                         childId = CinBlockList[j].childId.value
                     }
                 }
@@ -265,7 +321,61 @@ fun createCommandList(): MutableList<String> {
                             "array<" + ArrayVaribleList[j].selectedType.value + ">",
                         )
                     )
-                    childId = TypeVaribleList[j].childId.value
+                    childId = ArrayVaribleList[j].childId.value
+                }
+            }
+        }
+
+        if (!hasChild) {
+            for (j in 0 until StructVarBlockList.size) {
+                if (StructVarBlockList[j].thisID == childId) {
+                    hasChild = true
+                    var checkType: Boolean = false
+                    for(h in 0 until structList.size) {
+                        if(StructVarBlockList[j].Type.value == structList[h].structName) {
+                            checkType = true
+                        }
+                    }
+                    if(checkType) {
+                        commandList.add("<structobject:${StructVarBlockList[j].Type.value},${StructVarBlockList[j].Name.value}>")
+                        for(h in 0 until structList.size) {
+                            if(StructVarBlockList[j].Type.value == structList[h].structName) {
+                                for(k in 0 until structList[h].usageOfTypes.size) {
+                                    var temp = structList[h].usageOfParams[k]
+                                    temp = ":".toRegex().replaceFirst(temp, "")
+                                    variablesList.add(
+                                        Variables(
+                                            StructVarBlockList[j].Name.value + "." + temp,
+                                            structList[h].usageOfTypes[k]
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    } else {
+                        doRun = false
+                    }
+                    childId = StructVarBlockList[j].childId.value
+                }
+            }
+        }
+
+        if (!hasChild) {
+            for (j in 0 until BreakBlockList.size) {
+                if (BreakBlockList[j].thisID == childId) {
+                    hasChild = true
+                    commandList.add("<break>")
+                    childId = BreakBlockList[j].childId.value
+                }
+            }
+        }
+
+        if (!hasChild) {
+            for (j in 0 until ContinueBlockList.size) {
+                if (ContinueBlockList[j].thisID == childId) {
+                    hasChild = true
+                    commandList.add("<continue>")
+                    childId = ContinueBlockList[j].childId.value
                 }
             }
         }
@@ -279,12 +389,28 @@ fun createCommandList(): MutableList<String> {
                         val underType =
                             returnUnderVariableType(VariableAssignmentList[j].variableName.value)
                         if (underType == "Array") {
-                            commandList.add("<equals:" + VariableAssignmentList[j].variableName.value + ",<anyexpression:" + VariableAssignmentList[j].variableValue.value + ">>")
+                            commandList.add(
+                                "<equals:" + VariableAssignmentList[j].variableName.value + ",<anyexpression:" + normalizationOfExpression(
+                                    VariableAssignmentList[j].variableValue.value
+                                ) + ">>"
+                            )
                         } else {
+                            var name = VariableAssignmentList[j].variableName.value
+                            if (underType == "ElementOfArray") {
+                                name = normalizationElementOfArray(name)
+                            }
                             if (type == "String") {
-                                commandList.add("<equals:" + VariableAssignmentList[j].variableName.value + ",<stringexpression:" + VariableAssignmentList[j].variableValue.value + ">>")
+                                commandList.add(
+                                    "<equals:" + name + ",<stringexpression:" + normalizationOfExpression(
+                                        VariableAssignmentList[j].variableValue.value
+                                    ) + ">>"
+                                )
                             } else {
-                                commandList.add("<equals:" + VariableAssignmentList[j].variableName.value + ",<expression:" + VariableAssignmentList[j].variableValue.value + ">>")
+                                commandList.add(
+                                    "<equals:" + name + ",<expression:" + normalizationOfExpression(
+                                        VariableAssignmentList[j].variableValue.value
+                                    ) + ">>"
+                                )
                             }
                         }
                     } else {
@@ -304,7 +430,7 @@ fun createCommandList(): MutableList<String> {
                             IfBlockList[j].conditionSecond.value
                         ) + ">," + IfBlockList[j].selectedSign.value + "," + numOfEnd.toString() + ">"
                     )
-                    endList.add("endif:$numOfEnd")
+                    endList.add("<endif:$numOfEnd>")
                     ++numOfEnd
                     childId = IfBlockList[j].childId.value
                 }
@@ -320,7 +446,7 @@ fun createCommandList(): MutableList<String> {
                             ForBlockList[j].condExpression.value
                         ) + makeFirstToken(ForBlockList[j].loopExpression.value) + numOfEnd.toString() + ">"
                     )
-                    endList.add("endextendedfor:$numOfEnd")
+                    endList.add("<endextendedfor:$numOfEnd>")
                     ++numOfEnd
                     childId = ForBlockList[j].childId.value
                 }
@@ -338,10 +464,21 @@ fun createCommandList(): MutableList<String> {
         }
 
         if (!hasChild) {
+            for (j in 0 until EndBlockList.size) {
+                if (EndBlockList[j].thisID == childId) {
+                    hasChild = true
+                    commandList.add(endList[endList.size - 1])
+                    endList.removeAt(endList.size - 1)
+                    childId = EndBlockList[j].childId.value
+                }
+            }
+        }
+
+        if (!hasChild) {
             for (j in 0 until CinBlockList.size) {
                 if (CinBlockList[j].thisID == childId) {
                     hasChild = true
-                    commandList.add("<callin:<expression:" + CinBlockList[j].variableName + ">>")
+                    commandList.add("<callin:" + CinBlockList[j].variableName.value + ">")
                     childId = CinBlockList[j].childId.value
                 }
             }
@@ -393,7 +530,7 @@ fun normalizationPrametres(params: String): String {
     var normalParametres: String = ""
     val variableName = "([a-zA-Z][a-zA-Z0-9]*)"
     val variableNameRegex = variableName.toRegex()
-    val variableType = "(((Int)|(Double)|(String))|(array<((Int)|(Double)|(String))>))"
+    val variableType = "(((int)|(double)|(string))|(array<((int)|(double)|(string))>))"
     val variableTypeRegex = variableType.toRegex()
     val parameter = "($variableType[ ]+$variableName)"
     val parameterRegex = parameter.toRegex()
@@ -401,15 +538,26 @@ fun normalizationPrametres(params: String): String {
     while (parameterRegex.find(badString) != null) {
         val matchExp = parameterRegex.find(badString)
         var matchedExp = matchExp?.value.toString()
-        val matchName = variableNameRegex.find(matchedExp)
-        var matchedName = matchName?.value.toString()
         val matchType = variableTypeRegex.find(matchedExp)
         var matchedType = matchType?.value.toString()
+        matchedExp = matchedType.toRegex().replaceFirst(matchedExp, "")
+        val matchName = variableNameRegex.find(matchedExp)
+        var matchedName = matchName?.value.toString()
         normalParametres += matchedName + ":" + matchedType + ","
         badString = parameterRegex.replaceFirst(badString, "")
     }
     normalParametres = ".$".toRegex().replaceFirst(normalParametres, "")
     return normalParametres
+}
+
+fun returnNumOfArg(exp: String): Int {
+    var num: Int = 0;
+    for (i in 0 until exp.length) {
+        if (exp[i] == ':') {
+            ++num
+        }
+    }
+    return num
 }
 
 fun makeParametresList(params: String): List<String> {
@@ -426,6 +574,21 @@ fun makeParametresList(params: String): List<String> {
     return namesList
 }
 
+fun makeTypesList(params: String): List<String> {
+    var typesList = mutableListOf<String>()
+    val variableType = "([:](((int)|(double)|(string))|(array<((int)|(double)|(string))>)))"
+    val variableTypeRegex = variableType.toRegex()
+    var exp = params
+    while (variableTypeRegex.find(exp) != null) {
+        val matchExp = variableTypeRegex.find(exp)
+        var matchedExp = matchExp?.value.toString()
+        matchedExp = "^:".toRegex().replaceFirst(matchedExp, "")
+        typesList.add(matchedExp)
+        exp = variableTypeRegex.replaceFirst(exp, "")
+    }
+    return typesList
+}
+
 fun spaceRemove(exp: String): String {
     var adjExp: String = ""
     for (i in exp.indices) {
@@ -437,7 +600,7 @@ fun spaceRemove(exp: String): String {
 }
 
 fun normalizationElementOfArray(name: String): String {
-    val variableRegex = "([a-zA-Z][a-zA-Z0-9]*)"
+    val variableRegex = "(([a-zA-Z][a-zA-Z0-9]*)|(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*)))"
     val pattern = variableRegex.toRegex()
     val nameOfElement: String = pattern.find(name).toString()
     var exp = name
@@ -460,7 +623,9 @@ fun checkVariableName(name: String): Boolean {
 fun returnVariableType(name: String): String {
     var variab = name
     if ("\\[".toRegex().find(variab) != null) {
-        val matchExp = "^[a-zA-Z][a-zA-Z0-9]".toRegex().find(variab)
+        val matchExp =
+            "^(([a-zA-Z][a-zA-Z0-9]*)|(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*)))".toRegex()
+                .find(variab)
         var matchedExp = matchExp?.value.toString()
         for (i in 0 until variablesList.size) {
             if (variablesList[i].variableName == matchedExp) {
@@ -499,11 +664,13 @@ fun returnUnderVariableType(name: String): String {
 
 fun normalizationOfExpression(expression: String): String {
     val variableRegex = "([a-zA-Z][a-zA-Z0-9]*)"
+    val strVariableRegex = "(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*))"
     val numberRegex = "((([-])?[1-9][0-9]*([.][0-9]*[1-9])?)|(([-])?[0][.][0-9]*[1-9])|([0]))"
-    val arrayRegex = "([a-zA-Z][a-zA-Z0-9]*\\[(([a-zA-Z][a-zA-Z0-9]*)|(([0])|([1-9][0-9]*)))\\])"
+    val arrayRegex =
+        "((([a-zA-Z][a-zA-Z0-9]*)|(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*)))\\[((([a-zA-Z][a-zA-Z0-9]*)|(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*)))|(([0])|([1-9][0-9]*)))\\])"
     val stringRegex = "(\\/\\/[^\\/ ]*\\/\\/)"
     val functionReg =
-        "([a-zA-Z][a-zA-Z0-9]*\\((($variableRegex|$numberRegex|$arrayRegex|$stringRegex)([,]($variableRegex|$numberRegex|$arrayRegex|$stringRegex))*)?\\))"
+        "([a-zA-Z][a-zA-Z0-9]*\\((($variableRegex|$numberRegex|$arrayRegex|$stringRegex|$strVariableRegex)([,]($variableRegex|$numberRegex|$arrayRegex|$stringRegex|$strVariableRegex))*)?\\))"
     val pattern = functionReg.toRegex()
     var result = expression
 
@@ -512,7 +679,7 @@ fun normalizationOfExpression(expression: String): String {
     while (pattern.find(result) != null) {
         val matchfunc = pattern.find(result)
         var matchedfunc = matchfunc?.value.toString()
-        val matchnamefunc = variableRegex.toRegex().find(result)
+        val matchnamefunc = variableRegex.toRegex().find(matchedfunc)
         var matchednamefunc = matchnamefunc?.value.toString()
         matchedfunc = "([a-zA-Z][a-zA-Z0-9]*\\()".toRegex().replaceFirst(matchedfunc, "")
         matchedfunc = ".$".toRegex().replaceFirst(matchedfunc, "")
@@ -526,21 +693,24 @@ fun normalizationOfExpression(expression: String): String {
             }
         }
         var newFun: String = ""
-        while ("^($variableRegex|$numberRegex|$arrayRegex|$stringRegex)[,]".toRegex()
+        while ("^($variableRegex|$numberRegex|$arrayRegex|$stringRegex|$strVariableRegex)[,]".toRegex()
                 .find(matchedfunc) != null
         ) {
-            val matchVar = "^($variableRegex|$numberRegex|$arrayRegex|$stringRegex)[,]".toRegex()
-                .find(matchedfunc)
+            val matchVar =
+                "^($variableRegex|$numberRegex|$arrayRegex|$stringRegex|$strVariableRegex)[,]".toRegex()
+                    .find(matchedfunc)
             var matchedVar = matchVar?.value.toString()
             matchedVar = ".$".toRegex().replaceFirst(matchedVar, "|")
             newFun += parametersTypes[numOfPar] + matchedVar
             numOfPar++
-            matchedfunc = "^($variableRegex|$numberRegex|$arrayRegex|$stringRegex)[,]".toRegex()
-                .replaceFirst(matchedfunc, "")
+            matchedfunc =
+                "^($variableRegex|$numberRegex|$arrayRegex|$stringRegex|$strVariableRegex)[,]".toRegex()
+                    .replaceFirst(matchedfunc, "")
         }
+        newFun = ".$".toRegex().replaceFirst(newFun, "")
         newFun = "$matchednamefunc<$newFun>"
         matchedfunc = matchfunc?.value.toString()
-        result = matchedfunc.toRegex().replaceFirst(result, newFun)
+        result = pattern.replaceFirst(result, newFun)
     }
 
     return result
@@ -560,14 +730,15 @@ fun makeFirstToken(exp: String): String {
 }
 
 fun makeSecondToken(exp: String): String {
-    val variableRegex = "([a-zA-Z][a-zA-Z0-9]*)"
+    val variableRegex = "(([a-zA-Z][a-zA-Z0-9]*)|(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*)))"
     val numberRegex = "((([-])?[1-9][0-9]*([.][0-9]*[1-9])?)|(([-])?[0][.][0-9]*[1-9])|([0]))"
-    val arrayRegex = "([a-zA-Z][a-zA-Z0-9]*\\[(([a-zA-Z][a-zA-Z0-9]*)|(([0])|([1-9][0-9]*)))\\])"
+    val arrayRegex =
+        "((([a-zA-Z][a-zA-Z0-9]*)|(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*)))\\[((([a-zA-Z][a-zA-Z0-9]*)|(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*)))|(([0])|([1-9][0-9]*)))\\])"
     val stringRegex = "(\\/\\/[^\\/ ]*\\/\\/)"
     val functionRegex =
         "([a-zA-Z][a-zA-Z0-9]*\\((($variableRegex|$numberRegex|$arrayRegex|$stringRegex)([,]($variableRegex|$numberRegex|$arrayRegex|$stringRegex))*)?\\))"
     val array =
-        "([a-zA-Z][a-zA-Z0-9]*\\[(((\\()|(\\))|$variableRegex|$numberRegex|$arrayRegex|$stringRegex|$functionRegex|[\\+\\-\\/\\*])+)\\])"
+        "((([a-zA-Z][a-zA-Z0-9]*)|(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*)))\\[(((\\()|(\\))|$variableRegex|$numberRegex|$arrayRegex|$stringRegex|$functionRegex|[\\+\\-\\/\\*])+)\\])"
     val expRegex =
         "(($variableRegex|$array|$numberRegex|$functionRegex|[\\+\\/\\*\\-]|(\\()|(\\)))+)"
     var result = exp

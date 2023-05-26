@@ -1,25 +1,35 @@
+
 import com.example.ourmobile.CelestialElysiaInterpreter
-import com.example.ourmobile.EqualsToken
 import com.example.ourmobile.ExpressionToken
 import com.example.ourmobile.IToken
-import java.util.HashMap
 
-//TODO: сделать поддержку нормальных массивов и выражений со строками
 class Expression {
-    public fun toReversePolishNotation(expression: String, variables: Map<String, Any>, program:CelestialElysiaInterpreter): String {
+    public fun toReversePolishNotation(expressionString: String, variables: Map<String, Any>, program:CelestialElysiaInterpreter): String {
         val stack = mutableListOf<String>()
         val output = mutableListOf<String>()
         val operators = setOf("+", "-", "*", "/")
+
+        val expression = expressionString.replace("\\s".toRegex(), "")
+
+        val tokenRegex = Regex("(((?<=[+\\-\\/*]))-\\d+(\\.\\d+)?|[A-Za-z]+\\w*(\\[.+\\])|[+\\-\\/*)(]|\\w+<[\\w:+\\-\\/*\\|\\.]+>|[a-zA-Z]\\w*\\.[a-zA-Z]\\w*\\[.+\\]|[a-zA-Z]\\w*\\.[a-zA-Z]\\w*|\\w+(\\.\\d+)?)")
 
         val arrayRegex = Regex("^\\w+\\[.+]$")
         val arrayNameRegex = Regex("^\\w+(?=\\[)")
         val arrayExpressionRegex = Regex("(?<=(\\[)).+(?=]$)")
 
-        val functionRegex = Regex("^\\w+\\(.+\\)$")
-        val functionNameRegex = Regex("^\\w+(?=\\()")
-        val arrayArgumentsRegex = Regex("(?<=(\\w\\()).+(?=\\)$)")
+        val functionRegex = Regex("^\\w+<.+>$")
+        val functionNameRegex = Regex("^\\w+(?=<)")
+        val functionArgumentsRegex = Regex("(?<=(\\w<)).+(?=>$)")
 
-        expression.split(" ").forEach { token ->
+        val structRegex = Regex("^\\w+\\.\\w+(\\[.+\\])?$")
+        val structNameRegex = Regex("^\\w+(?=\\.)")
+        val structVarRegex = Regex("(?<=(\\.))\\w+")
+        val structArrayRegex = Regex("^\\w+\\.\\w+\\[.+]$")
+
+        var matches = tokenRegex.findAll(expression)
+
+        for(match in matches) {
+            var token = match.value
             if (token in operators) {
                 while (stack.isNotEmpty() && stack.last() in operators && precedence(stack.last()) >= precedence(token)) {
                     output.add(stack.removeLast())
@@ -45,7 +55,7 @@ class Expression {
                     val value = variables[arrayToken] ?: throw IllegalArgumentException("Unknown variable: $token")
                     output.add(value.toString())
                      */
-                    val array = variables.get(arrayName)
+                    val array = variables.get(arrayName) ?: IntArray(arrayIndex) {0}
 
                     if(array is IntArray){
                         val typedArray = array as IntArray
@@ -60,17 +70,20 @@ class Expression {
                 }else if(token.matches(functionRegex)){
                     var functionName = functionNameRegex.find(token)!!.value
                     var functionProgram = program.functionHashMap[functionName]
-                    var functionArguments = arrayArgumentsRegex.find(token)!!.value.split("|")
+                    var functionArguments = functionArgumentsRegex.find(token)!!.value.split("|")
 
                     for(n in functionArguments){
                         val nameAndValue = n.split(":")
                         val name = nameAndValue[0]
                         var value = nameAndValue[1]
 
-                        val expressionToken = EqualsToken()
+                        val expressionToken = ExpressionToken()
 
-                        if(functionProgram!!.varHashMap[name]!!::class.java.simpleName=="Integer" ||
-                            functionProgram!!.varHashMap[name]!!::class.java.simpleName=="Double") {
+                        if(functionProgram!!.varHashMap[name]!!::class.java.simpleName=="Integer") {
+                            expressionToken.command("<expression:" + value + ">", program)
+                            functionProgram!!.varHashMap.put(name, program.stack.removeFirst().toInt())
+                        }
+                        else if(functionProgram!!.varHashMap[name]!!::class.java.simpleName=="Double"){
                             expressionToken.command("<expression:" + value + ">", program)
                             functionProgram!!.varHashMap.put(name, program.stack.removeFirst())
                         }
@@ -80,8 +93,39 @@ class Expression {
                     }
                     functionProgram!!.interprete()
                     output.add(functionProgram.returnValue.toString())
-                }else{
-                    val value = variables[token] ?: throw IllegalArgumentException("Unknown variable: $token")
+                }else if(token.matches(structRegex)){
+                    if(token.matches(structArrayRegex)){
+                        //println("nigger")
+                        var structName = structNameRegex.find(token)!!.value
+                        var structVarName = structVarRegex.find(token)!!.value
+
+                        var structHashMap = variables.get(structName) as HashMap<String, Any>
+                        var array = structHashMap.get(structVarName)
+
+                        val expression = Expression()
+                        var arrayIndex = expression.evaluateReversePolishNotation(expression.toReversePolishNotation(arrayExpressionRegex.find(token)!!.value,variables, program)).toInt()
+
+                        if(array is IntArray){
+                            val typedArray = array as IntArray
+                            val value = typedArray[arrayIndex]
+                            output.add(value.toString())
+                        }
+                        else{
+                            val typedArray = array as DoubleArray
+                            val value = typedArray[arrayIndex]
+                            output.add(value.toString())
+                        }
+                    }else {
+                        //println("nigger")
+                        var structName = structNameRegex.find(token)!!.value
+                        var structVarName = structVarRegex.find(token)!!.value
+
+                        var structHashMap = variables.get(structName) as HashMap<String, Any>
+                        output.add(structHashMap[structVarName].toString())
+                    }
+                }
+                else{
+                    val value = variables[token] ?: "0"
                     output.add(value.toString())
                 }
 
@@ -160,4 +204,3 @@ fun boolExpression(expression1: String, expression2: String, operand: String,
     }
     return boolValue
 }
-

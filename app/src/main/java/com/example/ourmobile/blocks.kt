@@ -1,11 +1,13 @@
 package com.example.ourmobile
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,6 +18,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -34,9 +39,11 @@ import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ourmobile.ui.theme.*
 import kotlin.math.roundToInt
 
 @Composable
@@ -97,6 +104,7 @@ fun BeginBlockReal(
     isDragging: MutableState<Boolean>,
     thisID: Int,
     CardList: MutableList<CardClass>,
+    bordersize: MutableState<Dp>
 ) {
     Card(
         modifier = Modifier
@@ -124,7 +132,8 @@ fun BeginBlockReal(
                     }
                 )
             },
-        shape = RoundedCornerShape(15.dp)
+        shape = RoundedCornerShape(15.dp),
+                border = BorderStroke(bordersize.value,Black)
     ) {
         Box(
             modifier = Modifier
@@ -148,6 +157,7 @@ fun EndBlockReal(
     isDragging: MutableState<Boolean>,
     thisID: Int,
     CardList: MutableList<CardClass>,
+    bordersize: MutableState<Dp>
 ) {
     Card(
         modifier = Modifier
@@ -175,7 +185,8 @@ fun EndBlockReal(
                     }
                 )
             },
-        shape = RoundedCornerShape(15.dp)
+        shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value, Black)
     ) {
         Box(
             modifier = Modifier
@@ -255,15 +266,13 @@ fun TypeVariableReal(
     selectedType: MutableState<String>,
     thisID: Int,
     CardList: MutableList<CardClass>,
+    bordersize: MutableState<Dp>
 ) {
     // Сохраненный тип переменной
     if (selectedType.value == "") {
         selectedType.value = "int"
     }
     // Сохраненное имя переменной
-    if (variableName.value == "") {
-        variableName.value = "NewVariable"
-    }
 
     Card(
         modifier = Modifier
@@ -291,7 +300,8 @@ fun TypeVariableReal(
                     }
                 )
             },
-        shape = RoundedCornerShape(15.dp)
+        shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Pink80)
 
     )
     {
@@ -365,6 +375,7 @@ fun ArrayVariableReal(
     thisID: Int,
     count: MutableState<String>,
     CardList: MutableList<CardClass>,
+    bordersize: MutableState<Dp>
 ) {
     // Сохраненный тип переменной
     if (selectedType.value == "") {
@@ -398,6 +409,7 @@ fun ArrayVariableReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value, Blue)
     ) {
         Column(Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -443,20 +455,20 @@ fun ArrayVariableReal(
                     fontSize = 15.sp
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "count", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.width(8.dp))
-                TextField(
-                    modifier = Modifier.width(100.dp),
-                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
-                    value = count.value,
-                    onValueChange = { newText ->
-                        count.value = newText
-                    }
-                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "count", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    TextField(
+                        modifier = Modifier.width(100.dp),
+                        textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                        value = count.value,
+                        onValueChange = { newText ->
+                            count.value = newText
+                        }
+                    )
 
-            }
+                }
         }
     }
 }
@@ -472,6 +484,7 @@ fun ForBlockReal(
     initExpression: MutableState<String>,
     condExpression: MutableState<String>,
     loopExpression: MutableState<String>,
+    bordersize: MutableState<Dp>
 ) {
 
     Card(
@@ -479,7 +492,7 @@ fun ForBlockReal(
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
             .width(250.dp)
             .padding(2.dp)
-            .height(200.dp)
+            .height(225.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
@@ -501,6 +514,7 @@ fun ForBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value, Green)
     ) {
         Column(Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -561,6 +575,7 @@ fun CinBlockReal(
     variableName: MutableState<String>,
     thisID: Int,
     CardList: MutableList<CardClass>,
+    bordersize: MutableState<Dp>
 ) {
     Card(
         modifier = Modifier
@@ -589,6 +604,7 @@ fun CinBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Red)
     ) {
         Row(
             modifier = Modifier.padding(8.dp),
@@ -623,6 +639,7 @@ fun CoutBlockReal(
     variableName: MutableState<String>,
     thisID: Int,
     CardList: MutableList<CardClass>,
+    bordersize: MutableState<Dp>
 ) {
 
     Card(
@@ -652,6 +669,7 @@ fun CoutBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Red)
     ) {
         Row(            modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically)
@@ -686,6 +704,7 @@ fun VariableAssignmentReal(
     VariableValue: MutableState<String>,
     thisID: Int,
     CardList: MutableList<CardClass>,
+    bordersize: MutableState<Dp>
 ) {
     Card(
         modifier = Modifier
@@ -714,6 +733,7 @@ fun VariableAssignmentReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Red)
     ) {
         Box() {
             Row(
@@ -759,6 +779,7 @@ fun IfBlockReal(
     selectedSign: MutableState<String>,
     thisID: Int,
     CardList: MutableList<CardClass>,
+    bordersize: MutableState<Dp>
 ) {
     Card(
         modifier = Modifier
@@ -787,6 +808,7 @@ fun IfBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value, Green)
     ) {
         Column(
             Modifier.padding(16.dp)
@@ -887,13 +909,14 @@ fun ReturnBlockReal(
     isDragging: MutableState<Boolean>,
     thisID: Int,
     CardList: MutableList<CardClass>,
-    ReturnString:MutableState<String>
+    ReturnString:MutableState<String>,
+    bordersize: MutableState<Dp>
 ) {
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
             .width(200.dp)
-            .height(45.dp)
+            .height(80.dp)
             .padding(2.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
@@ -915,12 +938,13 @@ fun ReturnBlockReal(
                     }
                 )
             },
-        shape = RoundedCornerShape(15.dp)
+        shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Red)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(8.dp),
+                .padding(2.dp),
             contentAlignment = Alignment.Center
         ) {
             Row()
@@ -956,6 +980,7 @@ fun DoFunctionBlockReal(
     CardList: MutableList<CardClass>,
     FunctionName:MutableState<String>,
     FunctionParams:MutableState<String>,
+    bordersize: MutableState<Dp>
 ) {
     if(FunctionParams.value == "")
     {
@@ -989,6 +1014,7 @@ fun DoFunctionBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value, Green)
     ) {
         Box(
             modifier = Modifier
@@ -1031,11 +1057,8 @@ fun FunctionBlockReal(
     FunctionParams:MutableState<String>,
     expanded: MutableState<Boolean>,
     selectedType: MutableState<String>,
+    bordersize: MutableState<Dp>
 ) {
-    if(FunctionParams.value == "")
-    {
-        FunctionParams.value = "<>";
-    }
     if(selectedType.value == "")
     {
         selectedType.value = "int"
@@ -1068,6 +1091,7 @@ fun FunctionBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value, Green)
     ) {
         Box(
             modifier = Modifier
@@ -1116,8 +1140,8 @@ fun FunctionBlockReal(
                 TextField(modifier = Modifier
                     .width(50.dp) ,
                     value = FunctionName.value, onValueChange = { newText ->
-                        FunctionName.value = newText
-                    })
+                    FunctionName.value = newText
+                })
                 Text(
                     text = "     ",
                     style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
@@ -1126,6 +1150,276 @@ fun FunctionBlockReal(
                     FunctionParams.value = newText
                 })
             }
+        }
+    }
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StructBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+    Name:MutableState<String>,
+    StrObjects:MutableState<String>,
+    bordersize: MutableState<Dp>,
+    ShowAllert:MutableState<Boolean>,
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(450.dp)
+            .height(150.dp)
+            .padding(2.dp)
+            .background(Color.LightGray,)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Blue)
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(4.dp)
+                .fillMaxWidth()
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Struct Name")
+                TextField(
+                    value = Name.value,
+                    onValueChange = { newText ->
+                        Name.value = newText },
+                    modifier = Modifier.weight(1f)
+                )
+                IconButton(
+                    onClick = { ShowAllert.value = true }
+                ) {
+                    Icon(Icons.Default.Info, contentDescription = "Info Icon")
+                }
+            }
+            TextField(
+                value = StrObjects.value,
+                onValueChange = { newText ->
+                    StrObjects.value = newText },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(top = 16.dp)
+            )
+        }
+    }
+    if (ShowAllert.value == true) {
+        AlertDialog(
+            onDismissRequest = {ShowAllert.value = false },
+            title = { Text("Создание структуры") },
+            text = { Text("Текст Name - название. Саму структуру пишите в одну строку, переменные внутри нее отделяйте запятой, пример: int a,string s...") },
+            confirmButton = {
+                Button(
+                    onClick = { ShowAllert.value  = false },
+                ) {
+                    Text("ОК")
+                }
+            }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StructVarBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+    Name:MutableState<String>,
+    Type:MutableState<String>,
+    bordersize: MutableState<Dp>,
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(450.dp)
+            .height(130.dp)
+            .padding(2.dp)
+            .background(Color.LightGray,)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Blue)
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(4.dp)
+                .fillMaxWidth()
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Struct Type: ")
+                TextField(
+                    value = Type.value,
+                    onValueChange = { newText ->
+                        Type.value = newText },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            Row()
+            {
+                Text("Var Name: ")
+                TextField(
+                    value = Name.value,
+                    onValueChange = { newText ->
+                        Name.value = newText
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(top = 5.dp)
+                )
+            }
+        }
+    }
+}
+@Composable
+fun BreakBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+    bordersize: MutableState<Dp>
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(200.dp)
+            .height(45.dp)
+            .padding(2.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Black)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Break",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+@Composable
+fun ContinueBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+    bordersize: MutableState<Dp>
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(200.dp)
+            .height(45.dp)
+            .padding(2.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Black)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Continue",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }

@@ -2,8 +2,6 @@ package com.example.ourmobile
 
 import Expression
 import boolExpression
-import java.util.HashMap
-import kotlin.reflect.KClass
 
 interface IToken {
     fun command(input:String, program:CelestialElysiaInterpreter){
@@ -29,6 +27,7 @@ class VariableToken : IToken{
             else -> 0
         }
         program.varHashMap.put(arguments[0], variableType)
+        program.variableVisibilityStack.get(0).add(arguments[0])
     }
 }
 class EqualsToken : IToken{
@@ -39,6 +38,8 @@ class EqualsToken : IToken{
     val arrayRegex = Regex("^\\w+\\[.+]$")
     val arrayNameRegex = Regex("^\\w+(?=\\[)")
     val arrayExpressionRegex = Regex("(?<=(\\[)).+(?=]$)")
+
+    val structRegex = Regex("^\\w+\\.\\w+$")
     override fun command(input:String, program:CelestialElysiaInterpreter){
         var varName: String?
         val processedInput: String?
@@ -53,48 +54,83 @@ class EqualsToken : IToken{
 
         varName = arguments[0]
 
-        val variableValue = program.varHashMap[varName]
+        val variableValue = program.varHashMap.get(varName)
+
+
+
         if(arguments[0].matches(arrayRegex)){
             val expression = Expression()
             val arrayIndex = expression.evaluateReversePolishNotation(
                 expression.toReversePolishNotation(arrayExpressionRegex
                     .find(arguments[0])!!.value,program.varHashMap, program)).toInt()
             val arrayName = arrayNameRegex.find(arguments[0])!!.value
-            val array = program.varHashMap.get(arrayName) as? Array<*>
-            if (array is Array && array != null) {
-                if(array[arrayIndex] is Int){
-                    val value = program.stack.removeFirst().toInt()
-                    val typedArray = array as IntArray
-                    typedArray[arrayIndex] = value.toInt()
-                    program.varHashMap[arrayName] = typedArray
-                }
-                else if(array[arrayIndex] is Double){
-                    val value = program.stack.removeFirst()
-                    val typedArray = array as Array<Double>
-                    typedArray[arrayIndex] = value
-                    program.varHashMap[arrayName] = typedArray
-                }
-                else{
-                    val value = program.stringStack.removeFirst()
-                    val typedArray = array as Array<String>
-                    typedArray[arrayIndex] = value
-                    program.varHashMap[arrayName] = typedArray
-                }
-
+            val array = program.varHashMap.get(arrayName)
+            if (array is IntArray) {
+                val value = program.stack.removeFirst().toInt()
+                val typedArray = array as IntArray
+                typedArray[arrayIndex] = value.toInt()
+                program.varHashMap[arrayName] = typedArray
+            }
+            else if (array is DoubleArray){
+                val value = program.stack.removeFirst()
+                val typedArray = array as DoubleArray
+                typedArray[arrayIndex] = value
+                program.varHashMap[arrayName] = typedArray
+            }
+            else if (array is Array<*>){
+                val value = program.stringStack.removeFirst().toString()
+                val typedArray = array as Array<String>
+                typedArray[arrayIndex] = value
+                program.varHashMap[arrayName] = typedArray
+            }
+            return
+        }
+        else if(arguments[0].matches(structRegex)){
+            var structInfo = arguments[0].split(".")
+            val structName = structInfo[0]
+            val structVarName = structInfo[1]
+            val structHashMap = program.varHashMap[structName] as HashMap<String, Any>
+            if(structHashMap[structVarName]!! is Int){
+                structHashMap.put(structVarName, program.stack.removeFirst().toInt())
+            }
+            else if(structHashMap[structVarName]!! is Double){
+                structHashMap.put(structVarName, program.stack.removeFirst())
+            }
+            else if(structHashMap[structVarName]!! is String){
+                structHashMap.put(structVarName, program.stringStack.removeFirst())
+            }
+            else if(structHashMap[structVarName]!! is IntArray){
+                structHashMap.put(structVarName, program.FFAstack.removeFirst() as IntArray)
+            }
+            else if(structHashMap[structVarName]!! is DoubleArray){
+                structHashMap.put(structVarName, program.FFAstack.removeFirst() as DoubleArray)
+            }
+            else{
+                structHashMap.put(structVarName, program.FFAstack.removeFirst() as Array<String>)
             }
             return
         }
 
-        if(variableValue!!::class.java.simpleName == "Integer"){
-            program.varHashMap.put(varName,program.stack.removeFirst().toInt())
+        if(variableValue!! is IntArray){
+            program.varHashMap.put(varName,program.FFAstack.removeFirst() as IntArray)
         }
-        else if(variableValue!!::class.java.simpleName == "String"){
-            program.varHashMap.put(varName,program.stringStack.removeFirst().toString())
+        else if(variableValue!! is DoubleArray){
+            program.varHashMap.put(varName,program.FFAstack.removeFirst() as DoubleArray)
         }
-        else{
+        else if(variableValue!! is Array<*>){
+            program.varHashMap.put(varName,program.FFAstack.removeFirst() as Array<String>)
+        }
+        else {
 
-            program.varHashMap.put(varName,program.stack.removeFirst())
+            if (variableValue!!::class.java.simpleName == "Integer") {
+                program.varHashMap.put(varName, program.stack.removeFirst().toInt())
+            } else if (variableValue!!::class.java.simpleName == "String") {
+                program.varHashMap.put(varName, program.stringStack.removeFirst().toString())
+            } else if (variableValue!!::class.java.simpleName == "Double") {
+                program.varHashMap.put(varName, program.stack.removeFirst())
+            }
         }
+
     }
 }
 class ExpressionToken : IToken{
@@ -104,6 +140,7 @@ class ExpressionToken : IToken{
         val expressionString: String?
         val match = regex.find(input)
         expressionString = match?.value
+
 
         val expression = Expression()
         val expressionValue = expression.evaluateReversePolishNotation(
@@ -119,11 +156,26 @@ class StringExpressionToken : IToken{
     var rawStringToken = Regex("^//.+//$")
     var stringToken = Regex("(?<=(^//)).+(?=//$)")
 
+    val tokenRegex = Regex("(//.+//|\\w+<.+>|[a-zA-Z]\\w*\\.[a-zA-Z]\\w*\\[.+\\]|[a-zA-Z]\\w*\\.[a-zA-Z]\\w*|[a-zA-Z]\\w*\\[.+\\]|\\w+|[A-Za-z]+\\w*(\\[.+\\])?)")
+
+    val arrayRegex = Regex("^\\w+\\[.+\\]$")
+    val arrayNameRegex = Regex("^\\w+(?=\\[)")
+    val arrayExpressionRegex = Regex("(?<=(\\[)).+(?=]$)")
+
+    val functionRegex = Regex("^\\w+<.+>$")
+    val functionNameRegex = Regex("^\\w+(?=<)")
+    val functionArgumentsRegex = Regex("(?<=(\\w<)).+(?=>$)")
+
+    val structRegex = Regex("^\\w+\\.\\w+(\\[.+\\])?$")
+    val structNameRegex = Regex("^\\w+(?=\\.)")
+    val structVarRegex = Regex("(?<=(\\.))\\w+")
+    val structArrayRegex = Regex("^\\w+\\.\\w+\\[.+]$")
+
     override fun command(input:String, program:CelestialElysiaInterpreter){
         val processedInput: String?
         val match = regex.find(input)
         processedInput = match?.value
-
+        /*
         val terms = processedInput!!.split("+").map { it.trim() }
         val stringBuilder = StringBuilder()
 
@@ -132,13 +184,86 @@ class StringExpressionToken : IToken{
             val value = program.varHashMap[trimmedTerm] ?: stringToken.find(trimmedTerm)!!.value
             stringBuilder.append(value)
         }
+         */
+        val stringBuilder = StringBuilder()
+        var matches = tokenRegex.findAll(processedInput!!)
+        for(match in matches) {
+            var token = match.value
+            var value: String
+
+            if(token.matches(rawStringToken)){
+                value = stringToken.find(token)!!.value
+            }
+            else if(token.matches(arrayRegex)){
+                val expression = Expression()
+                var arrayIndex = expression.evaluateReversePolishNotation(expression.toReversePolishNotation(arrayExpressionRegex.find(token)!!.value,program.varHashMap, program)).toInt()
+                var arrayName = arrayNameRegex.find(token)!!.value
+
+                val array = program.varHashMap.get(arrayName) as Array<String>
+                value = array[arrayIndex]
+            }
+            else if(token.matches(functionRegex)){
+                var functionName = functionNameRegex.find(token)!!.value
+                var functionProgram = program.functionHashMap[functionName]
+                var functionArguments = functionArgumentsRegex.find(token)!!.value.split("|")
+
+                for(n in functionArguments){
+                    val nameAndValue = n.split(":")
+                    val name = nameAndValue[0]
+                    var functionValue = nameAndValue[1]
+
+                    val expressionToken = ExpressionToken()
+
+                    if(functionProgram!!.varHashMap[name]!!::class.java.simpleName=="Integer") {
+                        expressionToken.command("<expression:" + functionValue + ">", program)
+                        functionProgram!!.varHashMap.put(name, program.stack.removeFirst().toInt())
+                    }
+                    else if(functionProgram!!.varHashMap[name]!!::class.java.simpleName=="Double"){
+                        expressionToken.command("<expression:" + functionValue + ">", program)
+                        functionProgram!!.varHashMap.put(name, program.stack.removeFirst())
+                    }
+                    else{
+                        functionProgram!!.varHashMap.put(name,program.varHashMap[functionValue]!!)
+                    }
+                }
+                functionProgram!!.interprete()
+                value = functionProgram.returnValue.toString()
+            }
+            else if(token.matches(structRegex)){
+                if(token.matches(structArrayRegex)){
+                    //println("nigger")
+                    var structName = structNameRegex.find(token)!!.value
+                    var structVarName = structVarRegex.find(token)!!.value
+
+                    var structHashMap = program.varHashMap.get(structName) as HashMap<String, Any>
+                    var array = structHashMap.get(structVarName) as Array<String>
+
+                    val expression = Expression()
+                    var arrayIndex = expression.evaluateReversePolishNotation(expression.toReversePolishNotation(arrayExpressionRegex.find(token)!!.value,program.varHashMap, program)).toInt()
+
+                    val typedArray = array as Array<String>
+                    value = typedArray[arrayIndex]
+                }else {
+                    //println("nigger")
+                    var structName = structNameRegex.find(token)!!.value
+                    var structVarName = structVarRegex.find(token)!!.value
+
+                    var structHashMap = program.varHashMap.get(structName) as HashMap<String, Any>
+                    value = structHashMap[structVarName].toString()
+                }
+            }
+            else{
+                value = program.varHashMap[token].toString() ?: ""
+            }
+            stringBuilder.append(value)
+        }
 
         program.stringStack.addFirst(stringBuilder.toString())
         program.FFAstack.addFirst(stringBuilder.toString())
     }
 }
-class VariableExpressionToken : IToken {
-    override var regex = Regex("(?<=(<anyxpression:)).+(?=>)")
+class AnyExpressionToken : IToken {
+    override var regex = Regex("(?<=(<anyexpression:)).+(?=>)")
     override var returnType = "void"
     override fun command(input:String, program:CelestialElysiaInterpreter) {
         val processedInput: String?
@@ -162,9 +287,9 @@ class CallOutToken : IToken{
 
         tokenObject.command(processedInput,program)
 
-
-        program.calloutList.add(program.FFAstack.removeFirst().toString())
-        program.FFAstack.clear()
+        var stringValue = program.FFAstack.removeFirst().toString()
+        //program.calloutList.add(stringValue!!)
+        messagesCout.add(stringValue!!)
     }
     override var returnType = "void"
 }
@@ -192,15 +317,36 @@ class IfToken : IToken{
                 }
             }
         }
+        program.variableVisibilityStack.addFirst(mutableListOf<String>())
     }
 }
 class ElseToken : IToken{
-    override var regex = Regex("^<else")
+    override var regex = Regex("(?<=(^<else:)).+(?=>\$)")
     override var returnType = "void"
+    var endifRegex = Regex("<(endif):\\d+>")
+    var idRegex = Regex("(?<=(^<endif:))\\d+(?=>$)")
+    override fun command(input:String, program:CelestialElysiaInterpreter){
+        val processedInput: String?
+        val match = regex.find(input)
+        processedInput = match?.value
+
+        for(n in program.stringPoint..program.commandList.size-1){
+            if(program.commandList[n].matches(endifRegex)
+                && idRegex.find(program.commandList[n])!!.value == processedInput){
+                program.stringPoint = n
+            }
+        }
+    }
 }
 class EndIfToken : IToken{
     override var regex = Regex("^<endif")
     override var returnType = "void"
+    override fun command(input:String, program:CelestialElysiaInterpreter){
+        var variableList = program.variableVisibilityStack.removeFirst()
+        for(variable in variableList){
+            program.varHashMap.remove(variable)
+        }
+    }
 }
 
 class ForToken : IToken {
@@ -213,6 +359,7 @@ class ForToken : IToken {
 
         val arguments = processedInput!!.split(",")
         program.forStack.addFirst(arguments[0].toInt())
+        program.variableVisibilityStack.addFirst(mutableListOf<String>())
     }
 }
 class EndForToken : IToken{
@@ -236,6 +383,10 @@ class EndForToken : IToken{
         }
         else{
             program.forStack.removeFirst()
+            var variableList = program.variableVisibilityStack.removeFirst()
+            for(variable in variableList){
+                program.varHashMap.remove(variable)
+            }
         }
     }
 }
@@ -293,6 +444,8 @@ class ExtendedForToken : IToken{
         val processedInput: String?
         val match = regex.find(input)
         processedInput = match?.value
+
+        program.variableVisibilityStack.addFirst(mutableListOf<String>())
 
         val arguments = processedInput!!.split(";")
 
@@ -354,6 +507,10 @@ class EndExtendedForToken : IToken {
 
         if(!boolValue) {
             program.stringPoint = currentString
+            var variableList = program.variableVisibilityStack.removeFirst()
+            for(variable in variableList){
+                program.varHashMap.remove(variable)
+            }
         }
     }
 }
@@ -367,6 +524,8 @@ class WhileToken : IToken{
         val match = regex.find(input)
         processedInput = match?.value
 
+        program.variableVisibilityStack.addFirst(mutableListOf<String>())
+
         val arguments = processedInput!!.split(",")
 
         val boolValue: Boolean = boolExpression(arguments[0], arguments[1], arguments[2], program)
@@ -379,6 +538,7 @@ class WhileToken : IToken{
                 }
             }
         }
+
     }
 }
 class EndWhileToken : IToken{
@@ -390,6 +550,11 @@ class EndWhileToken : IToken{
         val processedInput: String?
         val match = regex.find(input)
         processedInput = match?.value
+
+        var variableList = program.variableVisibilityStack.removeFirst()
+        for(variable in variableList){
+            program.varHashMap.remove(variable)
+        }
 
         for(n in 0..program.stringPoint){
             if(program.commandList[n].matches(whileRegex)
@@ -411,12 +576,13 @@ class CastToken : IToken{
         val variableValue = program.varHashMap.getValue(arguments[0])
 
         val variableCasted: Any = when (arguments[1]) {
-            "int" -> variableValue.toString().toInt()
-            "double" -> variableValue.toString().toDouble()
-            "string" -> variableValue.toString()
+            "int" -> variableValue!!.toString().toInt()
+            "double" -> variableValue!!.toString().toDouble()
+            "string" -> variableValue!!.toString()
             else -> 0
         }
-        program.varHashMap.put(arguments[0], variableCasted)
+        program.varHashMap.put(arguments[0], variableCasted!!)
+        println(program.varHashMap[arguments[0]]!!::class.java.simpleName)
     }
 }
 class FunctionToken : IToken{
@@ -449,8 +615,12 @@ class FunctionToken : IToken{
                 "array<string>" -> newVarHashMap.put(name, Array<String>(0){""})
             }
         }
-        for(n in program.stringPoint..program.commandList.size-1){
-            if(program.commandList[n]=="<endfuntion:"+functionProperties[2]+">") break
+        for(n in program.stringPoint+1..program.commandList.size-1){
+            println(program.commandList[n])
+            if(program.commandList[n]=="<endfunction:"+functionProperties[2]+">"){
+                program.stringPoint = n
+                break
+            }
             newCommandList.add(program.commandList[n])
         }
 
@@ -458,6 +628,7 @@ class FunctionToken : IToken{
                 = CelestialElysiaInterpreter(newVarHashMap,newCommandList,functionProperties[1])
 
         program.functionHashMap.put(functionProperties[0], newProgram)
+
     }
 }
 class EndFunctionToken : IToken{
@@ -467,28 +638,161 @@ class EndFunctionToken : IToken{
 class ReturnToken : IToken{
     override var regex = Regex("(?<=(^<return:)).+(?=>$)")
     override var returnType = "void"
+    var tokenRegex = Regex("<\\w+")
     override fun command(input:String, program:CelestialElysiaInterpreter) {
         val processedInput: String?
         val match = regex.find(input)
         processedInput = match?.value
+
+        val tokenName = tokenRegex.find(processedInput!!)!!.value
+        val tokenType = program.tokenHashMap.get(tokenName)
+        val tokenObject = tokenType?.java?.newInstance() as? IToken ?: throw IllegalArgumentException("Invalid token type")
+        tokenObject.command(processedInput!!,program)
+
         program.returnValue = when(program.returnType){
-            "void" -> null
-            "int" -> processedInput!!.toInt()
-            "double" -> processedInput!!.toDouble()
-            "string" -> processedInput!!
+            "void" -> 0
+            "int" -> program.stack.removeFirst().toInt()
+            "double" -> program.stack.removeFirst()
+            "string" -> program.stringStack.removeFirst()
+            "array<int>" -> program.FFAstack.removeFirst() as IntArray
+            "array<double>" -> program.FFAstack.removeFirst() as DoubleArray
+            "array<string>" -> program.FFAstack.removeFirst() as Array<String>
             else -> 0
-        }!!
+        }
+        program.stringPoint = program.commandList.size
     }
 }
 class CallInToken : IToken{
+
     override var regex = Regex("(?<=(^<callin:)).+(?=>$)")
+    override var returnType = "void"
+
+    override fun command(input:String, program:CelestialElysiaInterpreter) {
+        val processedInput: String?
+        val match = regex.find(input)
+        processedInput = match?.value
+
+        while (WaitConsole == false)
+        {
+
+        }
+
+        val equalsToken = EqualsToken()
+        equalsToken.command("<equals:"+processedInput+",<expression:"+messagesCin+">>", program)
+    }
+}
+class StructToken : IToken{
+    override var regex = Regex("(?<=(^<struct:)).+(?=>$)")
     override var returnType = "void"
     override fun command(input:String, program:CelestialElysiaInterpreter) {
         val processedInput: String?
         val match = regex.find(input)
         processedInput = match?.value
 
-        val equalsToken = EqualsToken()
-        equalsToken.command("<equals:"+processedInput+program.inputValue+">", program)
+        val arguments = processedInput!!.split(";")
+        val name = arguments[0]
+        val variables = arguments[1].split(",")
+
+        var structHashMap = hashMapOf<String, Any>()
+        for(variable in variables){
+            val nameAndValue = variable.split(":")
+            val name = nameAndValue[0]
+            var type = nameAndValue[1]
+
+            when (type) {
+                "int" -> structHashMap.put(name, 0)
+                "double" -> structHashMap.put(name, 0.0)
+                "string" -> structHashMap.put(name, "")
+                "array<int>" -> structHashMap.put(name, IntArray(0) {0})
+                "array<double>" -> structHashMap.put(name, DoubleArray(0) {0.0})
+                "array<string>" -> structHashMap.put(name, Array<String>(0) {""})
+                else -> 0
+            }
+        }
+        program.varHashMap.put(name, structHashMap)
     }
+}
+class StructObjectToken : IToken{
+    override var regex = Regex("(?<=(^<structobject:)).+(?=>$)")
+    override var returnType = "void"
+    override fun command(input:String, program:CelestialElysiaInterpreter) {
+        val processedInput: String?
+        val match = regex.find(input)
+        processedInput = match?.value
+
+        val arguments = processedInput!!.split(",")
+        val name = arguments[0]
+        val type = arguments[1]
+
+        var mapCopy = program.varHashMap[type] as HashMap<String, Any>
+        var newMap = mapCopy.toMap()
+
+        program.varHashMap.put(name, newMap)
+    }
+}
+class CallFunctionToken : IToken{
+    override var regex = Regex("(?<=(^<callfunction:)).+(?=>$)")
+    override var returnType = "void"
+
+    val functionRegex = Regex("^\\w+<.+>$")
+    val functionNameRegex = Regex("^\\w+(?=<)")
+    val arrayArgumentsRegex = Regex("(?<=(\\w<)).+(?=>$)")
+    override fun command(input:String, program:CelestialElysiaInterpreter) {
+        val processedInput: String?
+        val match = regex.find(input)
+        processedInput = match?.value
+
+        var functionName = functionNameRegex.find(processedInput!!)!!.value
+        var functionProgram = program.functionHashMap[functionName]
+        var functionArguments = arrayArgumentsRegex.find(processedInput!!)!!.value.split("|")
+
+        for(n in functionArguments){
+            val nameAndValue = n.split(":")
+            val name = nameAndValue[0]
+            var value = nameAndValue[1]
+
+            val expressionToken = ExpressionToken()
+
+            if(functionProgram!!.varHashMap[name]!!::class.java.simpleName=="Integer" ||
+                functionProgram!!.varHashMap[name]!!::class.java.simpleName=="Double") {
+
+                expressionToken.command("<expression:" + value + ">", program)
+                functionProgram!!.varHashMap.put(name, program.stack.removeFirst())
+            }
+            else{
+                functionProgram!!.varHashMap.put(name,program.varHashMap[value]!!)
+            }
+        }
+        functionProgram!!.interprete()
+    }
+}
+class ContinueToken : IToken {
+    override var regex = Regex("(?<=(^<continue:)).+(?=>$)")
+    override var returnType = "void"
+
+    var cycleRegex = Regex("<(endfor|endextendedfor|endwhile).+")
+    override fun command(input:String, program:CelestialElysiaInterpreter) {
+        for(n in program.stringPoint..program.commandList.size-1){
+            if(program.commandList[n]!!.matches(cycleRegex)){
+                program.stringPoint = n - 1
+                break
+            }
+        }
+    }
+
+}
+class BreakToken : IToken {
+    override var regex = Regex("(?<=(^<break:)).+(?=>$)")
+    override var returnType = "void"
+
+    var cycleRegex = Regex("<(endfor|endextendedfor|endwhile).+")
+    override fun command(input:String, program:CelestialElysiaInterpreter) {
+        for(n in program.stringPoint..program.commandList.size-1){
+            if(program.commandList[n]!!.matches(cycleRegex)){
+                program.stringPoint = n
+                break
+            }
+        }
+    }
+
 }
