@@ -6,7 +6,8 @@ import com.example.ourmobile.IToken
 import java.util.HashMap
 
 class Expression {
-    public fun toReversePolishNotation(expressionString: String, variables: Map<String, Any>, program:CelestialElysiaInterpreter): String {
+    public fun toReversePolishNotation(expressionString: String, variables: Map<String, Any>,
+                                       program:CelestialElysiaInterpreter): String {
         val stack = mutableListOf<String>()
         val output = mutableListOf<String>()
         val operators = setOf("+", "-", "*", "/")
@@ -28,7 +29,8 @@ class Expression {
         for(match in matches) {
             var token = match.value
             if (token in operators) {
-                while (stack.isNotEmpty() && stack.last() in operators && precedence(stack.last()) >= precedence(token)) {
+                while (stack.isNotEmpty() && stack.last() in operators &&
+                    precedence(stack.last()) >= precedence(token)) {
                     output.add(stack.removeLast())
                 }
                 stack.add(token)
@@ -105,19 +107,19 @@ class Expression {
 }
 fun boolExpression(expression1: String, expression2: String, operand: String,
                    program: CelestialElysiaInterpreter):Boolean{
-    var tokenRegex = Regex("<\\w+")
-    var token1Name = tokenRegex.find(expression1)!!.value
-    var token1Type = program.tokenHashMap.get(token1Name)
-    var token1Object = token1Type?.java?.newInstance() as? IToken ?: throw IllegalArgumentException("Invalid token type")
+    val tokenRegex = Regex("<\\w+")
+    val token1Name = tokenRegex.find(expression1)!!.value
+    val token1Type = program.tokenHashMap.get(token1Name)
+    val token1Object = token1Type?.java?.newInstance() as? IToken ?: throw IllegalArgumentException("Invalid token type")
     token1Object.command(expression1,program)
 
-    var token2Name = tokenRegex.find(expression2)!!.value
-    var token2Type = program.tokenHashMap.get(token2Name)
-    var token2Object = token2Type?.java?.newInstance() as? IToken ?: throw IllegalArgumentException("Invalid token type")
+    val token2Name = tokenRegex.find(expression2)!!.value
+    val token2Type = program.tokenHashMap.get(token2Name)
+    val token2Object = token2Type?.java?.newInstance() as? IToken ?: throw IllegalArgumentException("Invalid token type")
     token2Object.command(expression2,program)
 
-    var value2 = program.stack.removeFirst()
-    var value1 = program.stack.removeFirst()
+    val value2 = program.stack.removeFirst()
+    val value1 = program.stack.removeFirst()
     var boolValue: Boolean = true
     when (operand) {
         "==" -> boolValue = value1 == value2
@@ -130,13 +132,15 @@ fun boolExpression(expression1: String, expression2: String, operand: String,
     return boolValue
 }
 
-fun processArray(token: String, variables: Map<String, Any>, program:CelestialElysiaInterpreter) : String{
+fun processArray(token: String, variables: Map<String, Any>, program:CelestialElysiaInterpreter)
+: String{
     val arrayNameRegex = Regex("^\\w+(?=\\[)")
     val arrayExpressionRegex = Regex("(?<=(\\[)).+(?=]$)")
 
     val expression = Expression()
 
-    val arrayIndex = expression.evaluateReversePolishNotation(expression.toReversePolishNotation(arrayExpressionRegex.find(token)!!.value,variables, program)).toInt()
+    val arrayIndex = expression.evaluateReversePolishNotation(expression.toReversePolishNotation(
+        arrayExpressionRegex.find(token)!!.value,variables, program)).toInt()
     val arrayName = arrayNameRegex.find(token)!!.value
 
     val array = variables.get(arrayName) ?: IntArray(arrayIndex) {0}
@@ -156,7 +160,8 @@ fun processArray(token: String, variables: Map<String, Any>, program:CelestialEl
     }
 }
 
-fun processFunction(token: String, variables: Map<String, Any>, program:CelestialElysiaInterpreter) : String{
+fun processFunction(token: String, variables: Map<String, Any>, program:CelestialElysiaInterpreter)
+: String{
     val functionNameRegex = Regex("^\\w+(?=<)")
     val functionArgumentsRegex = Regex("(?<=(\\w<)).+(?=>$)")
 
@@ -174,24 +179,25 @@ fun processFunction(token: String, variables: Map<String, Any>, program:Celestia
 
         if(functionProgram!!.varHashMap[name]!!::class.java.simpleName=="Integer") {
             expressionToken.command("<expression:" + value + ">", program)
-            functionProgram!!.varHashMap.put(name, program.stack.removeFirst().toInt())
+            functionProgram.varHashMap.put(name, program.stack.removeFirst().toInt())
         }
-        else if(functionProgram!!.varHashMap[name]!!::class.java.simpleName=="Double"){
+        else if(functionProgram.varHashMap[name]!!::class.java.simpleName=="Double"){
             expressionToken.command("<expression:" + value + ">", program)
-            functionProgram!!.varHashMap.put(name, program.stack.removeFirst())
+            functionProgram.varHashMap.put(name, program.stack.removeFirst())
         }
-        else if(functionProgram!!.varHashMap[name]!!::class.java.simpleName=="String"){
+        else if(functionProgram.varHashMap[name]!!::class.java.simpleName=="String"){
             stringExpressionToken.command("<stringexpression:" + value + ">", program)
-            functionProgram!!.varHashMap.put(name, program.stringStack.removeFirst())
+            functionProgram.varHashMap.put(name, program.stringStack.removeFirst())
         }
         else{
-            functionProgram!!.varHashMap.put(name,program.varHashMap[value]!!)
+            functionProgram.varHashMap.put(name,program.varHashMap[value]!!)
         }
     }
     functionProgram!!.interprete()
     return functionProgram.returnValue.toString()
 }
-fun processStruct(token: String, variables: Map<String, Any>, program:CelestialElysiaInterpreter) : String{
+fun processStruct(token: String, variables: Map<String, Any>, program:CelestialElysiaInterpreter)
+: String{
     val arrayExpressionRegex = Regex("(?<=(\\[)).+(?=]$)")
 
     val structNameRegex = Regex("^\\w+(?=\\.)")
@@ -206,7 +212,8 @@ fun processStruct(token: String, variables: Map<String, Any>, program:CelestialE
         val array = structHashMap.get(structVarName)
 
         val expression = Expression()
-        val arrayIndex = expression.evaluateReversePolishNotation(expression.toReversePolishNotation(arrayExpressionRegex.find(token)!!.value,variables, program)).toInt()
+        val arrayIndex = expression.evaluateReversePolishNotation(expression.toReversePolishNotation
+            (arrayExpressionRegex.find(token)!!.value,variables, program)).toInt()
 
         if(array is IntArray){
             val typedArray = array as IntArray

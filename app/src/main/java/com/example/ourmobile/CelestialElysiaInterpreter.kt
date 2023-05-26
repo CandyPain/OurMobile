@@ -54,11 +54,11 @@ class CelestialElysiaInterpreter(var varHashMap: HashMap<String, Any>,
         variableVisibilityStack.clear()
         variableVisibilityStack.addFirst(mutableListOf<String>())
 
-        var tokenRegex = Regex("<\\w+")
+        val tokenRegex = Regex("<\\w+")
         while(stringPoint<commandList.size){
-            var tokenName = tokenRegex.find(commandList[stringPoint])!!.value
-            var tokenType = tokenHashMap.get(tokenName)
-            var tokenObject = tokenType?.java?.newInstance() as? IToken ?: throw IllegalArgumentException("Invalid token type")
+            val tokenName = tokenRegex.find(commandList[stringPoint])!!.value
+            val tokenType = tokenHashMap.get(tokenName)
+            val tokenObject = tokenType?.java?.newInstance() as? IToken ?: throw IllegalArgumentException("Invalid token type")
             tokenObject.command(commandList[stringPoint],this)
             stringPoint++
         }
