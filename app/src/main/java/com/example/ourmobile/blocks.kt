@@ -1,235 +1,63 @@
 package com.example.ourmobile
 
-import androidx.compose.animation.*
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.*
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlin.math.roundToInt
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 
-var myGlobalNumber by mutableStateOf(0);
-
-@OptIn(ExperimentalMaterial3Api::class)
-/*
-fun copyCard(card: Card): Card {
-    val offsetX = card.offsetX.value
-    val offsetY = card.offsetY.value
-    val isDragging = card.isDragging.value
-    val VariableName = card.VariableName.value
-    val VariableValue = card.VariableValue.value
-
-    return Card(
-        modifier = Modifier
-            .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
-            .width(500.dp)
-            .padding(10.dp)
-            .pointerInput(Unit) {
-                detectDragGestures(
-                    onDragStart = { isDragging.value = true },
-                    onDragEnd = { isDragging.value = false },
-                    onDragCancel = { /* не нужно ничего делать */ },
-                    onDrag = { change, dragAmount ->
-                        offsetX += dragAmount.x
-                        offsetY += dragAmount.y
-                        change.consumeAllChanges()
-                    }
-                )
-            },
-        shape = RoundedCornerShape(15.dp),
-    ) {
-        Box(
-        ) {
-            Row() {
-                TextField(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .padding(10.dp),
-                    textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
-                    value = VariableName,
-                    onValueChange = { newText -> /* не нужно делать ничего */ }
-                )
-                Text(
-                    text = " = ",
-                    fontSize = 20.sp,
-                    modifier = Modifier.padding(10.dp)
-                )
-                TextField(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .padding(10.dp),
-                    textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
-                    value = VariableValue,
-                    onValueChange = { newText -> /* не нужно делать ничего */ }
-                )
-                Button(
-                    onClick = {},
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    Text(text = "Save")
-                }
-            }
-        }
-    }
-}
-*/
 @Composable
-fun DraggableText() {
-    val offsetX = remember { mutableStateOf(0f) }
-    val offsetY = remember { mutableStateOf(0f) }
-    val isDragging = remember { mutableStateOf(false) }
-    val text = remember { mutableStateOf("Text block") }
-
-    Text(
-        text = text.value,
-        modifier = Modifier
-            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .pointerInput(Unit) {
-                detectDragGestures(
-                    onDragStart = {
-                        isDragging.value = true
-                    },
-                    onDragEnd = {
-                        isDragging.value = false
-                    },
-                    onDrag = { change, dragAmount ->
-                        offsetX.value += dragAmount.x
-                        offsetY.value += dragAmount.y
-                        change.consumeAllChanges()
-                    }
-                )
-            }
-    )
-}
-
-
-class SmallYellowCard {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun card() {
-        Card(
-            modifier = Modifier.size(100.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
-                var variableName by remember { mutableStateOf("") }
-                var variableValue by remember { mutableStateOf("") }
-
-                TextField(
-                    value = variableName,
-                    onValueChange = { variableName = it },
-                    label = { Text("Variable name") }
-                )
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                ) {
-                    Text("=")
-                    Spacer(modifier = Modifier.width(16.dp))
-                    TextField(
-                        value = variableValue,
-                        onValueChange = { variableValue = it },
-                        label = { Text("Variable value") }
-                    )
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun VariableItem()
-{
-    val VariableType = remember{mutableStateOf("")}
-    val VariableName = remember{mutableStateOf("")}
-    val offsetX = remember { mutableStateOf(0f) }
-    val offsetY = remember { mutableStateOf(0f) }
-    val isDragging = remember { mutableStateOf(false) }
+fun BeginBlock(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+) {
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(500.dp)
-            .padding(10.dp)
+            .width(300.dp)
+            .height(60.dp)
+            .padding(2.dp)
+            .background(Color.LightGray,)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
                         isDragging.value = true
-                    },
-                    onDragEnd = { isDragging.value = false },
-                    onDragCancel = { /* не нужно ничего делать */ },
-                    onDrag = { change, dragAmount ->
-                        offsetX.value += dragAmount.x
-                        offsetY.value += dragAmount.y
-                        change.consumeAllChanges()
-                    }
-                )
-            },
-        shape = RoundedCornerShape(15.dp),
-    ){
-        Box(){
-            Row()
-            {
-                TextField(
-                    modifier = Modifier.width(200.dp),
-                    textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
-                    value = VariableType.value,
-                    onValueChange = {newText -> VariableType.value = newText}
-                )
-                Text(
-                    text = "   ",
-                    fontSize = 20.sp
-                )
-                TextField(
-                    modifier = Modifier.width(200.dp),
-                    textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
-                    value = VariableName.value,
-                    onValueChange = {newText -> VariableName.value = newText}
-                )
-                Button(
-                    onClick = {}
-                )
-                {
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun VariableAssignment(onCloseClicked: () -> Unit) {
-    val offsetX = remember { mutableStateOf(0f) }
-    val offsetY = remember { mutableStateOf(0f) }
-    val isDragging = remember { mutableStateOf(false) }
-    val VariableName = remember { mutableStateOf("") }
-    val VariableValue = remember { mutableStateOf("") }
-
-    Card(
-
-        modifier = Modifier
-            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(500.dp)
-            .padding(10.dp)
-            .pointerInput(Unit) {
-                detectDragGestures(
-                    onDragStart = {
-                        myGlobalNumber = 2;
-                        isDragging.value = true
-                        onCloseClicked()
                     },
                     onDragEnd = { isDragging.value = false },
                     onDragCancel = { },
@@ -237,47 +65,180 @@ fun VariableAssignment(onCloseClicked: () -> Unit) {
                         offsetX.value += dragAmount.x
                         offsetY.value += dragAmount.y
                         change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
                     }
                 )
-            }
-            .clickable {
-                myGlobalNumber = 2;
-                onCloseClicked()
-
             },
         shape = RoundedCornerShape(15.dp),
     ) {
         Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Row() {
-                TextField(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .padding(10.dp),
-                    textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
-                    value = VariableName.value,
-                    onValueChange = { newText -> VariableName.value = newText }
+            Text(
+                text = "Main begin",
+                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            )
+        }
+    }
+}
+
+@Composable
+fun BeginBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(200.dp)
+            .height(45.dp)
+            .padding(2.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
                 )
-                Text(
-                    text = " = ",
-                    fontSize = 20.sp,
-                    modifier = Modifier.padding(10.dp)
+            },
+        shape = RoundedCornerShape(15.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Begin",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
+fun EndBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(200.dp)
+            .height(45.dp)
+            .padding(2.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
                 )
-                TextField(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .padding(10.dp),
-                    textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
-                    value = VariableValue.value,
-                    onValueChange = { newText -> VariableValue.value = newText }
+            },
+        shape = RoundedCornerShape(15.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "End",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
+fun EndBlock(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(300.dp)
+            .height(60.dp)
+            .padding(2.dp)
+            .background(Color.LightGray,)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
                 )
-                Button(
-                    onClick = {},
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    Text(text = "Save")
-                }
-            }
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Main End",
+                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            )
         }
     }
 }
@@ -285,23 +246,50 @@ fun VariableAssignment(onCloseClicked: () -> Unit) {
 //Кард для создания переменной
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TypeVariable(onCloseClicked: () -> Unit) {
-    var expanded by remember { mutableStateOf(false) }
-    val variableName = remember { mutableStateOf("") }
-    val selectedType = remember { mutableStateOf("") }
-
+fun TypeVariableReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    expanded: MutableState<Boolean>,
+    variableName: MutableState<String>,
+    selectedType: MutableState<String>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+) {
     // Сохраненный тип переменной
-    selectedType.value = "int"
+    if (selectedType.value == "") {
+        selectedType.value = "int"
+    }
     // Сохраненное имя переменной
-    variableName.value = "NewVariable"
+    if (variableName.value == "") {
+        variableName.value = "NewVariable"
+    }
 
     Card(
         modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
             .width(500.dp)
-            .padding(10.dp)
-            .clickable {
-                myGlobalNumber = 1;
-                onCloseClicked()
+            .height(80.dp)
+            .padding(2.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value;
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
             },
         shape = RoundedCornerShape(15.dp)
 
@@ -310,7 +298,7 @@ fun TypeVariable(onCloseClicked: () -> Unit) {
         Column {
             Row()
             {
-                IconButton(onClick = { expanded = true })
+                IconButton(onClick = { expanded.value = true })
                 {
                     Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
                 }
@@ -320,29 +308,29 @@ fun TypeVariable(onCloseClicked: () -> Unit) {
                     fontSize = 15.sp
                 )
                 DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
+                    expanded = expanded.value,
+                    onDismissRequest = { expanded.value = false }
                 ) {
                     DropdownMenuItem(
                         text = { Text(text = "int") },
                         onClick = {
                             selectedType.value = "int"
                             // Изменять значение внешнего класса (типа переменной) здесь (при изменении дроп меню) именно через selectedType.value
-                            expanded = false
+                            expanded.value = false
                         })
                     DropdownMenuItem(
                         text = { Text(text = "double") },
                         onClick = {
                             selectedType.value = "double"
                             // Изменять значение внешнего класса (типа переменной) здесь (при изменении дроп меню) именно через selectedType.value
-                            expanded = false
+                            expanded.value = false
                         })
                     DropdownMenuItem(
                         text = { Text(text = "string") },
                         onClick = {
                             selectedType.value = "string"
                             // Изменять значение внешнего класса (типа переменной) здесь (при изменении дроп меню) именно через selectedType.value
-                            expanded = false
+                            expanded.value = false
                         })
                 }
                 Text(text = "   ", fontSize = 15.sp)
@@ -355,15 +343,404 @@ fun TypeVariable(onCloseClicked: () -> Unit) {
                         // Изменять значение внешнего класса (имени переменной) здесь (при изменении текст филда) именно через variableName.value
                     }
                 )
-                Button(
-                    modifier = Modifier.padding(5.dp),
-                    onClick = {
-                        // Действие для удаления блока
+                IconButton(onClick = { NeedClear.IdToClear = thisID
+                    NeedClear.WhatList = 1})
+                {
+                    Icon(Icons.Filled.Close, contentDescription = null)
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ArrayVariableReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    expanded: MutableState<Boolean>,
+    variableName: MutableState<String>,
+    selectedType: MutableState<String>,
+    thisID: Int,
+    count: MutableState<String>,
+    CardList: MutableList<CardClass>,
+) {
+    // Сохраненный тип переменной
+    if (selectedType.value == "") {
+        selectedType.value = "int"
+    }
+
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(250.dp)
+            .padding(2.dp)
+            .height(200.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value;
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
                     }
                 )
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "Array Name", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.width(8.dp))
+                TextField(
+                    modifier = Modifier.width(200.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = variableName.value,
+                    onValueChange = { newText ->
+                        variableName.value = newText
+                    }
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = { expanded.value = true })
                 {
-                    Text(text = "Del", fontSize = 15.sp)
+                    Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
                 }
+                DropdownMenu(
+                    expanded = expanded.value,
+                    onDismissRequest = { expanded.value = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = "int") },
+                        onClick = {
+                            selectedType.value = "int"
+                            // Изменять значение внешнего класса (типа переменной) здесь (при изменении дроп меню) именно через selectedType.value
+                            expanded.value = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "double") },
+                        onClick = {
+                            selectedType.value = "double"
+                            // Изменять значение внешнего класса (типа переменной) здесь (при изменении дроп меню) именно через selectedType.value
+                            expanded.value = false
+                        })
+                }
+                Text(
+                    text = selectedType.value,
+                    modifier = Modifier.padding(15.dp),
+                    fontSize = 15.sp
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "count", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.width(8.dp))
+                TextField(
+                    modifier = Modifier.width(100.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = count.value,
+                    onValueChange = { newText ->
+                        count.value = newText
+                    }
+                )
+
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ForBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+    initExpression: MutableState<String>,
+    condExpression: MutableState<String>,
+    loopExpression: MutableState<String>,
+) {
+
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(250.dp)
+            .padding(2.dp)
+            .height(200.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value;
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "For", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.width(8.dp))
+                TextField(
+                    modifier = Modifier.width(200.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = initExpression.value,
+                    onValueChange = { newText ->
+                        initExpression.value = newText
+                    }
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "to", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.width(8.dp))
+                TextField(
+                    modifier = Modifier.width(200.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = condExpression.value,
+                    onValueChange = { newText ->
+                        condExpression.value = newText
+                    }
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "step", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.width(8.dp))
+                TextField(
+                    modifier = Modifier.width(200.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = loopExpression.value,
+                    onValueChange = { newText ->
+                        loopExpression.value = newText
+                    }
+                )
+
+            }
+            Text(
+                text = "Do begin",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 16.dp)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CinBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    variableName: MutableState<String>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(300.dp)
+            .padding(2.dp)
+            .height(80.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Row(
+            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Cin",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            TextField(
+                modifier = Modifier.weight(1f),
+                textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                value = variableName.value,
+                onValueChange = { newText ->
+                    variableName.value = newText
+                    // Изменять значение внешнего класса (значение имени переменной) здесь (при изменении текст филда) именно через variableName.value
+                }
+            )
+        }
+    }
+}
+
+// Кард для вывода значения переменной
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CoutBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    variableName: MutableState<String>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+) {
+
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(300.dp)
+            .height(80.dp)
+            .padding(2.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value;
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Row(            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically)
+        {
+            Text(
+                text = "Cout",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            TextField(
+                modifier = Modifier.weight(1f),
+                textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                value = variableName.value,
+                onValueChange = { newText ->
+                    variableName.value = newText
+                    // Изменять значение внешнего класса (значение имени переменной) здесь (при изменении текст филда) именно через variableName.value
+                }
+            )
+
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun VariableAssignmentReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    VariableName: MutableState<String>,
+    VariableValue: MutableState<String>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(500.dp)
+            .height(80.dp)
+            .padding(2.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value;
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Box() {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                TextField(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(10.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
+                    value = VariableName.value,
+                    onValueChange = { newText -> VariableName.value = newText }
+                )
+                Text(
+                    text = " = ",
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(10.dp)
+                )
+                TextField(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(10.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
+                    value = VariableValue.value,
+                    onValueChange = { newText -> VariableValue.value = newText }
+                )
             }
         }
     }
@@ -372,354 +749,382 @@ fun TypeVariable(onCloseClicked: () -> Unit) {
 //Кард для ифа
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun IfBlock(onCloseClicked: () -> Unit) {
-    var expanded by remember { mutableStateOf(false) }
-    val conditionFirst= remember { mutableStateOf("") }
-    val conditionSecond = remember { mutableStateOf("") }
-    var selectedSign by remember { mutableStateOf("") }
+fun IfBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    conditionFirst: MutableState<String>,
+    conditionSecond: MutableState<String>,
+    expanded: MutableState<Boolean>,
+    selectedSign: MutableState<String>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+) {
     Card(
         modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
             .width(500.dp)
-            .padding(10.dp)
-            .clickable {
-                myGlobalNumber = 3;
-                onCloseClicked()
+            .height(150.dp)
+            .padding(8.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
             },
         shape = RoundedCornerShape(15.dp),
     ) {
-        Column {
-            Row()
-            {
-                Text(text = "If ", modifier = Modifier.padding(15.dp), fontSize = 15.sp)
+        Column(
+            Modifier.padding(16.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "If",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
                 TextField(
-                    modifier = Modifier.width(200.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
                     value = conditionFirst.value,
                     onValueChange = { newText ->
                         conditionFirst.value = newText
-// Изменять значение внешнего класса (условия ифа) здесь (при изменении текст филда) именно через condition.value
                     }
                 )
-                IconButton(onClick = { expanded= true })
-                {
+                IconButton(onClick = { expanded.value = true }) {
                     Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
                 }
                 Text(
-                    text = selectedSign,
-                    modifier = Modifier.padding(15.dp),
-                    fontSize = 15.sp
+                    text = selectedSign.value,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 8.dp)
                 )
                 DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
+                    expanded = expanded.value,
+                    onDismissRequest = { expanded.value = false }
                 ) {
                     DropdownMenuItem(
-                        text = { Text(text = "=") },
+                        text = { Text(text = "==") },
                         onClick = {
-                            selectedSign = "="
-                            expanded = false
+                            selectedSign.value = "=="
+                            expanded.value = false
                         })
                     DropdownMenuItem(
                         text = { Text(text = "!=") },
                         onClick = {
-                            selectedSign = "!="
-                            expanded = false
+                            selectedSign.value = "!="
+                            expanded.value = false
                         })
                     DropdownMenuItem(
                         text = { Text(text = ">") },
                         onClick = {
-                            selectedSign= ">"
-                            expanded = false
+                            selectedSign.value = ">"
+                            expanded.value = false
                         })
                     DropdownMenuItem(
                         text = { Text(text = ">=") },
                         onClick = {
-                            selectedSign = ">="
-                            expanded = false
+                            selectedSign.value = ">="
+                            expanded.value = false
                         })
                     DropdownMenuItem(
                         text = { Text(text = "<") },
                         onClick = {
-                            selectedSign = "<"
-                            expanded = false
+                            selectedSign.value = "<"
+                            expanded.value = false
                         })
                     DropdownMenuItem(
                         text = { Text(text = "<=") },
                         onClick = {
-                            selectedSign = "<="
-                            expanded = false
+                            selectedSign.value = "<="
+                            expanded.value = false
                         })
                 }
                 TextField(
-                    modifier = Modifier.width(200.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 8.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
                     value = conditionSecond.value,
                     onValueChange = { newText ->
                         conditionSecond.value = newText
-// Изменять значение внешнего класса (условия ифа) здесь (при изменении текст филда) именно через condition.value
                     }
                 )
-                Button(
-                    modifier = Modifier.padding(5.dp),
-                    onClick = {
-// Действие для удаления блока
-                    }
-                )
-                {
-                    Text(text = "Del", fontSize = 15.sp)
-                }
             }
-            Text(text = "Then begin", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+            Text(
+                text = "Then begin",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
     }
 }
 
-
-
-//Кард для фора
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ForBlock(onCloseClicked: () -> Unit) {
-    val initExpression = remember { mutableStateOf("") }
-    val condExpression = remember { mutableStateOf("") }
-    val loopExpression = remember { mutableStateOf("") }
-
-    // Сохраненное пре-объявление переменной
-    initExpression.value = ""
-    // Сохраненное условие цикла
-    condExpression.value = ""
-    // Сохраненное действие цикла
-    loopExpression.value = ""
-
+fun ReturnBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+    ReturnString:MutableState<String>
+) {
     Card(
         modifier = Modifier
-            .width(500.dp)
-            .padding(10.dp)
-            .clickable {
-                myGlobalNumber = 4;
-                onCloseClicked();
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(200.dp)
+            .height(45.dp)
+            .padding(2.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
             },
-        shape = RoundedCornerShape(15.dp),
+        shape = RoundedCornerShape(15.dp)
     ) {
-        Column {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
             Row()
             {
-                Text(text = "For ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+                Text(
+                    text = "return",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
                 TextField(
-                    modifier = Modifier.width(100.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 8.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
-                    value = initExpression.value,
+                    value = ReturnString.value,
                     onValueChange = { newText ->
-                        initExpression.value = newText
-                        // Изменять значение внешнего класса (пре-объявление переменной) здесь (при изменении текст филда) именно через initExpression.value
+                        ReturnString.value = newText
                     }
                 )
-                Text(text = " ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
-                TextField(
-                    modifier = Modifier.width(100.dp),
-                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
-                    value = condExpression.value,
-                    onValueChange = { newText ->
-                        condExpression.value = newText
-                        // Изменять значение внешнего класса (условие цикла) здесь (при изменении текст филда) именно через condExpression.value
-                    }
-                )
-                Text(text = " ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
-                TextField(
-                    modifier = Modifier.width(100.dp),
-                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
-                    value = loopExpression.value,
-                    onValueChange = { newText ->
-                        loopExpression.value = newText
-                        // Изменять значение внешнего класса (действие цикла) здесь (при изменении текст филда) именно через loopExpression.value
-                    }
-                )
-                Button(
-                    modifier = Modifier.padding(5.dp),
-                    onClick = {
-                        // Действие для удаления блока
-                    }
-                )
-                {
-                    Text(text = "Del", fontSize = 15.sp)
-                }
             }
-            Text(text = "Do begin", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
         }
     }
 }
 
-// Кард для ввода значения переменной
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CinBlock(onCloseClicked: () -> Unit) {
-    val variableName = remember { mutableStateOf("") }
-
-    // Сохраненное значение имени переменной
-    variableName.value = ""
-
+fun DoFunctionBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+    FunctionName:MutableState<String>,
+    FunctionParams:MutableState<String>,
+) {
+    if(FunctionParams.value == "")
+    {
+        FunctionParams.value = "<>";
+    }
     Card(
         modifier = Modifier
-            .width(400.dp)
-            .padding(10.dp)
-            .height(80.dp)
-            .clickable {
-                myGlobalNumber = 5;
-                onCloseClicked();
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(350.dp)
+            .height(90.dp)
+            .padding(2.dp)
+            .background(Color.LightGray,)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
             },
         shape = RoundedCornerShape(15.dp),
     ) {
-        Row()
-        {
-            Text(text = "Cin ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
-            TextField(
-                modifier = Modifier.width(200.dp),
-                textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
-                value = variableName.value,
-                onValueChange = { newText ->
-                    variableName.value = newText
-                    // Изменять значение внешнего класса (значение имени переменной) здесь (при изменении текст филда) именно через variableName.value
-                }
-            )
-            Button(
-                modifier = Modifier.padding(5.dp),
-                onClick = {
-                    // Действие для удаления блока
-                }
-            )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Row()
             {
-                Text(text = "Del", fontSize = 15.sp)
+
+                Text(
+                    text = "Do Function name ",
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                )
+                TextField(modifier = Modifier
+                    .width(50.dp) ,
+                    value = FunctionName.value, onValueChange = { newText ->
+                        FunctionName.value = newText
+                    })
+                Text(
+                    text = "     ",
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                )
+                TextField(value = FunctionParams.value, onValueChange = { newText ->
+                    FunctionParams.value = newText
+                })
             }
         }
     }
 }
-
-// Кард для вывода значения переменной
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CoutBlock(onCloseClicked: () -> Unit) {
-    val variableName = remember { mutableStateOf("") }
-
-    // Сохраненное значение имени переменной
-    variableName.value = ""
-
+fun FunctionBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+    FunctionName:MutableState<String>,
+    FunctionParams:MutableState<String>,
+    expanded: MutableState<Boolean>,
+    selectedType: MutableState<String>,
+) {
+    if(FunctionParams.value == "")
+    {
+        FunctionParams.value = "<>";
+    }
+    if(selectedType.value == "")
+    {
+        selectedType.value = "int"
+    }
     Card(
         modifier = Modifier
-            .width(400.dp)
-            .padding(10.dp)
-            .clickable {
-                myGlobalNumber = 6;
-                onCloseClicked();
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(500.dp)
+            .height(90.dp)
+            .padding(2.dp)
+            .background(Color.LightGray,)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
             },
         shape = RoundedCornerShape(15.dp),
     ) {
-        Row()
-        {
-            Text(text = "Cout ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
-            TextField(
-                modifier = Modifier.width(200.dp),
-                textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
-                value = variableName.value,
-                onValueChange = { newText ->
-                    variableName.value = newText
-                    // Изменять значение внешнего класса (значение имени переменной) здесь (при изменении текст филда) именно через variableName.value
-                }
-            )
-            Button(
-                modifier = Modifier.padding(5.dp),
-                onClick = {
-                    // Действие для удаления блока
-                }
-            )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Row()
             {
-                Text(text = "Del", fontSize = 15.sp)
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
-    var selectedButton by remember { mutableStateOf(-1) }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .wrapContentSize(align = Alignment.TopCenter)
-            .padding(top = 20.dp)
-    ) {
-        if (showNewScreen) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            ) {
-                    Button(
+                IconButton(onClick = { expanded.value = true }) {
+                    Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+                }
+                Text(
+                    text = selectedType.value,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+                DropdownMenu(
+                    expanded = expanded.value,
+                    onDismissRequest = { expanded.value = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = "int") },
                         onClick = {
-                            if (selectedButton == 1) {
-                                selectedButton = -1
-                            } else {
-                                selectedButton = 1
-                            }
-                        },
-                        modifier = Modifier
-                            .padding(vertical = 8.dp)
-                    ) {
-                        Text("Переменные")
-                    }
-                if (selectedButton == 1) {
-                    TypeVariable(onCloseClicked = onCloseClicked)
-                    VariableAssignment(onCloseClicked = onCloseClicked)
-                    CinBlock(onCloseClicked = onCloseClicked)
-                    CoutBlock(onCloseClicked = onCloseClicked)
+                            selectedType.value = "int"
+                            expanded.value = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "double") },
+                        onClick = {
+                            selectedType.value = "double"
+                            expanded.value = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "string") },
+                        onClick = {
+                            selectedType.value = "string"
+                            expanded.value = false
+                        })
                 }
-                Button(
-                    onClick = {
-                        if (selectedButton == 2) {
-                            selectedButton = -1
-                        } else {
-                            selectedButton = 2
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(vertical = 8.dp)
-                ) {
-                    Text("Условия")
-                }
-                if (selectedButton == 2) {
-                    IfBlock(onCloseClicked = onCloseClicked)
-                }
-                Button(
-                    onClick = {
-                        if (selectedButton == 3) {
-                            selectedButton = -1
-                        } else {
-                            selectedButton = 3
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(vertical = 8.dp)
-                ) {
-                    Text("Циклы")
-                }
-                if (selectedButton == 3) {
-                    ForBlock(onCloseClicked = onCloseClicked)
-                }
-                Button(
-
-                    onClick = onCloseClicked,
-                    modifier = Modifier.padding(top = 16.dp)
-                ) {
-                    Text("Закрыть")
-                }
-            }
-        } else {
-            Button(
-                onClick = {},
-            ) {
-                Text("Нажми меня еще раз")
+                Text(
+                    text = "Function name ",
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                )
+                TextField(modifier = Modifier
+                    .width(50.dp) ,
+                    value = FunctionName.value, onValueChange = { newText ->
+                        FunctionName.value = newText
+                    })
+                Text(
+                    text = "     ",
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                )
+                TextField(value = FunctionParams.value, onValueChange = { newText ->
+                    FunctionParams.value = newText
+                })
             }
         }
     }
