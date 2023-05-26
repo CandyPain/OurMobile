@@ -24,10 +24,10 @@ class Expression {
 
         val structRegex = Regex("^\\w+\\.\\w+(\\[.+\\])?$")
 
-        var matches = tokenRegex.findAll(expression)
+        val matches = tokenRegex.findAll(expression)
 
         for(match in matches) {
-            var token = match.value
+            val token = match.value
             if (token in operators) {
                 while (stack.isNotEmpty() && stack.last() in operators &&
                     precedence(stack.last()) >= precedence(token)) {
