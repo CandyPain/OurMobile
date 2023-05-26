@@ -290,7 +290,7 @@ class CallOutToken : IToken{
         tokenObject.command(processedInput,program)
 
         var stringValue = program.FFAstack.removeFirst().toString()
-        program.calloutList.add(stringValue!!)
+        //program.calloutList.add(stringValue!!)
         messagesCout.add(stringValue!!)
     }
     override var returnType = "void"
@@ -316,6 +316,7 @@ class IfToken : IToken{
                 if(program.commandList[n].matches(endifRegex)
                     && idRegex.find(program.commandList[n])!!.value == arguments[3]){
                     program.stringPoint = n
+                    break
                 }
             }
         }
@@ -537,6 +538,7 @@ class WhileToken : IToken{
                 if(program.commandList[n].matches(endwhileRegex)
                     && idRegex.find(program.commandList[n])!!.value == arguments[3]){
                     program.stringPoint = n
+                    break
                 }
             }
         }
@@ -617,8 +619,8 @@ class FunctionToken : IToken{
                 "array<string>" -> newVarHashMap.put(name, Array<String>(0){""})
             }
         }
-        for(n in program.stringPoint..program.commandList.size-1){
-            if(program.commandList[n]=="<endfucntion:"+functionProperties[2]+">"){
+        for(n in program.stringPoint+1..program.commandList.size-1){
+            if(program.commandList[n]=="<endfunction:"+functionProperties[2]+">"){
                 program.stringPoint = n
                 break
             }
@@ -626,7 +628,7 @@ class FunctionToken : IToken{
         }
 
         var newProgram: CelestialElysiaInterpreter
-        = CelestialElysiaInterpreter(newVarHashMap,newCommandList,functionProperties[1])
+                = CelestialElysiaInterpreter(newVarHashMap,newCommandList,functionProperties[1])
 
         program.functionHashMap.put(functionProperties[0], newProgram)
 
