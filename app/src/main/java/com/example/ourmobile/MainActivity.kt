@@ -30,13 +30,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.Dialog
-import com.example.ourmobile.ui.theme.OurMobileTheme
+import com.example.ourmobile.ui.theme.*
 import java.io.*
 
 var cardIdCounter = 0
 var NextStep = false;
 var GlobalDebugMod = false;
 var DebugID = 0;
+var WaitConsole = false;
 data class needClear(
     var IdToClear:Int,
     var WhatList:Int,
@@ -411,8 +412,8 @@ fun MyScreen(pixelsPerDp: Float) {
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column {
-                Text(text = title,color = Color.White, fontWeight = FontWeight.Bold)
-                Text(text = description, color = Color.White)
+                Text(text = title,color = White, fontWeight = FontWeight.Bold)
+                Text(text = description, color = White)
             }
         }
     }
@@ -425,7 +426,7 @@ fun MyScreen(pixelsPerDp: Float) {
                     .padding(16.dp)
                     ) {
                     Column {
-                        Text(text = "Функции кнопок", fontWeight = FontWeight.Bold, color = Color.White)
+                        Text(text = "Функции кнопок", fontWeight = FontWeight.Bold, color = White)
                         Spacer(modifier = Modifier.height(16.dp))
                         ButtonInfoRow(Icons.Default.PlayArrow, "Запуск", "Запуск приложения.",)
                         ButtonInfoRow(Icons.Default.List, "Консоль", "Открыть консоль.")
@@ -835,7 +836,7 @@ fun MyScreen(pixelsPerDp: Float) {
                                                 itemsIndexed(messagesCout) { _, item ->
                                                     Text(
                                                         text = item,
-                                                        color = Color.White
+                                                        color = White
                                                     )
                                                 }
                                             }
@@ -853,11 +854,12 @@ fun MyScreen(pixelsPerDp: Float) {
                                                     },
                                                     colors = TextFieldDefaults.textFieldColors(
                                                         containerColor = Color.Black,
-                                                        textColor = Color.White
+                                                        textColor = White
                                                     )
                                                 )
                                                 IconButton(onClick = {
-                                                    //ToDo
+                                                    messagesCin = fromConsole;
+                                                    WaitConsole = true;
                                                 })
                                                 {
                                                     Icon(Icons.Filled.Check, tint = Color.Green,contentDescription = null)

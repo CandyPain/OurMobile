@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ourmobile.ui.theme.*
 import kotlin.math.roundToInt
 
 @Composable
@@ -132,7 +133,7 @@ fun BeginBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-                border = BorderStroke(bordersize.value,Color.Black)
+                border = BorderStroke(bordersize.value,Black)
     ) {
         Box(
             modifier = Modifier
@@ -185,7 +186,7 @@ fun EndBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Color.Black)
+        border = BorderStroke(bordersize.value, Black)
     ) {
         Box(
             modifier = Modifier
@@ -300,7 +301,7 @@ fun TypeVariableReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Color.Red)
+        border = BorderStroke(bordersize.value,Pink80)
 
     )
     {
@@ -408,7 +409,7 @@ fun ArrayVariableReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Color.Blue)
+        border = BorderStroke(bordersize.value, Blue)
     ) {
         Column(Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -513,7 +514,7 @@ fun ForBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Color.Green)
+        border = BorderStroke(bordersize.value, Green)
     ) {
         Column(Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -603,7 +604,7 @@ fun CinBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Color.Red)
+        border = BorderStroke(bordersize.value,Red)
     ) {
         Row(
             modifier = Modifier.padding(8.dp),
@@ -668,7 +669,7 @@ fun CoutBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Color.Red)
+        border = BorderStroke(bordersize.value,Red)
     ) {
         Row(            modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically)
@@ -732,7 +733,7 @@ fun VariableAssignmentReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Color.Red)
+        border = BorderStroke(bordersize.value,Red)
     ) {
         Box() {
             Row(
@@ -807,7 +808,7 @@ fun IfBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Color.Green)
+        border = BorderStroke(bordersize.value, Green)
     ) {
         Column(
             Modifier.padding(16.dp)
@@ -938,7 +939,7 @@ fun ReturnBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Color.Red)
+        border = BorderStroke(bordersize.value,Red)
     ) {
         Box(
             modifier = Modifier
@@ -1013,7 +1014,7 @@ fun DoFunctionBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Color.Green)
+        border = BorderStroke(bordersize.value, Green)
     ) {
         Box(
             modifier = Modifier
@@ -1090,7 +1091,7 @@ fun FunctionBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Color.Green)
+        border = BorderStroke(bordersize.value, Green)
     ) {
         Box(
             modifier = Modifier
@@ -1193,7 +1194,7 @@ fun StructBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Color.Blue)
+        border = BorderStroke(bordersize.value,Blue)
     ) {
         Column(
             modifier = Modifier

@@ -132,16 +132,16 @@ fun createCommandList(): MutableList<String> {
                             val underType =
                                 returnUnderVariableType(VariableAssignmentList[j].variableName.value)
                             if (underType == "Array") {
-                                commandList.add("<equals:" + VariableAssignmentList[j].variableName.value + ",<anyexpression:" + VariableAssignmentList[j].variableValue.value + ">>")
+                                commandList.add("<equals:" + VariableAssignmentList[j].variableName.value + ",<anyexpression:" + normalizationOfExpression(VariableAssignmentList[j].variableValue.value) + ">>")
                             } else {
                                 var name = VariableAssignmentList[j].variableName.value
                                 if(underType == "ElementOfArray") {
                                     name = normalizationElementOfArray(name)
                                 }
                                 if (type == "String") {
-                                    commandList.add("<equals:" + name + ",<stringexpression:" + VariableAssignmentList[j].variableValue.value + ">>")
+                                    commandList.add("<equals:" + name + ",<stringexpression:" + normalizationOfExpression(VariableAssignmentList[j].variableValue.value) + ">>")
                                 } else {
-                                    commandList.add("<equals:" + name + ",<expression:" + VariableAssignmentList[j].variableValue.value + ">>")
+                                    commandList.add("<equals:" + name + ",<expression:" + normalizationOfExpression(VariableAssignmentList[j].variableValue.value) + ">>")
                                 }
                             }
                         } else {
@@ -307,16 +307,16 @@ fun createCommandList(): MutableList<String> {
                         val underType =
                             returnUnderVariableType(VariableAssignmentList[j].variableName.value)
                         if (underType == "Array") {
-                            commandList.add("<equals:" + VariableAssignmentList[j].variableName.value + ",<anyexpression:" + VariableAssignmentList[j].variableValue.value + ">>")
+                            commandList.add("<equals:" + VariableAssignmentList[j].variableName.value + ",<anyexpression:" + normalizationOfExpression(VariableAssignmentList[j].variableValue.value) + ">>")
                         } else {
                             var name = VariableAssignmentList[j].variableName.value
                             if(underType == "ElementOfArray") {
                                 name = normalizationElementOfArray(name)
                             }
                             if (type == "String") {
-                                commandList.add("<equals:" + name + ",<stringexpression:" + VariableAssignmentList[j].variableValue.value + ">>")
+                                commandList.add("<equals:" + name + ",<stringexpression:" + normalizationOfExpression(VariableAssignmentList[j].variableValue.value) + ">>")
                             } else {
-                                commandList.add("<equals:" + name + ",<expression:" + VariableAssignmentList[j].variableValue.value + ">>")
+                                commandList.add("<equals:" + name + ",<expression:" + normalizationOfExpression(VariableAssignmentList[j].variableValue.value) + ">>")
                             }
                         }
                     } else {
@@ -591,9 +591,10 @@ fun normalizationOfExpression(expression: String): String {
             matchedfunc = "^($variableRegex|$numberRegex|$arrayRegex|$stringRegex)[,]".toRegex()
                 .replaceFirst(matchedfunc, "")
         }
+        newFun = ".$".toRegex().replaceFirst(newFun,"")
         newFun = "$matchednamefunc<$newFun>"
         matchedfunc = matchfunc?.value.toString()
-        result = matchedfunc.toRegex().replaceFirst(result, newFun)
+        result = pattern.replaceFirst(result, newFun)
     }
 
     return result
