@@ -79,6 +79,12 @@ class EqualsToken : IToken{
                 typedArray[arrayIndex] = value
                 program.varHashMap[arrayName] = typedArray
             }
+            else if (array is Array<*>){
+                val value = program.stringStack.removeFirst().toString()
+                val typedArray = array as Array<String>
+                typedArray[arrayIndex] = value
+                program.varHashMap[arrayName] = typedArray
+            }
             return
         }
         else if(arguments[0].matches(structRegex)){
@@ -152,17 +158,105 @@ class StringExpressionToken : IToken{
     var rawStringToken = Regex("^//.+//$")
     var stringToken = Regex("(?<=(^//)).+(?=//$)")
 
+    val tokenRegex = Regex("(//.+//|\\w+<.+>|[a-zA-Z]\\w*\\.[a-zA-Z]\\w*\\[.+\\]|[a-zA-Z]\\w*\\.[a-zA-Z]\\w*|[a-zA-Z]\\w*\\[.+\\]|\\w+|[A-Za-z]+\\w*(\\[.+\\])?)")
+
+    val arrayRegex = Regex("^\\w+\\[.+\\]$")
+    val arrayNameRegex = Regex("^\\w+(?=\\[)")
+    val arrayExpressionRegex = Regex("(?<=(\\[)).+(?=]$)")
+
+    val functionRegex = Regex("^\\w+<.+>$")
+    val functionNameRegex = Regex("^\\w+(?=<)")
+    val functionArgumentsRegex = Regex("(?<=(\\w<)).+(?=>$)")
+
+    val structRegex = Regex("^\\w+\\.\\w+(\\[.+\\])?$")
+    val structNameRegex = Regex("^\\w+(?=\\.)")
+    val structVarRegex = Regex("(?<=(\\.))\\w+")
+    val structArrayRegex = Regex("^\\w+\\.\\w+\\[.+]$")
+
     override fun command(input:String, program:CelestialElysiaInterpreter){
         val processedInput: String?
         val match = regex.find(input)
         processedInput = match?.value
-
+        /*
         val terms = processedInput!!.split("+").map { it.trim() }
         val stringBuilder = StringBuilder()
 
         for (term in terms) {
             val trimmedTerm = term.trim()
             val value = program.varHashMap[trimmedTerm] ?: stringToken.find(trimmedTerm)!!.value
+            stringBuilder.append(value)
+        }
+         */
+        val stringBuilder = StringBuilder()
+        var matches = tokenRegex.findAll(processedInput!!)
+        for(match in matches) {
+            var token = match.value
+            var value: String
+
+            if(token.matches(rawStringToken)){
+                value = stringToken.find(token)!!.value
+            }
+            else if(token.matches(arrayRegex)){
+                val expression = Expression()
+                var arrayIndex = expression.evaluateReversePolishNotation(expression.toReversePolishNotation(arrayExpressionRegex.find(token)!!.value,program.varHashMap, program)).toInt()
+                var arrayName = arrayNameRegex.find(token)!!.value
+
+                val array = program.varHashMap.get(arrayName) as Array<String>
+                value = array[arrayIndex]
+            }
+            else if(token.matches(functionRegex)){
+                var functionName = functionNameRegex.find(token)!!.value
+                var functionProgram = program.functionHashMap[functionName]
+                var functionArguments = functionArgumentsRegex.find(token)!!.value.split("|")
+
+                for(n in functionArguments){
+                    val nameAndValue = n.split(":")
+                    val name = nameAndValue[0]
+                    var functionValue = nameAndValue[1]
+
+                    val expressionToken = ExpressionToken()
+
+                    if(functionProgram!!.varHashMap[name]!!::class.java.simpleName=="Integer") {
+                        expressionToken.command("<expression:" + functionValue + ">", program)
+                        functionProgram!!.varHashMap.put(name, program.stack.removeFirst().toInt())
+                    }
+                    else if(functionProgram!!.varHashMap[name]!!::class.java.simpleName=="Double"){
+                        expressionToken.command("<expression:" + functionValue + ">", program)
+                        functionProgram!!.varHashMap.put(name, program.stack.removeFirst())
+                    }
+                    else{
+                        functionProgram!!.varHashMap.put(name,program.varHashMap[functionValue]!!)
+                    }
+                }
+                functionProgram!!.interprete()
+                value = functionProgram.returnValue.toString()
+            }
+            else if(token.matches(structRegex)){
+                if(token.matches(structArrayRegex)){
+                    //println("nigger")
+                    var structName = structNameRegex.find(token)!!.value
+                    var structVarName = structVarRegex.find(token)!!.value
+
+                    var structHashMap = program.varHashMap.get(structName) as HashMap<String, Any>
+                    var array = structHashMap.get(structVarName) as Array<String>
+
+                    val expression = Expression()
+                    var arrayIndex = expression.evaluateReversePolishNotation(expression.toReversePolishNotation(arrayExpressionRegex.find(token)!!.value,program.varHashMap, program)).toInt()
+
+                    val typedArray = array as Array<String>
+                    value = typedArray[arrayIndex]
+                }else {
+                    //println("nigger")
+                    var structName = structNameRegex.find(token)!!.value
+                    var structVarName = structVarRegex.find(token)!!.value
+
+                    var structHashMap = program.varHashMap.get(structName) as HashMap<String, Any>
+                    value = structHashMap[structVarName].toString()
+                }
+            }
+            else{
+                value = program.varHashMap[token].toString() ?: ""
+            }
             stringBuilder.append(value)
         }
 
