@@ -288,7 +288,7 @@ class CallOutToken : IToken{
         tokenObject.command(processedInput,program)
 
         var stringValue = program.FFAstack.removeFirst().toString()
-        program.calloutList.add(stringValue!!)
+        //program.calloutList.add(stringValue!!)
         messagesCout.add(stringValue!!)
     }
     override var returnType = "void"
@@ -615,8 +615,9 @@ class FunctionToken : IToken{
                 "array<string>" -> newVarHashMap.put(name, Array<String>(0){""})
             }
         }
-        for(n in program.stringPoint..program.commandList.size-1){
-            if(program.commandList[n]=="<endfucntion:"+functionProperties[2]+">"){
+        for(n in program.stringPoint+1..program.commandList.size-1){
+            println(program.commandList[n])
+            if(program.commandList[n]=="<endfunction:"+functionProperties[2]+">"){
                 program.stringPoint = n
                 break
             }

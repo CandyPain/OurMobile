@@ -81,6 +81,7 @@ data class StructBlockClass(
     var thisID: Int,
     var childId: MutableState<Int> = mutableStateOf(-1),
     var bordersize: MutableState<Dp> = mutableStateOf(0.dp),
+    var ShowDialog: MutableState<Boolean> = mutableStateOf(false)
 )
 
 
@@ -313,6 +314,7 @@ fun MyScreen(pixelsPerDp: Float) {
     var fromConsole by remember { mutableStateOf("") }
     val showDialog = remember { mutableStateOf(false) }
     val saveButtonClicked = remember { mutableStateOf(false) }
+    val openButtonClicked = remember { mutableStateOf(false) }
     // методы для добавления новой карточки в список
     fun TypeVaribleListAddCard() {
         TypeVaribleList.add(TypeVaribleClass(thisID = cardIdCounter))
@@ -349,7 +351,7 @@ fun MyScreen(pixelsPerDp: Float) {
     fun ForBlockListAddCard() {
         ForBlockList.add(ForBlockClass(thisID = cardIdCounter))
         ForBlockList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = ForBlockList.last().childId,isDragging = ForBlockList.last().isDragging, offsetX = ForBlockList.last().offsetX, offsetY = ForBlockList.last().offsetY,thisID = cardIdCounter,width = 250.dp, height = 200.dp, bordersize = ForBlockList.last().bordersize))
+        CardList.add(CardClass(childId = ForBlockList.last().childId,isDragging = ForBlockList.last().isDragging, offsetX = ForBlockList.last().offsetX, offsetY = ForBlockList.last().offsetY,thisID = cardIdCounter,width = 250.dp, height = 225.dp, bordersize = ForBlockList.last().bordersize))
         cardIdCounter++;
         //BeginBlockList.add(BeginBlockClass(thisID = cardIdCounter))
         //CardList.add(CardClass(childId = BeginBlockList.last().childId,isDragging = BeginBlockList.last().isDragging, offsetX = BeginBlockList.last().offsetX, offsetY = BeginBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
@@ -382,7 +384,7 @@ fun MyScreen(pixelsPerDp: Float) {
         cardIdCounter++;
         ReturnBlockList.add(ReturnBlockClass(thisID = cardIdCounter))
         ReturnBlockList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = ReturnBlockList.last().childId,isDragging = ReturnBlockList.last().isDragging, offsetX = ReturnBlockList.last().offsetX, offsetY =ReturnBlockList.last().offsetY,thisID = cardIdCounter,width = 200.dp, height = 45.dp, bordersize =ReturnBlockList.last().bordersize))
+        CardList.add(CardClass(childId = ReturnBlockList.last().childId,isDragging = ReturnBlockList.last().isDragging, offsetX = ReturnBlockList.last().offsetX, offsetY =ReturnBlockList.last().offsetY,thisID = cardIdCounter,width = 200.dp, height = 80.dp, bordersize =ReturnBlockList.last().bordersize))
         cardIdCounter++;
     }
     fun DoFunctionBlockListAddCard()
@@ -934,6 +936,7 @@ fun MyScreen(pixelsPerDp: Float) {
                         thisID = card.thisID,
                         CardList = CardList,
                         bordersize = card.bordersize,
+                        ShowAllert = card.ShowDialog,
                     )
                 }
                 for (card in VariableAssignmentList) {

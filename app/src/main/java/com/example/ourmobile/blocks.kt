@@ -19,6 +19,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -489,7 +491,7 @@ fun ForBlockReal(
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
             .width(250.dp)
             .padding(2.dp)
-            .height(200.dp)
+            .height(225.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
@@ -913,7 +915,7 @@ fun ReturnBlockReal(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
             .width(200.dp)
-            .height(45.dp)
+            .height(80.dp)
             .padding(2.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
@@ -941,7 +943,7 @@ fun ReturnBlockReal(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(8.dp),
+                .padding(2.dp),
             contentAlignment = Alignment.Center
         ) {
             Row()
@@ -1056,10 +1058,6 @@ fun FunctionBlockReal(
     selectedType: MutableState<String>,
     bordersize: MutableState<Dp>
 ) {
-    if(FunctionParams.value == "")
-    {
-        FunctionParams.value = "<>";
-    }
     if(selectedType.value == "")
     {
         selectedType.value = "int"
@@ -1164,7 +1162,8 @@ fun StructBlockReal(
     CardList: MutableList<CardClass>,
     Name:MutableState<String>,
     StrObjects:MutableState<String>,
-    bordersize: MutableState<Dp>
+    bordersize: MutableState<Dp>,
+    ShowAllert:MutableState<Boolean>,
 ) {
     Card(
         modifier = Modifier
@@ -1212,7 +1211,7 @@ fun StructBlockReal(
                     modifier = Modifier.weight(1f)
                 )
                 IconButton(
-                    onClick = { /* Обработка нажатия на кнопку */ }
+                    onClick = { ShowAllert.value = true }
                 ) {
                     Icon(Icons.Default.Info, contentDescription = "Info Icon")
                 }
@@ -1227,5 +1226,19 @@ fun StructBlockReal(
                     .padding(top = 16.dp)
             )
         }
+    }
+    if (ShowAllert.value == true) {
+        AlertDialog(
+            onDismissRequest = {ShowAllert.value = false },
+            title = { Text("Создание структуры") },
+            text = { Text("Текст Name - название. Саму структуру пишите в одну строку, переменные внутри нее отделяйте запятой") },
+            confirmButton = {
+                Button(
+                    onClick = { ShowAllert.value  = false },
+                ) {
+                    Text("ОК")
+                }
+            }
+        )
     }
 }
