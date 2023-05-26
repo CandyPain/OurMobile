@@ -1232,7 +1232,7 @@ fun StructBlockReal(
         AlertDialog(
             onDismissRequest = {ShowAllert.value = false },
             title = { Text("Создание структуры") },
-            text = { Text("Текст Name - название. Саму структуру пишите в одну строку, переменные внутри нее отделяйте запятой") },
+            text = { Text("Текст Name - название. Саму структуру пишите в одну строку, переменные внутри нее отделяйте запятой, пример: int a,string s...") },
             confirmButton = {
                 Button(
                     onClick = { ShowAllert.value  = false },
@@ -1241,5 +1241,81 @@ fun StructBlockReal(
                 }
             }
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StructVarBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+    Name:MutableState<String>,
+    Type:MutableState<String>,
+    bordersize: MutableState<Dp>,
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(450.dp)
+            .height(130.dp)
+            .padding(2.dp)
+            .background(Color.LightGray,)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Blue)
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(4.dp)
+                .fillMaxWidth()
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Struct Type: ")
+                TextField(
+                    value = Type.value,
+                    onValueChange = { newText ->
+                        Type.value = newText },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            Row()
+            {
+                Text("Var Name: ")
+                TextField(
+                    value = Name.value,
+                    onValueChange = { newText ->
+                        Name.value = newText
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(top = 5.dp)
+                )
+            }
+        }
     }
 }

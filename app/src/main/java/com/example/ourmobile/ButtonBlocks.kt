@@ -892,6 +892,53 @@ fun StructBlock(onCloseClicked: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StructVarBlock(onCloseClicked: () -> Unit) {
+    var Name by remember { mutableStateOf("") }
+    var Type by remember { mutableStateOf("") }
+    Card(
+        modifier = Modifier
+            .width(400.dp)
+            .height(120.dp)
+            .clickable {
+                myGlobalNumber = 11;
+                onCloseClicked();
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(4.dp)
+                .fillMaxWidth()
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Struct Type: ")
+                TextField(
+                    value = Type,
+                    onValueChange = { newText ->
+                        Type = newText },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            Row()
+            {
+                TextField(
+                    value = Name,
+                    onValueChange = { newText ->
+                        Name = newText
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(top = 5.dp)
+                )
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -973,13 +1020,29 @@ fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
                     modifier = Modifier
                         .padding(vertical = 8.dp)
                 ) {
-                    Text("Остальное")
+                    Text("Структуры")
                 }
                 if (selectedButton == 4) {
+                    StructBlock(onCloseClicked = onCloseClicked)
+                    StructVarBlock (onCloseClicked = onCloseClicked)
+                }
+                Button(
+                    onClick = {
+                        if (selectedButton == 5) {
+                            selectedButton = -1
+                        } else {
+                            selectedButton = 5
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                ) {
+                    Text("Остальное")
+                }
+                if (selectedButton == 5) {
                     ArrayVariable(onCloseClicked = onCloseClicked)
                     FunctionBlock(onCloseClicked = onCloseClicked)
                     DoFunctionBlock(onCloseClicked = onCloseClicked)
-                    StructBlock(onCloseClicked = onCloseClicked)
                 }
                 Button(
 

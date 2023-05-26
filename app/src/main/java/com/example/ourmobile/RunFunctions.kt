@@ -565,7 +565,7 @@ fun normalizationOfExpression(expression: String): String {
     while (pattern.find(result) != null) {
         val matchfunc = pattern.find(result)
         var matchedfunc = matchfunc?.value.toString()
-        val matchnamefunc = variableRegex.toRegex().find(result)
+        val matchnamefunc = variableRegex.toRegex().find(matchedfunc)
         var matchednamefunc = matchnamefunc?.value.toString()
         matchedfunc = "([a-zA-Z][a-zA-Z0-9]*\\()".toRegex().replaceFirst(matchedfunc, "")
         matchedfunc = ".$".toRegex().replaceFirst(matchedfunc, "")

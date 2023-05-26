@@ -85,6 +85,17 @@ data class StructBlockClass(
     var ShowDialog: MutableState<Boolean> = mutableStateOf(false)
 )
 
+data class StructVarBlockClass(
+    var offsetX: MutableState<Float> = mutableStateOf(0f),
+    var offsetY: MutableState<Float> = mutableStateOf(0f),
+    var isDragging: MutableState<Boolean> = mutableStateOf(false),
+    var Name: MutableState<String> = mutableStateOf(""),
+    var Type: MutableState<String> = mutableStateOf(""),
+    var thisID: Int,
+    var childId: MutableState<Int> = mutableStateOf(-1),
+    var bordersize: MutableState<Dp> = mutableStateOf(0.dp),
+)
+
 
 data class IfBlockClass(
     var offsetX: MutableState<Float> = mutableStateOf(0f),
@@ -235,6 +246,7 @@ var FunctionBlockList = mutableListOf<FunctionBlockClass>()
 var DoFunctionBlockList = mutableListOf<DoFunctionBlockClass>()
 var ReturnBlockList = mutableListOf<ReturnBlockClass>()
 var StructBlockList = mutableListOf<StructBlockClass>()
+var StructVarBlockList = mutableListOf<StructVarBlockClass>()
 var DebugList = mutableListOf<TablePair>()
 
 var SaveTypeVaribleList = mutableListOf<TypeVaribleClass>()
@@ -399,7 +411,14 @@ fun MyScreen(pixelsPerDp: Float) {
     {
         StructBlockList.add(StructBlockClass(thisID = cardIdCounter))
         StructBlockList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = StructBlockList.last().childId,isDragging =  StructBlockList.last().isDragging, offsetX =  StructBlockList.last().offsetX, offsetY =  StructBlockList.last().offsetY,thisID = cardIdCounter,width = 350.dp, height = 90.dp, bordersize = StructBlockList.last().bordersize))
+        CardList.add(CardClass(childId = StructBlockList.last().childId,isDragging =  StructBlockList.last().isDragging, offsetX =  StructBlockList.last().offsetX, offsetY =  StructBlockList.last().offsetY,thisID = cardIdCounter,width = 350.dp, height = 150.dp, bordersize = StructBlockList.last().bordersize))
+        cardIdCounter++;
+    }
+    fun StructVarBlockListAddCard()
+    {
+        StructVarBlockList.add(StructVarBlockClass(thisID = cardIdCounter))
+        StructVarBlockList.last().offsetY.value = 300f;
+        CardList.add(CardClass(childId = StructVarBlockList.last().childId,isDragging =  StructVarBlockList.last().isDragging, offsetX =  StructVarBlockList.last().offsetX, offsetY =  StructVarBlockList.last().offsetY,thisID = cardIdCounter,width = 350.dp, height = 130.dp, bordersize = StructVarBlockList.last().bordersize))
         cardIdCounter++;
     }
     @Composable
@@ -614,6 +633,11 @@ fun MyScreen(pixelsPerDp: Float) {
                     if(myGlobalNumber == 10)
                     {
                         StructBlockListAddCard()
+                        myGlobalNumber = 0;
+                    }
+                    if(myGlobalNumber == 11)
+                    {
+                        StructVarBlockListAddCard()
                         myGlobalNumber = 0;
                     }
                     if (FirstTime == true) {
@@ -939,6 +963,18 @@ fun MyScreen(pixelsPerDp: Float) {
                         CardList = CardList,
                         bordersize = card.bordersize,
                         ShowAllert = card.ShowDialog,
+                    )
+                }
+                for (card in StructVarBlockList) {
+                    StructVarBlockReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        Name = card.Name,
+                        Type = card.Type,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                        bordersize = card.bordersize,
                     )
                 }
                 for (card in VariableAssignmentList) {

@@ -663,14 +663,17 @@ class ReturnToken : IToken{
     }
 }
 class CallInToken : IToken{
+
     override var regex = Regex("(?<=(^<callin:)).+(?=>$)")
     override var returnType = "void"
+
     override fun command(input:String, program:CelestialElysiaInterpreter) {
         val processedInput: String?
         val match = regex.find(input)
         processedInput = match?.value
 
-        while(pendingCin){
+        while (WaitConsole == false)
+        {
 
         }
 
