@@ -56,7 +56,7 @@ class Expression {
                     val value = variables[arrayToken] ?: throw IllegalArgumentException("Unknown variable: $token")
                     output.add(value.toString())
                      */
-                    val array = variables.get(arrayName)
+                    val array = variables.get(arrayName) ?: IntArray(arrayIndex) {0}
 
                     if(array is IntArray){
                         val typedArray = array as IntArray
@@ -126,7 +126,7 @@ class Expression {
                     }
                 }
                 else{
-                    val value = variables[token] ?: throw IllegalArgumentException("Unknown variable: $token")
+                    val value = variables[token] ?: "0"
                     output.add(value.toString())
                 }
 
