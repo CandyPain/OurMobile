@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.List
@@ -58,7 +59,7 @@ class CardClass(
     var isDragging: MutableState<Boolean> = mutableStateOf(false),
     var childId: MutableState<Int> = mutableStateOf(-1),
     var bordersize: MutableState<Dp> = mutableStateOf(0.dp),
-    )
+)
 
 data class VariableAssignmentClass(
     var offsetX: MutableState<Float> = mutableStateOf(0f),
@@ -69,7 +70,18 @@ data class VariableAssignmentClass(
     var thisID: Int,
     var childId: MutableState<Int> = mutableStateOf(-1),
     var bordersize: MutableState<Dp> = mutableStateOf(0.dp),
-    )
+)
+
+data class StructBlockClass(
+    var offsetX: MutableState<Float> = mutableStateOf(0f),
+    var offsetY: MutableState<Float> = mutableStateOf(0f),
+    var isDragging: MutableState<Boolean> = mutableStateOf(false),
+    var Name: MutableState<String> = mutableStateOf(""),
+    var StrObject: MutableState<String> = mutableStateOf(""),
+    var thisID: Int,
+    var childId: MutableState<Int> = mutableStateOf(-1),
+    var bordersize: MutableState<Dp> = mutableStateOf(0.dp),
+)
 
 
 data class IfBlockClass(
@@ -83,7 +95,7 @@ data class IfBlockClass(
     var selectedSign: MutableState<String> = mutableStateOf(""),
     var expanded: MutableState<Boolean> = mutableStateOf(false),
     var bordersize: MutableState<Dp> = mutableStateOf(0.dp),
-    )
+)
 
 data class ForBlockClass(
     var offsetX: MutableState<Float> = mutableStateOf(0f),
@@ -206,21 +218,39 @@ data class TablePair(
 )
 
 
-val TypeVaribleList = mutableListOf<TypeVaribleClass>()
-val ArrayVaribleList = mutableListOf<ArrayVaribleClass>()
-val VariableAssignmentList = mutableListOf<VariableAssignmentClass>()
-val IfBlockList = mutableListOf<IfBlockClass>()
-val CardList = mutableListOf<CardClass>()
-val ForBlockList = mutableListOf<ForBlockClass>()
-val CinBlockList = mutableListOf<CinBlockClass>()
-val CoutBlockList = mutableListOf<CoutBlockClass>()
-val BeginBlockList = mutableListOf<BeginBlockClass>()
-val EndBlockList = mutableListOf<EndBlockClass>()
-val EndBeginBlockList = mutableListOf<EndBeginBlockClass>()
-val FunctionBlockList = mutableListOf<FunctionBlockClass>()
-val DoFunctionBlockList = mutableListOf<DoFunctionBlockClass>()
-val ReturnBlockList = mutableListOf<ReturnBlockClass>()
-val DebugList = mutableListOf<TablePair>()
+var TypeVaribleList = mutableListOf<TypeVaribleClass>()
+var ArrayVaribleList = mutableListOf<ArrayVaribleClass>()
+var VariableAssignmentList = mutableListOf<VariableAssignmentClass>()
+var IfBlockList = mutableListOf<IfBlockClass>()
+var CardList = mutableListOf<CardClass>()
+var ForBlockList = mutableListOf<ForBlockClass>()
+var CinBlockList = mutableListOf<CinBlockClass>()
+var CoutBlockList = mutableListOf<CoutBlockClass>()
+var BeginBlockList = mutableListOf<BeginBlockClass>()
+var EndBlockList = mutableListOf<EndBlockClass>()
+var EndBeginBlockList = mutableListOf<EndBeginBlockClass>()
+var FunctionBlockList = mutableListOf<FunctionBlockClass>()
+var DoFunctionBlockList = mutableListOf<DoFunctionBlockClass>()
+var ReturnBlockList = mutableListOf<ReturnBlockClass>()
+var StructBlockList = mutableListOf<StructBlockClass>()
+var DebugList = mutableListOf<TablePair>()
+
+var SaveTypeVaribleList = mutableListOf<TypeVaribleClass>()
+var SaveArrayVaribleList = mutableListOf<ArrayVaribleClass>()
+var SaveVariableAssignmentList = mutableListOf<VariableAssignmentClass>()
+var SaveIfBlockList = mutableListOf<IfBlockClass>()
+var SaveCardList = mutableListOf<CardClass>()
+var SaveForBlockList = mutableListOf<ForBlockClass>()
+var SaveCinBlockList = mutableListOf<CinBlockClass>()
+var SaveCoutBlockList = mutableListOf<CoutBlockClass>()
+var SaveBeginBlockList = mutableListOf<BeginBlockClass>()
+var SaveEndBlockList = mutableListOf<EndBlockClass>()
+var SaveEndBeginBlockList = mutableListOf<EndBeginBlockClass>()
+var SaveFunctionBlockList = mutableListOf<FunctionBlockClass>()
+var SaveDoFunctionBlockList = mutableListOf<DoFunctionBlockClass>()
+var SaveReturnBlockList = mutableListOf<ReturnBlockClass>()
+var SaveStructBlockList = mutableListOf<ReturnBlockClass>()
+var SaveDebugList = mutableListOf<TablePair>()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -246,30 +276,32 @@ fun TableScreen() {
                     modifier = Modifier
                         .weight(1f)
                         .padding(4.dp),
-                        enabled = false
+                    enabled = false
                 )
             }
         }
     }
 }
 // Функция для сохранения списка в формате JSON
-    /*
+/*
 fun <T> saveListToJson(list: List<T>, fileName: String, context: Context) {
-    val gson = Gson()
-    val json = gson.toJson(list)
-    val file = File(context.filesDir, fileName)
-    file.writeText(json)
+val gson = Gson()
+val json = gson.toJson(list)
+val file = File(context.filesDir, fileName)
+file.writeText(json)
 }
 // Функция для чтения списка из формата JSON
 fun <T> readListFromJson(fileName: String, context: Context): List<T> {
-    val file = File(context.filesDir, fileName)
-    val json = file.readText()
-    val gson = Gson()
-    val type: Type = object : TypeToken<List<T>>() {}.type
-    return gson.fromJson(json, type)
+val file = File(context.filesDir, fileName)
+val json = file.readText()
+val gson = Gson()
+val type: Type = object : TypeToken<List<T>>() {}.type
+return gson.fromJson(json, type)
 }
 
-     */
+
+ */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyScreen(pixelsPerDp: Float) {
@@ -280,6 +312,7 @@ fun MyScreen(pixelsPerDp: Float) {
     var delete by remember { mutableStateOf(false) }
     var fromConsole by remember { mutableStateOf("") }
     val showDialog = remember { mutableStateOf(false) }
+    val saveButtonClicked = remember { mutableStateOf(false) }
     // методы для добавления новой карточки в список
     fun TypeVaribleListAddCard() {
         TypeVaribleList.add(TypeVaribleClass(thisID = cardIdCounter))
@@ -359,6 +392,13 @@ fun MyScreen(pixelsPerDp: Float) {
         CardList.add(CardClass(childId = DoFunctionBlockList.last().childId,isDragging =  DoFunctionBlockList.last().isDragging, offsetX =  DoFunctionBlockList.last().offsetX, offsetY =  DoFunctionBlockList.last().offsetY,thisID = cardIdCounter,width = 350.dp, height = 90.dp, bordersize =DoFunctionBlockList.last().bordersize))
         cardIdCounter++;
     }
+    fun StructBlockListAddCard()
+    {
+        StructBlockList.add(StructBlockClass(thisID = cardIdCounter))
+        StructBlockList.last().offsetY.value = 300f;
+        CardList.add(CardClass(childId = StructBlockList.last().childId,isDragging =  StructBlockList.last().isDragging, offsetX =  StructBlockList.last().offsetX, offsetY =  StructBlockList.last().offsetY,thisID = cardIdCounter,width = 350.dp, height = 90.dp, bordersize = StructBlockList.last().bordersize))
+        cardIdCounter++;
+    }
     @Composable
     fun ButtonInfoRow(icon: ImageVector, title: String, description: String) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -369,8 +409,8 @@ fun MyScreen(pixelsPerDp: Float) {
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column {
-                Text(text = title, fontWeight = FontWeight.Bold)
-                Text(text = description)
+                Text(text = title,color = Color.White, fontWeight = FontWeight.Bold)
+                Text(text = description, color = Color.White)
             }
         }
     }
@@ -379,12 +419,13 @@ fun MyScreen(pixelsPerDp: Float) {
         Dialog(
             onDismissRequest = onDismiss,
             content = {
-                Box(modifier = Modifier.padding(16.dp)
-                    .background(Color.White.copy(alpha = 0.5f))) {
+                Box(modifier = Modifier
+                    .padding(16.dp)
+                    ) {
                     Column {
-                        Text(text = "Функции кнопок", fontWeight = FontWeight.Bold)
+                        Text(text = "Функции кнопок", fontWeight = FontWeight.Bold, color = Color.White)
                         Spacer(modifier = Modifier.height(16.dp))
-                        ButtonInfoRow(Icons.Default.PlayArrow, "Запуск", "Запуск приложения.")
+                        ButtonInfoRow(Icons.Default.PlayArrow, "Запуск", "Запуск приложения.",)
                         ButtonInfoRow(Icons.Default.List, "Консоль", "Открыть консоль.")
                         ButtonInfoRow(Icons.Default.Delete, "Удалить", "Очистка проекта")
                         ButtonInfoRow(Icons.Default.Add, "Отладка", "Открыть панель отладки")
@@ -401,6 +442,52 @@ fun MyScreen(pixelsPerDp: Float) {
             }
         )
     }
+    fun saveData()
+    {
+
+            SaveTypeVaribleList.clear()
+            SaveTypeVaribleList.addAll(TypeVaribleList)
+
+            SaveArrayVaribleList.clear()
+            SaveArrayVaribleList.addAll(ArrayVaribleList)
+
+            SaveVariableAssignmentList.clear()
+            SaveVariableAssignmentList.addAll(VariableAssignmentList)
+
+            SaveIfBlockList.clear()
+            SaveIfBlockList.addAll(IfBlockList)
+
+            SaveCardList.clear()
+            SaveCardList.addAll(CardList)
+
+            SaveForBlockList.clear()
+            SaveForBlockList.addAll(ForBlockList)
+
+            SaveCinBlockList.clear()
+            SaveCinBlockList.addAll(CinBlockList)
+
+            SaveCoutBlockList.clear()
+            SaveCoutBlockList.addAll(CoutBlockList)
+
+            SaveBeginBlockList.clear()
+            SaveBeginBlockList.addAll(BeginBlockList)
+
+            SaveEndBlockList.clear()
+            SaveEndBlockList.addAll(EndBlockList)
+
+            SaveEndBeginBlockList.clear()
+            SaveEndBeginBlockList.addAll(EndBeginBlockList)
+
+            SaveFunctionBlockList.clear()
+            SaveFunctionBlockList.addAll(FunctionBlockList)
+
+            SaveDoFunctionBlockList.clear()
+            SaveDoFunctionBlockList.addAll(DoFunctionBlockList)
+
+            SaveReturnBlockList.clear()
+            SaveReturnBlockList.addAll(ReturnBlockList)
+    }
+
 
     fun closeDialog() {
         showDialog.value = false
@@ -521,6 +608,11 @@ fun MyScreen(pixelsPerDp: Float) {
                         DoFunctionBlockListAddCard()
                         myGlobalNumber = 0;
                     }
+                    if(myGlobalNumber == 10)
+                    {
+                        StructBlockListAddCard()
+                        myGlobalNumber = 0;
+                    }
                     if (FirstTime == true) {
                         EndBeginBlockList.add(EndBeginBlockClass(thisID = cardIdCounter))
                         EndBeginBlockList[0].offsetY.value = 900f;
@@ -561,17 +653,65 @@ fun MyScreen(pixelsPerDp: Float) {
                     {
                         Column(verticalArrangement = Arrangement.Center)
                         {
-                            Button(
-                                onClick = {
-                                    for(card in CardList)
-                                    {
-                                        card.offsetY.value += 1500f;
-                                    }
+                            Row()
+                            {
+                                Button(
+                                    onClick = {
+                                        for (card in CardList) {
+                                            card.offsetY.value += 1500f;
+                                        }
 
-                                    showNewScreen = true // показываем новый экран
-                                },
-                            ) {
-                                Text("Добавить блоки")
+                                        showNewScreen = true // показываем новый экран
+                                    },
+                                ) {
+                                    Text("Добавить блоки")
+                                }
+                                IconButton(onClick = {
+                                    TypeVaribleList.clear()
+                                    TypeVaribleList.addAll(SaveTypeVaribleList)
+
+                                    ArrayVaribleList.clear()
+                                    ArrayVaribleList.addAll(SaveArrayVaribleList)
+
+                                    VariableAssignmentList.clear()
+                                    VariableAssignmentList.addAll(SaveVariableAssignmentList)
+
+                                    IfBlockList.clear()
+                                    IfBlockList.addAll(SaveIfBlockList)
+
+                                    CardList.clear()
+                                    CardList.addAll(SaveCardList)
+
+                                    ForBlockList.clear()
+                                    ForBlockList.addAll(SaveForBlockList)
+
+                                    CinBlockList.clear()
+                                    CinBlockList.addAll(SaveCinBlockList)
+
+                                    CoutBlockList.clear()
+                                    CoutBlockList.addAll(SaveCoutBlockList)
+
+                                    BeginBlockList.clear()
+                                    BeginBlockList.addAll(SaveBeginBlockList)
+
+                                    EndBlockList.clear()
+                                    EndBlockList.addAll(SaveEndBlockList)
+
+                                    EndBeginBlockList.clear()
+                                    EndBeginBlockList.addAll(SaveEndBeginBlockList)
+
+                                    FunctionBlockList.clear()
+                                    FunctionBlockList.addAll(SaveFunctionBlockList)
+
+                                    DoFunctionBlockList.clear()
+                                    DoFunctionBlockList.addAll(SaveDoFunctionBlockList)
+
+                                    ReturnBlockList.clear()
+                                    ReturnBlockList.addAll(SaveReturnBlockList)
+                                })
+                                {
+                                    Icon(Icons.Filled.Favorite, contentDescription = null)
+                                }
                             }
                             Row()
                             {
@@ -582,7 +722,7 @@ fun MyScreen(pixelsPerDp: Float) {
                                     Icon(Icons.Filled.Info, contentDescription = null)
                                 }
                                 IconButton(onClick = {
-                                    RunApp()
+                                    runApp()
                                     ConsoleIsVisible = true
                                 })
                                 {
@@ -614,6 +754,10 @@ fun MyScreen(pixelsPerDp: Float) {
                                 {
                                     Icon(Icons.Filled.Delete, contentDescription = null)
                                 }
+                                IconButton(onClick = {saveButtonClicked.value = true })
+                                {
+                                    Icon(Icons.Filled.Check, contentDescription = null)
+                                }
                                 IconButton(onClick = {
                                     if(DebugMode == true)
                                     {
@@ -643,7 +787,6 @@ fun MyScreen(pixelsPerDp: Float) {
                                             CardList[commandListID[DebugID - 1]].bordersize.value =
                                                 0.dp
                                         }
-                                        DebugID++;
                                         NextStep = true;
                                     }
                                 })
@@ -651,6 +794,14 @@ fun MyScreen(pixelsPerDp: Float) {
                                     Icon(Icons.Filled.KeyboardArrowDown, contentDescription = null)
                                 }
 
+                            }
+                            LaunchedEffect(saveButtonClicked.value) {
+                                if (saveButtonClicked.value) {
+                                    // Вызываем метод сохранения данных
+                                    saveData()
+                                    // Сбрасываем состояние нажатия кнопки
+                                    saveButtonClicked.value = false
+                                }
                             }
                             if(ConsoleIsVisible)
                             {
@@ -718,227 +869,238 @@ fun MyScreen(pixelsPerDp: Float) {
                             {
                                 TableScreen()
                             }
-                            }
                         }
                     }
+                }
                 if (showDialog.value) {
                     ButtonInfoDialog(onDismiss = { closeDialog() })
                 }
-                    //отрисовка
-                    for (card in TypeVaribleList) {
-                        TypeVariableReal(
-                            offsetX = card.offsetX,
-                            offsetY = card.offsetY,
-                            isDragging = card.isDragging,
-                            variableName = card.variableName,
-                            expanded = card.expanded,
-                            selectedType = card.selectedType,
-                            thisID = card.thisID,
-                            CardList = CardList,
-                            bordersize = card.bordersize
-                        )
+                //отрисовка
+                for (card in TypeVaribleList) {
+                    TypeVariableReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        variableName = card.variableName,
+                        expanded = card.expanded,
+                        selectedType = card.selectedType,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                        bordersize = card.bordersize
+                    )
 
-                    }
-                    for (card in ArrayVaribleList) {
-                        ArrayVariableReal(
-                            offsetX = card.offsetX,
-                            offsetY = card.offsetY,
-                            isDragging = card.isDragging,
-                            variableName = card.variableName,
-                            expanded = card.expanded,
-                            selectedType = card.selectedType,
-                            thisID = card.thisID,
-                            CardList = CardList,
-                            count = card.count,
-                            bordersize = card.bordersize,
-                        )
+                }
+                for (card in ArrayVaribleList) {
+                    ArrayVariableReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        variableName = card.variableName,
+                        expanded = card.expanded,
+                        selectedType = card.selectedType,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                        count = card.count,
+                        bordersize = card.bordersize,
+                    )
 
-                    }
-                    for (card in EndBeginBlockList) {
-                        if (card.thisID == 0) {
-                            BeginBlock(
-                                offsetX = card.offsetX,
-                                offsetY = card.offsetY,
-                                isDragging = card.isDragging,
-                                thisID = card.thisID,
-                                CardList = CardList
-                            )
-                        } else {
-                            EndBlock(
-                                offsetX = card.offsetX,
-                                offsetY = card.offsetY,
-                                isDragging = card.isDragging,
-                                thisID = card.thisID,
-                                CardList = CardList
-                            )
-                        }
-                    }
-
-                    for (card in VariableAssignmentList) {
-                        VariableAssignmentReal(
+                }
+                for (card in EndBeginBlockList) {
+                    if (card.thisID == 0) {
+                        BeginBlock(
                             offsetX = card.offsetX,
                             offsetY = card.offsetY,
                             isDragging = card.isDragging,
-                            VariableName = card.variableName,
-                            VariableValue = card.variableValue,
                             thisID = card.thisID,
-                            CardList = CardList,
-                            bordersize = card.bordersize,
+                            CardList = CardList
+                        )
+                    } else {
+                        EndBlock(
+                            offsetX = card.offsetX,
+                            offsetY = card.offsetY,
+                            isDragging = card.isDragging,
+                            thisID = card.thisID,
+                            CardList = CardList
                         )
                     }
-                    for (card in IfBlockList) {
-                        IfBlockReal(
-                            offsetX = card.offsetX,
-                            offsetY = card.offsetY,
-                            isDragging = card.isDragging,
-                            conditionFirst = card.conditionFirst,
-                            conditionSecond = card.conditionSecond,
-                            expanded = card.expanded,
-                            selectedSign = card.selectedSign,
-                            thisID = card.thisID,
-                            CardList = CardList,
-                            bordersize = card.bordersize,
-                            )
-                    }
-                    for (card in ForBlockList) {
-                        ForBlockReal(
-                            offsetX = card.offsetX,
-                            offsetY = card.offsetY,
-                            isDragging = card.isDragging,
-                            initExpression = card.initExpression,
-                            condExpression = card.condExpression,
-                            loopExpression = card.loopExpression,
-                            thisID = card.thisID,
-                            CardList = CardList,
-                            bordersize = card.bordersize,
-                            )
-                    }
-                    for (card in CinBlockList) {
-                        CinBlockReal(
-                            offsetX = card.offsetX,
-                            offsetY = card.offsetY,
-                            isDragging = card.isDragging,
-                            variableName = card.variableName,
-                            thisID = card.thisID,
-                            CardList = CardList,
-                            bordersize = card.bordersize,
-                        )
-                    }
-                    for (card in CoutBlockList) {
-                        CoutBlockReal(
-                            offsetX = card.offsetX,
-                            offsetY = card.offsetY,
-                            isDragging = card.isDragging,
-                            variableName = card.variableName,
-                            thisID = card.thisID,
-                            CardList = CardList,
-                            bordersize = card.bordersize,
-                        )
-                    }
-                    for (card in BeginBlockList) {
-                        BeginBlockReal(
-                            offsetX = card.offsetX,
-                            offsetY = card.offsetY,
-                            isDragging = card.isDragging,
-                            thisID = card.thisID,
-                            CardList = CardList,
-                            bordersize = card.bordersize,
-                        )
-                    }
-                    for (card in EndBlockList) {
-                        EndBlockReal(
-                            offsetX = card.offsetX,
-                            offsetY = card.offsetY,
-                            isDragging = card.isDragging,
-                            thisID = card.thisID,
-                            CardList = CardList,
-                            bordersize = card.bordersize,
-                        )
-                    }
-                    for (card in FunctionBlockList) {
-                        FunctionBlockReal(
-                            offsetX = card.offsetX,
-                            offsetY = card.offsetY,
-                            isDragging = card.isDragging,
-                            thisID = card.thisID,
-                            CardList = CardList,
-                            FunctionName = card.FunctionName,
-                            FunctionParams = card.FunctionParams,
-                            expanded = card.expanded,
-                            selectedType = card.selectedType,
-                            bordersize = card.bordersize,
-                        )
-                    }
-                    for (card in DoFunctionBlockList) {
-                        DoFunctionBlockReal(
-                            offsetX = card.offsetX,
-                            offsetY = card.offsetY,
-                            isDragging = card.isDragging,
-                            thisID = card.thisID,
-                            CardList = CardList,
-                            FunctionName = card.FunctionName,
-                            FunctionParams = card.FunctionParams,
-                            bordersize = card.bordersize,
-                        )
-                    }
-                    for (card in ReturnBlockList) {
-                        ReturnBlockReal(
-                            offsetX = card.offsetX,
-                            offsetY = card.offsetY,
-                            isDragging = card.isDragging,
-                            thisID = card.thisID,
-                            CardList = CardList,
-                            ReturnString = card.ReturnString,
-                            bordersize = card.bordersize,
-                        )
-                    }
+                }
+                for (card in StructBlockList) {
+                    StructBlockReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        Name = card.Name,
+                        StrObjects = card.StrObject,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                        bordersize = card.bordersize,
+                    )
+                }
+                for (card in VariableAssignmentList) {
+                    VariableAssignmentReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        VariableName = card.variableName,
+                        VariableValue = card.variableValue,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                        bordersize = card.bordersize,
+                    )
+                }
+                for (card in IfBlockList) {
+                    IfBlockReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        conditionFirst = card.conditionFirst,
+                        conditionSecond = card.conditionSecond,
+                        expanded = card.expanded,
+                        selectedSign = card.selectedSign,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                        bordersize = card.bordersize,
+                    )
+                }
+                for (card in ForBlockList) {
+                    ForBlockReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        initExpression = card.initExpression,
+                        condExpression = card.condExpression,
+                        loopExpression = card.loopExpression,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                        bordersize = card.bordersize,
+                    )
+                }
+                for (card in CinBlockList) {
+                    CinBlockReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        variableName = card.variableName,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                        bordersize = card.bordersize,
+                    )
+                }
+                for (card in CoutBlockList) {
+                    CoutBlockReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        variableName = card.variableName,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                        bordersize = card.bordersize,
+                    )
+                }
+                for (card in BeginBlockList) {
+                    BeginBlockReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                        bordersize = card.bordersize,
+                    )
+                }
+                for (card in EndBlockList) {
+                    EndBlockReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                        bordersize = card.bordersize,
+                    )
+                }
+                for (card in FunctionBlockList) {
+                    FunctionBlockReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                        FunctionName = card.FunctionName,
+                        FunctionParams = card.FunctionParams,
+                        expanded = card.expanded,
+                        selectedType = card.selectedType,
+                        bordersize = card.bordersize,
+                    )
+                }
+                for (card in DoFunctionBlockList) {
+                    DoFunctionBlockReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                        FunctionName = card.FunctionName,
+                        FunctionParams = card.FunctionParams,
+                        bordersize = card.bordersize,
+                    )
+                }
+                for (card in ReturnBlockList) {
+                    ReturnBlockReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                        ReturnString = card.ReturnString,
+                        bordersize = card.bordersize,
+                    )
+                }
                 /*
 
                  */
-                    if (NeedClear.IdToClear != -1) {
-                        if (NeedClear.WhatList == 1) {
-                            TypeVaribleList.removeIf { it.thisID == NeedClear.IdToClear }
-                            CardList.removeIf { it.thisID == NeedClear.IdToClear }
-                            NeedClear.IdToClear = -1;
-                        }
+                if (NeedClear.IdToClear != -1) {
+                    if (NeedClear.WhatList == 1) {
+                        TypeVaribleList.removeIf { it.thisID == NeedClear.IdToClear }
+                        CardList.removeIf { it.thisID == NeedClear.IdToClear }
+                        NeedClear.IdToClear = -1;
                     }
-                    val MagnitRange = 80;
-                    var cardHeightInPixels = 0
-                    var cardWidthInPixels = 0
-                    var center = 0f;
-                    var HasChild = false;
-                    //Магниты
-                    // LocalDensity.current.run { MagnitRange.toDp().to }
-                    if (CardList.all { it.isDragging.value == false }) {
-                        for (i in 0 until CardList.size) {
-                            HasChild = false;
-                            cardHeightInPixels =
-                                LocalDensity.current.run { CardList[i].height.toPx() }.toInt()
-                            cardWidthInPixels =
-                                LocalDensity.current.run { CardList[i].width.toPx() }.toInt()
-                            for (j in 0 until CardList.size) {
-                                if (i != j && CardList[i].offsetY.value < CardList[j].offsetY.value && CardList[j].offsetY.value - (CardList[i].offsetY.value + cardHeightInPixels) < MagnitRange) {
-                                    CardList[j].offsetY.value -= CardList[j].offsetY.value - (CardList[i].offsetY.value + cardHeightInPixels)
-                                    center = CardList[i].offsetX.value + (cardWidthInPixels / 2)
-                                    cardWidthInPixels =
-                                        LocalDensity.current.run { CardList[j].width.toPx() }
-                                            .toInt()
-                                    CardList[j].offsetX.value = CardList[i].offsetX.value
-                                    CardList[i].childId.value = CardList[j].thisID;
-                                    HasChild = true;
-                                }
-                            }
-                            if (HasChild == false) {
-                                CardList[i].childId.value = -1;
-                            }
-                        }
-                    }
-
-
                 }
+                val MagnitRange = 80;
+                var cardHeightInPixels = 0
+                var cardWidthInPixels = 0
+                var center = 0f;
+                var HasChild = false;
+                //Магниты
+                // LocalDensity.current.run { MagnitRange.toDp().to }
+                if (CardList.all { it.isDragging.value == false }) {
+                    for (i in 0 until CardList.size) {
+                        HasChild = false;
+                        cardHeightInPixels =
+                            LocalDensity.current.run { CardList[i].height.toPx() }.toInt()
+                        cardWidthInPixels =
+                            LocalDensity.current.run { CardList[i].width.toPx() }.toInt()
+                        for (j in 0 until CardList.size) {
+                            if (i != j && CardList[i].offsetY.value < CardList[j].offsetY.value && CardList[j].offsetY.value - (CardList[i].offsetY.value + cardHeightInPixels) < MagnitRange) {
+                                CardList[j].offsetY.value -= CardList[j].offsetY.value - (CardList[i].offsetY.value + cardHeightInPixels)
+                                center = CardList[i].offsetX.value + (cardWidthInPixels / 2)
+                                cardWidthInPixels =
+                                    LocalDensity.current.run { CardList[j].width.toPx() }
+                                        .toInt()
+                                CardList[j].offsetX.value = CardList[i].offsetX.value
+                                CardList[i].childId.value = CardList[j].thisID;
+                                HasChild = true;
+                            }
+                        }
+                        if (HasChild == false) {
+                            CardList[i].childId.value = -1;
+                        }
+                    }
+                }
+
+
             }
         }
     }
+}
 
 
 

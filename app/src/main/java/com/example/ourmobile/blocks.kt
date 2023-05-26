@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -1149,6 +1151,81 @@ fun FunctionBlockReal(
                     FunctionParams.value = newText
                 })
             }
+        }
+    }
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StructBlockReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+    Name:MutableState<String>,
+    StrObjects:MutableState<String>,
+    bordersize: MutableState<Dp>
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(450.dp)
+            .height(150.dp)
+            .padding(2.dp)
+            .background(Color.LightGray,)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Color.Blue)
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(4.dp)
+                .fillMaxWidth()
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Struct Name")
+                TextField(
+                    value = Name.value,
+                    onValueChange = { newText ->
+                        Name.value = newText },
+                    modifier = Modifier.weight(1f)
+                )
+                IconButton(
+                    onClick = { /* Обработка нажатия на кнопку */ }
+                ) {
+                    Icon(Icons.Default.Info, contentDescription = "Info Icon")
+                }
+            }
+            TextField(
+                value = StrObjects.value,
+                onValueChange = { newText ->
+                    StrObjects.value = newText },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(top = 16.dp)
+            )
         }
     }
 }

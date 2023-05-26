@@ -11,6 +11,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -842,6 +843,55 @@ fun DoFunctionBlock(onCloseClicked: () -> Unit
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StructBlock(onCloseClicked: () -> Unit) {
+    var Name by remember { mutableStateOf("") }
+    var StrObjects by remember { mutableStateOf("") }
+    Card(
+        modifier = Modifier
+            .width(400.dp)
+            .height(120.dp)
+            .clickable {
+                myGlobalNumber = 10;
+                onCloseClicked();
+            },
+        shape = RoundedCornerShape(15.dp),
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Struct Name")
+                TextField(
+                    value = "",
+                    onValueChange = { newText ->
+                        Name = newText },
+                    modifier = Modifier.weight(1f)
+                )
+                IconButton(
+                    onClick = { /* Обработка нажатия на кнопку */ }
+                ) {
+                    Icon(Icons.Default.Info, contentDescription = "Info Icon")
+                }
+            }
+            TextField(
+                value = "",
+                onValueChange = { newText ->
+                    StrObjects = newText },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(top = 16.dp)
+            )
+        }
+    }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -929,6 +979,7 @@ fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
                     ArrayVariable(onCloseClicked = onCloseClicked)
                     FunctionBlock(onCloseClicked = onCloseClicked)
                     DoFunctionBlock(onCloseClicked = onCloseClicked)
+                    StructBlock(onCloseClicked = onCloseClicked)
                 }
                 Button(
 
@@ -953,4 +1004,5 @@ fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
         }
     }
 }
+
 
