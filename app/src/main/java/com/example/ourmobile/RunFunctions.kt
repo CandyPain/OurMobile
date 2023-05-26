@@ -129,7 +129,7 @@ fun createCommandList(): MutableList<String> {
                     if (IfBlockList[j].thisID == childId) {
                         hasChild = true
                         commandList.add(
-                            "<if:<expression:" + normalizationOfExpression(IfBlockList[j].conditionFirst.value) + ">,<expression" + normalizationOfExpression(
+                            "<if:<expression:" + normalizationOfExpression(IfBlockList[j].conditionFirst.value) + ">,<expression:" + normalizationOfExpression(
                                 IfBlockList[j].conditionSecond.value
                             ) + ">," + IfBlockList[j].selectedSign.value + "," + numOfEnd.toString() + ">"
                         )
@@ -168,6 +168,16 @@ fun createCommandList(): MutableList<String> {
                             }>>"
                         )
                         childId = CoutBlockList[j].childId.value
+                    }
+                }
+            }
+
+            if (!hasChild) {
+                for (j in 0 until CinBlockList.size) {
+                    if (CinBlockList[j].thisID == childId) {
+                        hasChild = true
+                        commandList.add("<callin:<expression:" + CinBlockList[j].variableName + ">>")
+                        childId = CinBlockList[j].childId.value
                     }
                 }
             }
@@ -290,7 +300,7 @@ fun createCommandList(): MutableList<String> {
                 if (IfBlockList[j].thisID == childId) {
                     hasChild = true
                     commandList.add(
-                        "<if:<expression:" + normalizationOfExpression(IfBlockList[j].conditionFirst.value) + ">,<expression" + normalizationOfExpression(
+                        "<if:<expression:" + normalizationOfExpression(IfBlockList[j].conditionFirst.value) + ">,<expression:" + normalizationOfExpression(
                             IfBlockList[j].conditionSecond.value
                         ) + ">," + IfBlockList[j].selectedSign.value + "," + numOfEnd.toString() + ">"
                     )
@@ -323,6 +333,16 @@ fun createCommandList(): MutableList<String> {
                     hasChild = true
                     commandList.add("<callout:<expression:${normalizationOfExpression(CoutBlockList[j].variableName.value)}>>")
                     childId = CoutBlockList[j].childId.value
+                }
+            }
+        }
+
+        if (!hasChild) {
+            for (j in 0 until CinBlockList.size) {
+                if (CinBlockList[j].thisID == childId) {
+                    hasChild = true
+                    commandList.add("<callin:<expression:" + CinBlockList[j].variableName + ">>")
+                    childId = CinBlockList[j].childId.value
                 }
             }
         }
