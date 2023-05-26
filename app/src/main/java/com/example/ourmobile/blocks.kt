@@ -1,5 +1,6 @@
 package com.example.ourmobile
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
@@ -34,6 +35,7 @@ import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -97,6 +99,7 @@ fun BeginBlockReal(
     isDragging: MutableState<Boolean>,
     thisID: Int,
     CardList: MutableList<CardClass>,
+    bordersize: MutableState<Dp>
 ) {
     Card(
         modifier = Modifier
@@ -124,7 +127,8 @@ fun BeginBlockReal(
                     }
                 )
             },
-        shape = RoundedCornerShape(15.dp)
+        shape = RoundedCornerShape(15.dp),
+                border = BorderStroke(bordersize.value,Color.Black)
     ) {
         Box(
             modifier = Modifier
@@ -148,6 +152,7 @@ fun EndBlockReal(
     isDragging: MutableState<Boolean>,
     thisID: Int,
     CardList: MutableList<CardClass>,
+    bordersize: MutableState<Dp>
 ) {
     Card(
         modifier = Modifier
@@ -175,7 +180,8 @@ fun EndBlockReal(
                     }
                 )
             },
-        shape = RoundedCornerShape(15.dp)
+        shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Color.Black)
     ) {
         Box(
             modifier = Modifier
@@ -255,15 +261,13 @@ fun TypeVariableReal(
     selectedType: MutableState<String>,
     thisID: Int,
     CardList: MutableList<CardClass>,
+    bordersize: MutableState<Dp>
 ) {
     // Сохраненный тип переменной
     if (selectedType.value == "") {
         selectedType.value = "int"
     }
     // Сохраненное имя переменной
-    if (variableName.value == "") {
-        variableName.value = "NewVariable"
-    }
 
     Card(
         modifier = Modifier
@@ -291,7 +295,8 @@ fun TypeVariableReal(
                     }
                 )
             },
-        shape = RoundedCornerShape(15.dp)
+        shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Color.Red)
 
     )
     {
@@ -365,6 +370,7 @@ fun ArrayVariableReal(
     thisID: Int,
     count: MutableState<String>,
     CardList: MutableList<CardClass>,
+    bordersize: MutableState<Dp>
 ) {
     // Сохраненный тип переменной
     if (selectedType.value == "") {
@@ -398,6 +404,7 @@ fun ArrayVariableReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Color.Blue)
     ) {
         Column(Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -472,6 +479,7 @@ fun ForBlockReal(
     initExpression: MutableState<String>,
     condExpression: MutableState<String>,
     loopExpression: MutableState<String>,
+    bordersize: MutableState<Dp>
 ) {
 
     Card(
@@ -501,6 +509,7 @@ fun ForBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Color.Green)
     ) {
         Column(Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -561,6 +570,7 @@ fun CinBlockReal(
     variableName: MutableState<String>,
     thisID: Int,
     CardList: MutableList<CardClass>,
+    bordersize: MutableState<Dp>
 ) {
     Card(
         modifier = Modifier
@@ -589,6 +599,7 @@ fun CinBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Color.Red)
     ) {
         Row(
             modifier = Modifier.padding(8.dp),
@@ -623,6 +634,7 @@ fun CoutBlockReal(
     variableName: MutableState<String>,
     thisID: Int,
     CardList: MutableList<CardClass>,
+    bordersize: MutableState<Dp>
 ) {
 
     Card(
@@ -652,6 +664,7 @@ fun CoutBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Color.Red)
     ) {
         Row(            modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically)
@@ -686,6 +699,7 @@ fun VariableAssignmentReal(
     VariableValue: MutableState<String>,
     thisID: Int,
     CardList: MutableList<CardClass>,
+    bordersize: MutableState<Dp>
 ) {
     Card(
         modifier = Modifier
@@ -714,6 +728,7 @@ fun VariableAssignmentReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Color.Red)
     ) {
         Box() {
             Row(
@@ -759,6 +774,7 @@ fun IfBlockReal(
     selectedSign: MutableState<String>,
     thisID: Int,
     CardList: MutableList<CardClass>,
+    bordersize: MutableState<Dp>
 ) {
     Card(
         modifier = Modifier
@@ -787,6 +803,7 @@ fun IfBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Color.Green)
     ) {
         Column(
             Modifier.padding(16.dp)
@@ -887,7 +904,8 @@ fun ReturnBlockReal(
     isDragging: MutableState<Boolean>,
     thisID: Int,
     CardList: MutableList<CardClass>,
-    ReturnString:MutableState<String>
+    ReturnString:MutableState<String>,
+    bordersize: MutableState<Dp>
 ) {
     Card(
         modifier = Modifier
@@ -915,7 +933,8 @@ fun ReturnBlockReal(
                     }
                 )
             },
-        shape = RoundedCornerShape(15.dp)
+        shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Color.Red)
     ) {
         Box(
             modifier = Modifier
@@ -956,6 +975,7 @@ fun DoFunctionBlockReal(
     CardList: MutableList<CardClass>,
     FunctionName:MutableState<String>,
     FunctionParams:MutableState<String>,
+    bordersize: MutableState<Dp>
 ) {
     if(FunctionParams.value == "")
     {
@@ -989,6 +1009,7 @@ fun DoFunctionBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Color.Green)
     ) {
         Box(
             modifier = Modifier
@@ -1031,6 +1052,7 @@ fun FunctionBlockReal(
     FunctionParams:MutableState<String>,
     expanded: MutableState<Boolean>,
     selectedType: MutableState<String>,
+    bordersize: MutableState<Dp>
 ) {
     if(FunctionParams.value == "")
     {
@@ -1068,6 +1090,7 @@ fun FunctionBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Color.Green)
     ) {
         Box(
             modifier = Modifier

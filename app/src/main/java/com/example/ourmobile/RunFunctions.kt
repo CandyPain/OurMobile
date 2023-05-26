@@ -1,11 +1,6 @@
 package com.example.ourmobile
 
 import android.util.Log
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.runtime.Composable
 
 class Variables(
     var variableName: String,
@@ -18,6 +13,7 @@ var messagesCout = mutableListOf<String>()
 var valuesCout = mutableListOf<Int>()
 var messagesCin: String = ""
 var commandList = mutableListOf<String>()
+var commandListID = mutableListOf<Int>()
 
 fun RunApp() {
     valuesCout.clear()
@@ -26,13 +22,27 @@ fun RunApp() {
     valuesCout.clear()
     doRun = true
     commandList = createCommandList()
+    var compiler = CelestialElysiaInterpreter(hashMapOf<String, Any>(), commandList)
     var checkCommands: Boolean = checkCommandList(commandList)
-    if(doRun)
+    if(doRun && GlobalDebugMod == false)
     {
-        var compiler = CelestialElysiaInterpreter(hashMapOf<String, Any>(), commandList)
         compiler.interprete()
-        messagesCout += compiler.calloutList
+        for(pair in DebugList)
+        {
+            if(pair.key.value != "")
+            {
+                if(compiler.varHashMap.get(pair.key.value) != null)
+                {
+                    pair.value.value = compiler.varHashMap.get(pair.key.value).toString()
+                }
+            }
+        }
     }
+    if(doRun && GlobalDebugMod == true)
+    {
+        compiler.interpret_debug()
+    }
+    messagesCout += compiler.calloutList
     for(i in 0 until messagesCout.size)
     {
         Log.d("MyTag", messagesCout[i])
@@ -66,6 +76,7 @@ fun createCommandList(): MutableList<String> {
                 hasChild = true
                 if (checkMakeAVariable(TypeVaribleList[i].variableName.value, blockNumber)) {
                     commandList.add("<variable:" + TypeVaribleList[i].variableName.value + "," + TypeVaribleList[i].selectedType.value + ">")
+                    commandListID.add(TypeVaribleList[i].thisID)
                     variablesList.add(
                         Variables(
                             TypeVaribleList[i].variableName.value,
@@ -91,6 +102,7 @@ fun createCommandList(): MutableList<String> {
                     ) {
                         expString = normalizationOfExpression(expString)
                         commandList.add("<equals:" + VariableAssignmentList[i].variableName.value + ",<expression:" + expString + ">>")
+                        commandListID.add(VariableAssignmentList[i].thisID)
                     } else {
                         doRun = false
                     }
@@ -106,6 +118,7 @@ fun createCommandList(): MutableList<String> {
                     var expString = spaceRemove(CoutBlockList[i].variableName.value)
                     expString = normalizationOfExpression(expString)
                     commandList.add("<callout:<expression:$expString>>")
+                    commandListID.add(CoutBlockList[i].thisID)
                     childId = CoutBlockList[i].childId.value
                 }
             }
@@ -139,6 +152,7 @@ fun createCommandList(): MutableList<String> {
                     expStringSec = normalizationOfExpression(expStringSec)
                     commandList.add("<if:<expression:$expStringFir>,<expression:$expStringSec>," + IfBlockList[i].selectedSign.value + ",$numOfEnd>")
                     endList.add("<endif:$numOfEnd>")
+                    commandListID.add(IfBlockList[i].thisID)
                     ++numOfEnd
                     childId = IfBlockList[i].childId.value
                 }
@@ -151,6 +165,7 @@ fun createCommandList(): MutableList<String> {
                     hasChild = true
                     if (endList.size > 0) {
                         commandList.add(endList[endList.size - 1])
+                        commandListID.add(EndBlockList[i].thisID)
                         endList.removeAt(endList.size - 1)
                     } else {
                         doRun = false

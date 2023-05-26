@@ -1,7 +1,9 @@
 package com.example.ourmobile
 
-import java.util.HashMap
-import java.util.Stack
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class CelestialElysiaInterpreter(val varHashMap: HashMap<String, Any>,
@@ -30,6 +32,36 @@ class CelestialElysiaInterpreter(val varHashMap: HashMap<String, Any>,
             var tokenObject = tokenType?.java?.newInstance() as? IToken ?: throw IllegalArgumentException("Invalid token type")
             tokenObject.command(commandList[stringPoint],this)
             stringPoint++
+        }
+    }
+
+    fun interpret_debug()
+    {
+        val scope = CoroutineScope(Dispatchers.Default)
+        scope.launch {
+            var tokenRegex = Regex("<\\w+")
+            while (stringPoint < commandList.size) {
+                if(NextStep) {
+                    var tokenName = tokenRegex.find(commandList[stringPoint])!!.value
+                    var tokenType = tokenHashMap.get(tokenName)
+                    var tokenObject = tokenType?.java?.newInstance() as? IToken
+                        ?: throw IllegalArgumentException("Invalid token type")
+                    tokenObject.command(commandList[stringPoint], this@CelestialElysiaInterpreter)
+                    stringPoint++
+                    for(pair in DebugList)
+                    {
+                        if(pair.key.value != "")
+                        {
+                            if(this@CelestialElysiaInterpreter.varHashMap.get(pair.key.value) != null)
+                            {
+                                pair.value.value = this@CelestialElysiaInterpreter.varHashMap.get(pair.key.value).toString()
+                            }
+                        }
+                    }
+                    NextStep = false;
+                }
+                delay(100)
+            }
         }
     }
 

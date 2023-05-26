@@ -222,27 +222,11 @@ fun VariableAssignment(onCloseClicked: () -> Unit) {
     val VariableValue = remember { mutableStateOf("") }
 
     Card(
-
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
             .width(500.dp)
-            .padding(10.dp)
-            .pointerInput(Unit) {
-                detectDragGestures(
-                    onDragStart = {
-                        myGlobalNumber = 2;
-                        isDragging.value = true
-                        onCloseClicked()
-                    },
-                    onDragEnd = { isDragging.value = false },
-                    onDragCancel = { },
-                    onDrag = { change, dragAmount ->
-                        offsetX.value += dragAmount.x
-                        offsetY.value += dragAmount.y
-                        change.consumeAllChanges()
-                    }
-                )
-            }
+            .height(80.dp)
+            .padding(2.dp)
             .clickable {
                 myGlobalNumber = 2;
                 onCloseClicked()
@@ -250,12 +234,14 @@ fun VariableAssignment(onCloseClicked: () -> Unit) {
             },
         shape = RoundedCornerShape(15.dp),
     ) {
-        Box(
-        ) {
-            Row() {
+        Box() {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 TextField(
                     modifier = Modifier
-                        .width(200.dp)
+                        .weight(1f)
                         .padding(10.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
                     value = VariableName.value,
@@ -268,18 +254,12 @@ fun VariableAssignment(onCloseClicked: () -> Unit) {
                 )
                 TextField(
                     modifier = Modifier
-                        .width(200.dp)
+                        .weight(1f)
                         .padding(10.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
                     value = VariableValue.value,
                     onValueChange = { newText -> VariableValue.value = newText }
                 )
-                Button(
-                    onClick = {},
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    Text(text = "Save")
-                }
             }
         }
     }
@@ -301,12 +281,14 @@ fun TypeVariable(onCloseClicked: () -> Unit) {
     Card(
         modifier = Modifier
             .width(500.dp)
-            .padding(10.dp)
+            .height(80.dp)
+            .padding(2.dp)
             .clickable {
                 myGlobalNumber = 1;
                 onCloseClicked()
+
             },
-        shape = RoundedCornerShape(15.dp)
+        shape = RoundedCornerShape(15.dp),
 
     )
     {
@@ -358,15 +340,6 @@ fun TypeVariable(onCloseClicked: () -> Unit) {
                         // Изменять значение внешнего класса (имени переменной) здесь (при изменении текст филда) именно через variableName.value
                     }
                 )
-                Button(
-                    modifier = Modifier.padding(5.dp),
-                    onClick = {
-                        // Действие для удаления блока
-                    }
-                )
-                {
-                    Text(text = "Del", fontSize = 15.sp)
-                }
             }
         }
     }
@@ -467,34 +440,42 @@ fun IfBlock(onCloseClicked: () -> Unit) {
     Card(
         modifier = Modifier
             .width(500.dp)
-            .padding(10.dp)
+            .height(150.dp)
+            .padding(8.dp)
             .clickable {
                 myGlobalNumber = 3;
                 onCloseClicked()
             },
         shape = RoundedCornerShape(15.dp),
     ) {
-        Column {
-            Row()
-            {
-                Text(text = "If ", modifier = Modifier.padding(15.dp), fontSize = 15.sp)
+        Column(
+            Modifier.padding(16.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "If",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
                 TextField(
-                    modifier = Modifier.width(200.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
                     value = conditionFirst.value,
                     onValueChange = { newText ->
                         conditionFirst.value = newText
-// Изменять значение внешнего класса (условия ифа) здесь (при изменении текст филда) именно через condition.value
                     }
                 )
-                IconButton(onClick = { expanded= true })
-                {
+                IconButton(onClick = { expanded = true }) {
                     Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
                 }
                 Text(
                     text = selectedSign,
-                    modifier = Modifier.padding(15.dp),
-                    fontSize = 15.sp
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 8.dp)
                 )
                 DropdownMenu(
                     expanded = expanded,
@@ -515,7 +496,7 @@ fun IfBlock(onCloseClicked: () -> Unit) {
                     DropdownMenuItem(
                         text = { Text(text = ">") },
                         onClick = {
-                            selectedSign= ">"
+                            selectedSign = ">"
                             expanded = false
                         })
                     DropdownMenuItem(
@@ -538,25 +519,22 @@ fun IfBlock(onCloseClicked: () -> Unit) {
                         })
                 }
                 TextField(
-                    modifier = Modifier.width(200.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 8.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
                     value = conditionSecond.value,
                     onValueChange = { newText ->
                         conditionSecond.value = newText
-// Изменять значение внешнего класса (условия ифа) здесь (при изменении текст филда) именно через condition.value
                     }
                 )
-                Button(
-                    modifier = Modifier.padding(5.dp),
-                    onClick = {
-// Действие для удаления блока
-                    }
-                )
-                {
-                    Text(text = "Del", fontSize = 15.sp)
-                }
             }
-            Text(text = "Then begin", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+            Text(
+                text = "Then begin",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
     }
 }
@@ -580,58 +558,61 @@ fun ForBlock(onCloseClicked: () -> Unit) {
 
     Card(
         modifier = Modifier
-            .width(500.dp)
-            .padding(10.dp)
+            .width(250.dp)
+            .padding(2.dp)
+            .height(200.dp)
             .clickable {
                 myGlobalNumber = 4;
-                onCloseClicked();
+                onCloseClicked()
             },
         shape = RoundedCornerShape(15.dp),
     ) {
-        Column {
-            Row()
-            {
-                Text(text = "For ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+        Column(Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "For", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.width(8.dp))
                 TextField(
-                    modifier = Modifier.width(100.dp),
+                    modifier = Modifier.width(200.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
                     value = initExpression.value,
                     onValueChange = { newText ->
                         initExpression.value = newText
-                        // Изменять значение внешнего класса (пре-объявление переменной) здесь (при изменении текст филда) именно через initExpression.value
                     }
                 )
-                Text(text = " ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "to", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.width(8.dp))
                 TextField(
-                    modifier = Modifier.width(100.dp),
+                    modifier = Modifier.width(200.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
                     value = condExpression.value,
                     onValueChange = { newText ->
                         condExpression.value = newText
-                        // Изменять значение внешнего класса (условие цикла) здесь (при изменении текст филда) именно через condExpression.value
                     }
                 )
-                Text(text = " ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "step", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.width(8.dp))
                 TextField(
-                    modifier = Modifier.width(100.dp),
+                    modifier = Modifier.width(200.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
                     value = loopExpression.value,
                     onValueChange = { newText ->
                         loopExpression.value = newText
-                        // Изменять значение внешнего класса (действие цикла) здесь (при изменении текст филда) именно через loopExpression.value
                     }
                 )
-                Button(
-                    modifier = Modifier.padding(5.dp),
-                    onClick = {
-                        // Действие для удаления блока
-                    }
-                )
-                {
-                    Text(text = "Del", fontSize = 15.sp)
-                }
+
             }
-            Text(text = "Do begin", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+            Text(
+                text = "Do begin",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 16.dp)
+            )
         }
     }
 }
@@ -647,8 +628,8 @@ fun CinBlock(onCloseClicked: () -> Unit) {
 
     Card(
         modifier = Modifier
-            .width(400.dp)
-            .padding(10.dp)
+            .width(300.dp)
+            .padding(2.dp)
             .height(80.dp)
             .clickable {
                 myGlobalNumber = 5;
@@ -656,11 +637,18 @@ fun CinBlock(onCloseClicked: () -> Unit) {
             },
         shape = RoundedCornerShape(15.dp),
     ) {
-        Row()
-        {
-            Text(text = "Cin ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+        Row(
+            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Cin",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(end = 8.dp)
+            )
             TextField(
-                modifier = Modifier.width(200.dp),
+                modifier = Modifier.weight(1f),
                 textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
                 value = variableName.value,
                 onValueChange = { newText ->
@@ -668,15 +656,6 @@ fun CinBlock(onCloseClicked: () -> Unit) {
                     // Изменять значение внешнего класса (значение имени переменной) здесь (при изменении текст филда) именно через variableName.value
                 }
             )
-            Button(
-                modifier = Modifier.padding(5.dp),
-                onClick = {
-                    // Действие для удаления блока
-                }
-            )
-            {
-                Text(text = "Del", fontSize = 15.sp)
-            }
         }
     }
 }
@@ -692,19 +671,26 @@ fun CoutBlock(onCloseClicked: () -> Unit) {
 
     Card(
         modifier = Modifier
-            .width(400.dp)
-            .padding(10.dp)
+            .width(300.dp)
+            .height(80.dp)
+            .padding(2.dp)
             .clickable {
                 myGlobalNumber = 6;
                 onCloseClicked();
             },
         shape = RoundedCornerShape(15.dp),
     ) {
-        Row()
+        Row(            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically)
         {
-            Text(text = "Cout ", fontSize = 15.sp, modifier = Modifier.padding(15.dp))
+            Text(
+                text = "Cout",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(end = 8.dp)
+            )
             TextField(
-                modifier = Modifier.width(200.dp),
+                modifier = Modifier.weight(1f),
                 textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
                 value = variableName.value,
                 onValueChange = { newText ->
@@ -712,15 +698,7 @@ fun CoutBlock(onCloseClicked: () -> Unit) {
                     // Изменять значение внешнего класса (значение имени переменной) здесь (при изменении текст филда) именно через variableName.value
                 }
             )
-            Button(
-                modifier = Modifier.padding(5.dp),
-                onClick = {
-                    // Действие для удаления блока
-                }
-            )
-            {
-                Text(text = "Del", fontSize = 15.sp)
-            }
+
         }
     }
 }
@@ -731,14 +709,18 @@ fun FunctionBlock(onCloseClicked: () -> Unit
 ) {
     val FunctionName = remember { mutableStateOf("") }
     val FunctionParams = remember { mutableStateOf("") }
+    val selectedType = remember { mutableStateOf("") }
+    var expanded by remember {
+        mutableStateOf(false)
+    }
     if(FunctionParams.value == "")
     {
         FunctionParams.value = "<>";
     }
     Card(
         modifier = Modifier
-            .width(300.dp)
-            .height(60.dp)
+            .width(500.dp)
+            .height(90.dp)
             .padding(2.dp)
             .background(Color.LightGray,)
             .clickable {
@@ -755,14 +737,47 @@ fun FunctionBlock(onCloseClicked: () -> Unit
         ) {
             Row()
             {
-
+                IconButton(onClick = { expanded = true }) {
+                    Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+                }
                 Text(
-                    text = "Function",
+                    text = selectedType.value,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = "int") },
+                        onClick = {
+                            selectedType.value = "int"
+                            expanded = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "double") },
+                        onClick = {
+                            selectedType.value = "double"
+                            expanded = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "string") },
+                        onClick = {
+                            selectedType.value = "string"
+                            expanded = false
+                        })
+                }
+                Text(
+                    text = "Function name ",
                     style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 )
-                TextField(value = FunctionName.value, onValueChange = { newText ->
-                    FunctionName.value = newText
-                })
+                TextField(modifier = Modifier
+                    .width(50.dp) ,
+                    value = FunctionName.value, onValueChange = { newText ->
+                        FunctionName.value = newText
+                    })
                 Text(
                     text = "     ",
                     style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
@@ -787,8 +802,8 @@ fun DoFunctionBlock(onCloseClicked: () -> Unit
     }
     Card(
         modifier = Modifier
-            .width(300.dp)
-            .height(60.dp)
+            .width(350.dp)
+            .height(90.dp)
             .padding(2.dp)
             .background(Color.LightGray,)
             .clickable {
@@ -807,12 +822,14 @@ fun DoFunctionBlock(onCloseClicked: () -> Unit
             {
 
                 Text(
-                    text = "Do Function",
+                    text = "Do Function name ",
                     style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 )
-                TextField(value = FunctionName.value, onValueChange = { newText ->
-                    FunctionName.value = newText
-                })
+                TextField(modifier = Modifier
+                    .width(50.dp) ,
+                    value = FunctionName.value, onValueChange = { newText ->
+                        FunctionName.value = newText
+                    })
                 Text(
                     text = "     ",
                     style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
@@ -915,7 +932,13 @@ fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
                 }
                 Button(
 
-                    onClick = onCloseClicked,
+                    onClick = {
+                        for(card in CardList)
+                        {
+                            card.offsetY.value -= 1500f;
+                        }
+                        onCloseClicked()
+                    },
                     modifier = Modifier.padding(top = 16.dp)
                 ) {
                     Text("Закрыть")
