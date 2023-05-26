@@ -134,6 +134,18 @@ data class TypeVaribleClass(
     var bordersize: MutableState<Dp> = mutableStateOf(0.dp),
 )
 
+data class OtherTypeVaribleClass(
+    var offsetX: MutableState<Float> = mutableStateOf(0f),
+    var offsetY: MutableState<Float> = mutableStateOf(0f),
+    var isDragging: MutableState<Boolean> = mutableStateOf(false),
+    var expanded:  MutableState<Boolean> = mutableStateOf(false),
+    var variableName: MutableState<String> = mutableStateOf(""),
+    var selectedType: MutableState<String> = mutableStateOf(""),
+    var thisID: Int,
+    var childId: MutableState<Int> = mutableStateOf(-1),
+    var bordersize: MutableState<Dp> = mutableStateOf(0.dp),
+)
+
 data class ArrayVaribleClass(
     var offsetX: MutableState<Float> = mutableStateOf(0f),
     var offsetY: MutableState<Float> = mutableStateOf(0f),
@@ -269,6 +281,7 @@ var StructBlockList = mutableListOf<StructBlockClass>()
 var StructVarBlockList = mutableListOf<StructVarBlockClass>()
 var BreakBlockList = mutableListOf<BreakBlockClass>()
 var ContinueBlockList = mutableListOf<ContinueBlockClass>()
+var OtherTypeVaribleList = mutableListOf<OtherTypeVaribleClass>()
 var DebugList = mutableListOf<TablePair>()
 
 var SaveTypeVaribleList = mutableListOf<TypeVaribleClass>()
@@ -355,6 +368,12 @@ fun MyScreen(pixelsPerDp: Float) {
         TypeVaribleList.add(TypeVaribleClass(thisID = cardIdCounter))
         TypeVaribleList.last().offsetY.value = 300f;
         CardList.add(CardClass(childId = TypeVaribleList.last().childId,isDragging = TypeVaribleList.last().isDragging, offsetX = TypeVaribleList.last().offsetX, offsetY = TypeVaribleList.last().offsetY,thisID = cardIdCounter, width = 500.dp, height = 80.dp, bordersize = TypeVaribleList.last().bordersize))
+        cardIdCounter++;
+    }
+    fun OtherTypeVaribleListAddCard() {
+        OtherTypeVaribleList.add(OtherTypeVaribleClass(thisID = cardIdCounter))
+        OtherTypeVaribleList.last().offsetY.value = 300f;
+        CardList.add(CardClass(childId = OtherTypeVaribleList.last().childId,isDragging = OtherTypeVaribleList.last().isDragging, offsetX = OtherTypeVaribleList.last().offsetX, offsetY = OtherTypeVaribleList.last().offsetY,thisID = cardIdCounter, width = 500.dp, height = 80.dp, bordersize = OtherTypeVaribleList.last().bordersize))
         cardIdCounter++;
     }
     fun ArrayVaribleListAddCard() {
@@ -567,6 +586,11 @@ fun MyScreen(pixelsPerDp: Float) {
         FunctionBlockList.clear()
         DoFunctionBlockList.clear()
         ReturnBlockList.clear()
+        BreakBlockList.clear()
+        ContinueBlockList.clear()
+        OtherTypeVaribleList.clear()
+        StructBlockList.clear()
+        StructVarBlockList.clear()
         CardList.clear();
         CardList.add(
             CardClass(
@@ -686,6 +710,11 @@ fun MyScreen(pixelsPerDp: Float) {
                     if(myGlobalNumber == 13)
                     {
                         ContinieBlockListAddCard()
+                        myGlobalNumber = 0;
+                    }
+                    if(myGlobalNumber == 14)
+                    {
+                        OtherTypeVaribleListAddCard()
                         myGlobalNumber = 0;
                     }
                     if (FirstTime == true) {
@@ -966,6 +995,21 @@ fun MyScreen(pixelsPerDp: Float) {
                     )
 
                 }
+                for (card in OtherTypeVaribleList) {
+                    OtherTypeVariableReal(
+                        offsetX = card.offsetX,
+                        offsetY = card.offsetY,
+                        isDragging = card.isDragging,
+                        variableName = card.variableName,
+                        expanded = card.expanded,
+                        selectedType = card.selectedType,
+                        thisID = card.thisID,
+                        CardList = CardList,
+                        bordersize = card.bordersize
+                    )
+
+                }
+
                 for (card in ArrayVaribleList) {
                     ArrayVariableReal(
                         offsetX = card.offsetX,

@@ -1423,3 +1423,113 @@ fun ContinueBlockReal(
         }
     }
 }
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun OtherTypeVariableReal(
+    offsetX: MutableState<Float>,
+    offsetY: MutableState<Float>,
+    isDragging: MutableState<Boolean>,
+    expanded: MutableState<Boolean>,
+    variableName: MutableState<String>,
+    selectedType: MutableState<String>,
+    thisID: Int,
+    CardList: MutableList<CardClass>,
+    bordersize: MutableState<Dp>
+) {
+    // Сохраненный тип переменной
+    if (selectedType.value == "") {
+        selectedType.value = "int"
+    }
+    // Сохраненное имя переменной
+
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .width(500.dp)
+            .height(80.dp)
+            .padding(2.dp)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = {
+                        isDragging.value = true
+                    },
+                    onDragEnd = { isDragging.value = false },
+                    onDragCancel = { },
+                    onDrag = { change, dragAmount ->
+                        offsetX.value += dragAmount.x
+                        offsetY.value += dragAmount.y
+                        change.consumeAllChanges()
+                        var i = CardList[thisID].childId.value;
+                        while (i != -1) {
+                            CardList[i].offsetY.value += dragAmount.y
+                            CardList[i].offsetX.value += dragAmount.x
+                            i = CardList[i].childId.value
+                        }
+                    }
+                )
+            },
+        shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(bordersize.value,Pink80)
+
+    )
+    {
+        Column {
+            Row()
+            {
+                Text(text = "Change Type to")
+                IconButton(onClick = { expanded.value = true })
+                {
+                    Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+                }
+                Text(
+                    text = selectedType.value,
+                    modifier = Modifier.padding(15.dp),
+                    fontSize = 15.sp
+                )
+                DropdownMenu(
+                    expanded = expanded.value,
+                    onDismissRequest = { expanded.value = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = "int") },
+                        onClick = {
+                            selectedType.value = "int"
+                            // Изменять значение внешнего класса (типа переменной) здесь (при изменении дроп меню) именно через selectedType.value
+                            expanded.value = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "double") },
+                        onClick = {
+                            selectedType.value = "double"
+                            // Изменять значение внешнего класса (типа переменной) здесь (при изменении дроп меню) именно через selectedType.value
+                            expanded.value = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "string") },
+                        onClick = {
+                            selectedType.value = "string"
+                            // Изменять значение внешнего класса (типа переменной) здесь (при изменении дроп меню) именно через selectedType.value
+                            expanded.value = false
+                        })
+                }
+                Text(text = "for var:", fontSize = 15.sp)
+                TextField(
+                    modifier = Modifier.width(200.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = variableName.value,
+                    onValueChange = { newText ->
+                        variableName.value = newText
+                        // Изменять значение внешнего класса (имени переменной) здесь (при изменении текст филда) именно через variableName.value
+                    }
+                )
+                IconButton(onClick = { NeedClear.IdToClear = thisID
+                    NeedClear.WhatList = 1})
+                {
+                    Icon(Icons.Filled.Close, contentDescription = null)
+                }
+            }
+        }
+    }
+}

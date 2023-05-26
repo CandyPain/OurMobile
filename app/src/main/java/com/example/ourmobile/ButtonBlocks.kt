@@ -996,6 +996,85 @@ fun ContinueBlock(onCloseClicked: () -> Unit){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun OtherTypeVariableReal(onCloseClicked: () -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    val variableName = remember { mutableStateOf("") }
+    val selectedType = remember { mutableStateOf("") }
+    // Сохраненный тип переменной
+    if (selectedType.value == "") {
+        selectedType.value = "int"
+    }
+    // Сохраненное имя переменной
+
+    Card(
+        modifier = Modifier
+            .width(500.dp)
+            .height(80.dp)
+            .padding(2.dp)
+            .clickable {
+                myGlobalNumber = 14;
+                onCloseClicked();
+            },
+        shape = RoundedCornerShape(15.dp),
+
+    )
+    {
+        Column {
+            Row()
+            {
+                Text(text = "Change Type to")
+                IconButton(onClick = { expanded = true })
+                {
+                    Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+                }
+                Text(
+                    text = selectedType.value,
+                    modifier = Modifier.padding(15.dp),
+                    fontSize = 15.sp
+                )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = "int") },
+                        onClick = {
+                            selectedType.value = "int"
+                            // Изменять значение внешнего класса (типа переменной) здесь (при изменении дроп меню) именно через selectedType.value
+                            expanded = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "double") },
+                        onClick = {
+                            selectedType.value = "double"
+                            // Изменять значение внешнего класса (типа переменной) здесь (при изменении дроп меню) именно через selectedType.value
+                            expanded = false
+                        })
+                    DropdownMenuItem(
+                        text = { Text(text = "string") },
+                        onClick = {
+                            selectedType.value = "string"
+                            // Изменять значение внешнего класса (типа переменной) здесь (при изменении дроп меню) именно через selectedType.value
+                            expanded = false
+                        })
+                }
+                Text(text = "for var:", fontSize = 15.sp)
+                TextField(
+                    modifier = Modifier.width(200.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = variableName.value,
+                    onValueChange = { newText ->
+                        variableName.value = newText
+                        // Изменять значение внешнего класса (имени переменной) здесь (при изменении текст филда) именно через variableName.value
+                    }
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
     var selectedButton by remember { mutableStateOf(-1) }
 
@@ -1099,6 +1178,7 @@ fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
                     ArrayVariable(onCloseClicked = onCloseClicked)
                     FunctionBlock(onCloseClicked = onCloseClicked)
                     DoFunctionBlock(onCloseClicked = onCloseClicked)
+                    OtherTypeVariableReal(onCloseClicked = onCloseClicked)
                 }
                 Button(
 
