@@ -75,7 +75,7 @@ fun createCommandList(): MutableList<String> {
         val structName: String = StructBlockList[i].Name.value
         var structArgument: String = StructBlockList[i].StrObject.value
         structArgument = normalizationPrametres(structArgument)
-        commandList.add("<struct:" + structName + "," + structArgument + ">")
+        commandList.add("<struct:" + structName + ";" + structArgument + ">")
         structList.add(
             Structures(
                 structName,
@@ -551,11 +551,8 @@ fun createCommandList(): MutableList<String> {
 
 fun normalizationPrametres(params: String): String {
     var normalParametres: String = ""
-    val variableName = "([a-zA-Z][a-zA-Z0-9]*)"
     val variableNameRegex = variableName.toRegex()
-    val variableType = "(((int)|(double)|(string))|(array<((int)|(double)|(string))>))"
     val variableTypeRegex = variableType.toRegex()
-    val parameter = "($variableType[ ]+$variableName)"
     val parameterRegex = parameter.toRegex()
     var badString: String = params
     while (parameterRegex.find(badString) != null) {
@@ -571,16 +568,6 @@ fun normalizationPrametres(params: String): String {
     }
     normalParametres = ".$".toRegex().replaceFirst(normalParametres, "")
     return normalParametres
-}
-
-fun returnNumOfArg(exp: String): Int {
-    var num: Int = 0;
-    for (i in 0 until exp.length) {
-        if (exp[i] == ':') {
-            ++num
-        }
-    }
-    return num
 }
 
 fun makeParametresList(params: String): List<String> {
@@ -599,15 +586,14 @@ fun makeParametresList(params: String): List<String> {
 
 fun makeTypesList(params: String): List<String> {
     var typesList = mutableListOf<String>()
-    val variableType = "([:](((int)|(double)|(string))|(array<((int)|(double)|(string))>)))"
-    val variableTypeRegex = variableType.toRegex()
+    val variableTypeInListRegex = variableTypeInList.toRegex()
     var exp = params
-    while (variableTypeRegex.find(exp) != null) {
-        val matchExp = variableTypeRegex.find(exp)
+    while (variableTypeInListRegex.find(exp) != null) {
+        val matchExp = variableTypeInListRegex.find(exp)
         var matchedExp = matchExp?.value.toString()
         matchedExp = "^:".toRegex().replaceFirst(matchedExp, "")
         typesList.add(matchedExp)
-        exp = variableTypeRegex.replaceFirst(exp, "")
+        exp = variableTypeInListRegex.replaceFirst(exp, "")
     }
     return typesList
 }
@@ -623,8 +609,7 @@ fun spaceRemove(exp: String): String {
 }
 
 fun normalizationElementOfArray(name: String): String {
-    val variableRegex = "(([a-zA-Z][a-zA-Z0-9]*)|(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*)))"
-    val pattern = variableRegex.toRegex()
+    val pattern = structName.toRegex()
     val matchName = pattern.find(name)
     val nameOfElement = matchName?.value.toString()
     var exp = name
@@ -648,7 +633,7 @@ fun returnVariableType(name: String): String {
     var variab = name
     if ("\\[".toRegex().find(variab) != null) {
         val matchExp =
-            "^(([a-zA-Z][a-zA-Z0-9]*)|(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*)))".toRegex()
+            "^$structName".toRegex()
                 .find(variab)
         var matchedExp = matchExp?.value.toString()
         for (i in 0 until variablesList.size) {
@@ -687,14 +672,6 @@ fun returnUnderVariableType(name: String): String {
 }
 
 fun normalizationOfExpression(expression: String): String {
-    val variableRegex = "([a-zA-Z][a-zA-Z0-9]*)"
-    val strVariableRegex = "(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*))"
-    val numberRegex = "((([-])?[1-9][0-9]*([.][0-9]*[1-9])?)|(([-])?[0][.][0-9]*[1-9])|([0]))"
-    val arrayRegex =
-        "((([a-zA-Z][a-zA-Z0-9]*)|(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*)))\\[((([a-zA-Z][a-zA-Z0-9]*)|(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*)))|(([0])|([1-9][0-9]*)))\\])"
-    val stringRegex = "(\\/\\/[^\\/ ]*\\/\\/)"
-    val functionReg =
-        "([a-zA-Z][a-zA-Z0-9]*\\((($variableRegex|$numberRegex|$arrayRegex|$stringRegex|$strVariableRegex)([,]($variableRegex|$numberRegex|$arrayRegex|$stringRegex|$strVariableRegex))*)?\\))"
     val pattern = functionReg.toRegex()
     var result = expression
 
@@ -703,9 +680,9 @@ fun normalizationOfExpression(expression: String): String {
     while (pattern.find(result) != null) {
         val matchfunc = pattern.find(result)
         var matchedfunc = matchfunc?.value.toString()
-        val matchnamefunc = variableRegex.toRegex().find(matchedfunc)
+        val matchnamefunc = variableName.toRegex().find(matchedfunc)
         var matchednamefunc = matchnamefunc?.value.toString()
-        matchedfunc = "([a-zA-Z][a-zA-Z0-9]*\\()".toRegex().replaceFirst(matchedfunc, "")
+        matchedfunc = "($variableName\\()".toRegex().replaceFirst(matchedfunc, "")
         matchedfunc = ".$".toRegex().replaceFirst(matchedfunc, "")
         matchedfunc += ","
         var numOfPar: Int = 0
@@ -717,23 +694,22 @@ fun normalizationOfExpression(expression: String): String {
             }
         }
         var newFun: String = ""
-        while ("^($variableRegex|$numberRegex|$arrayRegex|$stringRegex|$strVariableRegex)[,]".toRegex()
+        while ("^($variableName|$numberRegex|$weakArrayRegex|$stringRegex|$structName)[,]".toRegex()
                 .find(matchedfunc) != null
         ) {
             val matchVar =
-                "^($variableRegex|$numberRegex|$arrayRegex|$stringRegex|$strVariableRegex)[,]".toRegex()
+                "^($variableName|$numberRegex|$weakArrayRegex|$stringRegex|$structName)[,]".toRegex()
                     .find(matchedfunc)
             var matchedVar = matchVar?.value.toString()
             matchedVar = ".$".toRegex().replaceFirst(matchedVar, "|")
             newFun += parametersTypes[numOfPar] + matchedVar
             numOfPar++
             matchedfunc =
-                "^($variableRegex|$numberRegex|$arrayRegex|$stringRegex|$strVariableRegex)[,]".toRegex()
+                "^($variableName|$numberRegex|$weakArrayRegex|$stringRegex|$structName)[,]".toRegex()
                     .replaceFirst(matchedfunc, "")
         }
         newFun = ".$".toRegex().replaceFirst(newFun, "")
         newFun = "$matchednamefunc<$newFun>"
-        matchedfunc = matchfunc?.value.toString()
         result = pattern.replaceFirst(result, newFun)
     }
 
@@ -754,17 +730,6 @@ fun makeFirstToken(exp: String): String {
 }
 
 fun makeSecondToken(exp: String): String {
-    val variableRegex = "(([a-zA-Z][a-zA-Z0-9]*)|(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*)))"
-    val numberRegex = "((([-])?[1-9][0-9]*([.][0-9]*[1-9])?)|(([-])?[0][.][0-9]*[1-9])|([0]))"
-    val arrayRegex =
-        "((([a-zA-Z][a-zA-Z0-9]*)|(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*)))\\[((([a-zA-Z][a-zA-Z0-9]*)|(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*)))|(([0])|([1-9][0-9]*)))\\])"
-    val stringRegex = "(\\/\\/[^\\/ ]*\\/\\/)"
-    val functionRegex =
-        "([a-zA-Z][a-zA-Z0-9]*\\((($variableRegex|$numberRegex|$arrayRegex|$stringRegex)([,]($variableRegex|$numberRegex|$arrayRegex|$stringRegex))*)?\\))"
-    val array =
-        "((([a-zA-Z][a-zA-Z0-9]*)|(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*)))\\[(((\\()|(\\))|$variableRegex|$numberRegex|$arrayRegex|$stringRegex|$functionRegex|[\\+\\-\\/\\*])+)\\])"
-    val expRegex =
-        "(($variableRegex|$array|$numberRegex|$functionRegex|[\\+\\/\\*\\-]|(\\()|(\\)))+)"
     var result = exp
 
     val matchLeft = "^[ ]*($expRegex)".toRegex().find(result)
@@ -786,9 +751,8 @@ fun makeSecondToken(exp: String): String {
 }
 
 fun clearScobs(name: String) : String {
-    val variableRegex = "(([a-zA-Z][a-zA-Z0-9]*)|(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*)))"
     if ("\\[".toRegex().find(name) != null) {
-        val matchExp = variableRegex.toRegex().find(name)
+        val matchExp = structName.toRegex().find(name)
         var matchedExp = matchExp?.value.toString()
         return matchedExp
     }

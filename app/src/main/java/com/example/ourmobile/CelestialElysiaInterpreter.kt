@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import processArray
 import kotlin.reflect.KClass
 
 class CelestialElysiaInterpreter(
@@ -58,6 +59,7 @@ class CelestialElysiaInterpreter(
 
     var inputValue: String = "0"
     fun interprete() {
+        stringPoint = 0
         variableVisibilityStack.clear()
         variableVisibilityStack.addFirst(mutableListOf<String>())
 
@@ -77,6 +79,9 @@ class CelestialElysiaInterpreter(
         val scope = CoroutineScope(Dispatchers.Default)
         scope.launch {
             var tokenRegex = Regex("<\\w+")
+            val arrayNameRegex = Regex("^\\w+(?=\\[)")
+            val arrayExpressionRegex = Regex("(?<=(\\[)).+(?=]$)")
+            val arrayRegex = Regex("^\\w+\\[.+]$")
             variableVisibilityStack.clear()
             variableVisibilityStack.addFirst(mutableListOf<String>())
             while (stringPoint < com.example.ourmobile.commandList.size) {
@@ -90,6 +95,11 @@ class CelestialElysiaInterpreter(
                     stringPoint++
                     for (pair in DebugList) {
                         if (pair.key.value != "") {
+                            if(pair.key.value.toString().matches(arrayRegex))
+                            {
+                                pair.value.value =
+                                    processArray(this@CelestialElysiaInterpreter.varHashMap.get(pair.key.value).toString(),this@CelestialElysiaInterpreter.varHashMap,this@CelestialElysiaInterpreter)
+                            }
                             if (this@CelestialElysiaInterpreter.varHashMap.get(pair.key.value) != null) {
                                 pair.value.value =
                                     this@CelestialElysiaInterpreter.varHashMap.get(pair.key.value)

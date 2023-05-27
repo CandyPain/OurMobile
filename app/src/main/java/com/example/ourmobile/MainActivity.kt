@@ -37,6 +37,7 @@ var cardIdCounter = 0
 var NextStep = false;
 var GlobalDebugMod = false;
 var DebugID = 0;
+var PredDebugID = 0;
 var WaitConsole = false;
 
 data class needClear(
@@ -1071,8 +1072,9 @@ fun MyScreen(pixelsPerDp: Float) {
                                 IconButton(onClick = {
                                     if (DebugID < commandListID.size) {
                                         CardList[commandListID[DebugID]].bordersize.value = 3.dp
+                                        PredDebugID = DebugID
                                         if (DebugID != 0) {
-                                            CardList[commandListID[DebugID - 1]].bordersize.value =
+                                            CardList[commandListID[PredDebugID]].bordersize.value =
                                                 0.dp
                                         }
                                         NextStep = true;
