@@ -6,8 +6,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
-class CelestialElysiaInterpreter(var varHashMap: HashMap<String, Any>,
-                                 val commandList: MutableList<String>, var returnType: String = "void") {
+class CelestialElysiaInterpreter(
+    var varHashMap: HashMap<String, Any>,
+    val commandList: MutableList<String>, var returnType: String = "void"
+) {
     val tokenHashMap = hashMapOf<String, KClass<out IToken>>(
         "<variable" to VariableToken::class,
         "<equals" to EqualsToken::class,
@@ -51,22 +53,26 @@ class CelestialElysiaInterpreter(var varHashMap: HashMap<String, Any>,
 
     var returnValue: Any = 0
 
+    val CinList = messagesCin.split(",")
+    var NumberCin = 0;
+
     var inputValue: String = "0"
-    fun interprete(){
+    fun interprete() {
         variableVisibilityStack.clear()
         variableVisibilityStack.addFirst(mutableListOf<String>())
 
         var tokenRegex = Regex("<\\w+")
-        while(stringPoint<commandList.size){
+        while (stringPoint < commandList.size) {
             var tokenName = tokenRegex.find(commandList[stringPoint])!!.value
             var tokenType = tokenHashMap.get(tokenName)
-            var tokenObject = tokenType?.java?.newInstance() as? IToken ?: throw IllegalArgumentException("Invalid token type")
-            tokenObject.command(commandList[stringPoint],this)
+            var tokenObject = tokenType?.java?.newInstance() as? IToken
+                ?: throw IllegalArgumentException("Invalid token type")
+            tokenObject.command(commandList[stringPoint], this)
             stringPoint++
         }
     }
-    fun interpret_debug()
-    {
+
+    fun interpret_debug() {
 
         val scope = CoroutineScope(Dispatchers.Default)
         scope.launch {
@@ -74,20 +80,20 @@ class CelestialElysiaInterpreter(var varHashMap: HashMap<String, Any>,
             variableVisibilityStack.clear()
             variableVisibilityStack.addFirst(mutableListOf<String>())
             while (stringPoint < com.example.ourmobile.commandList.size) {
-                if(NextStep) {
-                    var tokenName = tokenRegex.find(com.example.ourmobile.commandList[stringPoint])!!.value
+                if (NextStep) {
+                    var tokenName =
+                        tokenRegex.find(com.example.ourmobile.commandList[stringPoint])!!.value
                     var tokenType = tokenHashMap.get(tokenName)
                     var tokenObject = tokenType?.java?.newInstance() as? IToken
                         ?: throw IllegalArgumentException("Invalid token type")
                     tokenObject.command(commandList[stringPoint], this@CelestialElysiaInterpreter)
                     stringPoint++
-                    for(pair in DebugList)
-                    {
-                        if(pair.key.value != "")
-                        {
-                            if(this@CelestialElysiaInterpreter.varHashMap.get(pair.key.value) != null)
-                            {
-                                pair.value.value = this@CelestialElysiaInterpreter.varHashMap.get(pair.key.value).toString()
+                    for (pair in DebugList) {
+                        if (pair.key.value != "") {
+                            if (this@CelestialElysiaInterpreter.varHashMap.get(pair.key.value) != null) {
+                                pair.value.value =
+                                    this@CelestialElysiaInterpreter.varHashMap.get(pair.key.value)
+                                        .toString()
                             }
                         }
                     }

@@ -57,9 +57,7 @@ fun runApp() {
     for (i in 0 until messagesCout.size) {
         Log.d("MyTag", messagesCout[i])
     }
-    for (i in 0 until commandList.size) {
-        Log.d("MyTag", commandList[i])
-    }
+    Log.d("MyTag", doRun.toString())
 }
 
 fun createCommandList(): MutableList<String> {
@@ -145,7 +143,7 @@ fun createCommandList(): MutableList<String> {
                 for (j in 0 until VariableAssignmentList.size) {
                     if (VariableAssignmentList[j].thisID == childId) {
                         hasChild = true
-                        if (checkVariableName(VariableAssignmentList[j].variableName.value)) {
+                        if (checkVariableName(clearScobs(VariableAssignmentList[j].variableName.value))) {
                             val type =
                                 returnVariableType(VariableAssignmentList[j].variableName.value)
                             val underType =
@@ -346,17 +344,17 @@ fun createCommandList(): MutableList<String> {
                 if (StructVarBlockList[j].thisID == childId) {
                     hasChild = true
                     var checkType: Boolean = false
-                    for(h in 0 until structList.size) {
-                        if(StructVarBlockList[j].Type.value == structList[h].structName) {
+                    for (h in 0 until structList.size) {
+                        if (StructVarBlockList[j].Type.value == structList[h].structName) {
                             checkType = true
                         }
                     }
-                    if(checkType) {
+                    if (checkType) {
                         commandList.add("<structobject:${StructVarBlockList[j].Type.value},${StructVarBlockList[j].Name.value}>")
                         commandListID.add(StructVarBlockList[j].thisID)
-                        for(h in 0 until structList.size) {
-                            if(StructVarBlockList[j].Type.value == structList[h].structName) {
-                                for(k in 0 until structList[h].usageOfTypes.size) {
+                        for (h in 0 until structList.size) {
+                            if (StructVarBlockList[j].Type.value == structList[h].structName) {
+                                for (k in 0 until structList[h].usageOfTypes.size) {
                                     var temp = structList[h].usageOfParams[k]
                                     temp = ":".toRegex().replaceFirst(temp, "")
                                     variablesList.add(
@@ -401,7 +399,7 @@ fun createCommandList(): MutableList<String> {
             for (j in 0 until VariableAssignmentList.size) {
                 if (VariableAssignmentList[j].thisID == childId) {
                     hasChild = true
-                    if (checkVariableName(VariableAssignmentList[j].variableName.value)) {
+                    if (checkVariableName(clearScobs(VariableAssignmentList[j].variableName.value))) {
                         val type = returnVariableType(VariableAssignmentList[j].variableName.value)
                         val underType =
                             returnUnderVariableType(VariableAssignmentList[j].variableName.value)
@@ -545,7 +543,7 @@ fun createCommandList(): MutableList<String> {
     }
 
     for (i in 0 until variablesList.size) {
-        Log.d("MyTag", variablesList[i].variableType + " " + variablesList[i].variableName)
+        Log.d("MyTag2", variablesList[i].variableType + " " + variablesList[i].variableName)
     }
 
     return commandList
@@ -627,7 +625,8 @@ fun spaceRemove(exp: String): String {
 fun normalizationElementOfArray(name: String): String {
     val variableRegex = "(([a-zA-Z][a-zA-Z0-9]*)|(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*)))"
     val pattern = variableRegex.toRegex()
-    val nameOfElement: String = pattern.find(name).toString()
+    val matchName = pattern.find(name)
+    val nameOfElement = matchName?.value.toString()
     var exp = name
     exp = pattern.replaceFirst(exp, "")
     exp = "^.".toRegex().replaceFirst(exp, "")
@@ -784,4 +783,14 @@ fun makeSecondToken(exp: String): String {
     result = "[ ]*$".toRegex().replaceFirst(result, "")
 
     return "<expression:$matchedLeft>;<expression:$matchedRight>;$result;"
+}
+
+fun clearScobs(name: String) : String {
+    val variableRegex = "(([a-zA-Z][a-zA-Z0-9]*)|(([a-zA-Z][a-zA-Z0-9]*)[.]([a-zA-Z][a-zA-Z0-9]*)))"
+    if ("\\[".toRegex().find(name) != null) {
+        val matchExp = variableRegex.toRegex().find(name)
+        var matchedExp = matchExp?.value.toString()
+        return matchedExp
+    }
+    return name
 }

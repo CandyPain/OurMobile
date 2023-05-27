@@ -34,7 +34,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.TextStyle
@@ -57,10 +56,10 @@ fun BeginBlock(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(300.dp)
-            .height(60.dp)
+            .width(BeginBLockW)
+            .height(BeginBlockH)
             .padding(2.dp)
-            .background(Color.LightGray,)
+            .background(LightGrey)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
@@ -109,8 +108,8 @@ fun BeginBlockReal(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(200.dp)
-            .height(45.dp)
+            .width(EndBeginBlockRealW)
+            .height(EndBeginBlockRealH)
             .padding(2.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
@@ -133,7 +132,7 @@ fun BeginBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-                border = BorderStroke(bordersize.value,Black)
+        border = BorderStroke(bordersize.value, Black)
     ) {
         Box(
             modifier = Modifier
@@ -162,8 +161,8 @@ fun EndBlockReal(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(200.dp)
-            .height(45.dp)
+            .width(EndBeginBlockRealW)
+            .height(EndBeginBlockRealH)
             .padding(2.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
@@ -214,10 +213,10 @@ fun EndBlock(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(300.dp)
-            .height(60.dp)
+            .width(EndBLockW)
+            .height(EndBlockH)
             .padding(2.dp)
-            .background(Color.LightGray,)
+            .background(LightGrey)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
@@ -277,8 +276,8 @@ fun TypeVariableReal(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(500.dp)
-            .height(80.dp)
+            .width(TypeVariableRealW)
+            .height(TypeVariableRealH)
             .padding(2.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
@@ -301,7 +300,7 @@ fun TypeVariableReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Pink80)
+        border = BorderStroke(bordersize.value, Pink80)
 
     )
     {
@@ -353,8 +352,10 @@ fun TypeVariableReal(
                         // Изменять значение внешнего класса (имени переменной) здесь (при изменении текст филда) именно через variableName.value
                     }
                 )
-                IconButton(onClick = { NeedClear.IdToClear = thisID
-                    NeedClear.WhatList = 1})
+                IconButton(onClick = {
+                    NeedClear.IdToClear = thisID
+                    NeedClear.WhatList = 1
+                })
                 {
                     Icon(Icons.Filled.Close, contentDescription = null)
                 }
@@ -385,9 +386,9 @@ fun ArrayVariableReal(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(250.dp)
+            .width(ArrayVariableRealW)
             .padding(2.dp)
-            .height(200.dp)
+            .height(ArrayVariableRealH)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
@@ -455,20 +456,20 @@ fun ArrayVariableReal(
                     fontSize = 15.sp
                 )
             }
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "count", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    TextField(
-                        modifier = Modifier.width(100.dp),
-                        textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
-                        value = count.value,
-                        onValueChange = { newText ->
-                            count.value = newText
-                        }
-                    )
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "count", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.width(8.dp))
+                TextField(
+                    modifier = Modifier.width(100.dp),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 15.sp),
+                    value = count.value,
+                    onValueChange = { newText ->
+                        count.value = newText
+                    }
+                )
 
-                }
+            }
         }
     }
 }
@@ -490,9 +491,9 @@ fun ForBlockReal(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(250.dp)
+            .width(ForBlockRealW)
             .padding(2.dp)
-            .height(225.dp)
+            .height(ForBlockRealH)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
@@ -580,9 +581,9 @@ fun CinBlockReal(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(300.dp)
+            .width(CinBlockRealW)
             .padding(2.dp)
-            .height(80.dp)
+            .height(CinBlockRealH)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
@@ -604,7 +605,7 @@ fun CinBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Red)
+        border = BorderStroke(bordersize.value, Red)
     ) {
         Row(
             modifier = Modifier.padding(8.dp),
@@ -645,8 +646,8 @@ fun CoutBlockReal(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(300.dp)
-            .height(80.dp)
+            .width(CinBlockRealW)
+            .height(CinBlockRealH)
             .padding(2.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
@@ -669,10 +670,12 @@ fun CoutBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Red)
+        border = BorderStroke(bordersize.value, Red)
     ) {
-        Row(            modifier = Modifier.padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically)
+        Row(
+            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        )
         {
             Text(
                 text = "Cout",
@@ -709,8 +712,8 @@ fun VariableAssignmentReal(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(500.dp)
-            .height(80.dp)
+            .width(VariableAssignmentRealW)
+            .height(VariableAssignmentRealH)
             .padding(2.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
@@ -733,7 +736,7 @@ fun VariableAssignmentReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Red)
+        border = BorderStroke(bordersize.value, Red)
     ) {
         Box() {
             Row(
@@ -784,8 +787,8 @@ fun IfBlockReal(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(500.dp)
-            .height(150.dp)
+            .width(IfBlockRealW)
+            .height(IfBlockRealH)
             .padding(8.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
@@ -909,14 +912,14 @@ fun ReturnBlockReal(
     isDragging: MutableState<Boolean>,
     thisID: Int,
     CardList: MutableList<CardClass>,
-    ReturnString:MutableState<String>,
+    ReturnString: MutableState<String>,
     bordersize: MutableState<Dp>
 ) {
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(200.dp)
-            .height(80.dp)
+            .width(ReturnBlockRealW)
+            .height(ReturnBlockRealH)
             .padding(2.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
@@ -939,7 +942,7 @@ fun ReturnBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Red)
+        border = BorderStroke(bordersize.value, Red)
     ) {
         Box(
             modifier = Modifier
@@ -978,21 +981,20 @@ fun DoFunctionBlockReal(
     isDragging: MutableState<Boolean>,
     thisID: Int,
     CardList: MutableList<CardClass>,
-    FunctionName:MutableState<String>,
-    FunctionParams:MutableState<String>,
+    FunctionName: MutableState<String>,
+    FunctionParams: MutableState<String>,
     bordersize: MutableState<Dp>
 ) {
-    if(FunctionParams.value == "")
-    {
+    if (FunctionParams.value == "") {
         FunctionParams.value = "<>";
     }
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(350.dp)
-            .height(90.dp)
+            .width(DoFunctionBlockRealW)
+            .height(DoFunctionBlockRealH)
             .padding(2.dp)
-            .background(Color.LightGray,)
+            .background(LightGrey)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
@@ -1030,7 +1032,7 @@ fun DoFunctionBlockReal(
                     style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 )
                 TextField(modifier = Modifier
-                    .width(50.dp) ,
+                    .width(50.dp),
                     value = FunctionName.value, onValueChange = { newText ->
                         FunctionName.value = newText
                     })
@@ -1045,6 +1047,7 @@ fun DoFunctionBlockReal(
         }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FunctionBlockReal(
@@ -1053,23 +1056,22 @@ fun FunctionBlockReal(
     isDragging: MutableState<Boolean>,
     thisID: Int,
     CardList: MutableList<CardClass>,
-    FunctionName:MutableState<String>,
-    FunctionParams:MutableState<String>,
+    FunctionName: MutableState<String>,
+    FunctionParams: MutableState<String>,
     expanded: MutableState<Boolean>,
     selectedType: MutableState<String>,
     bordersize: MutableState<Dp>
 ) {
-    if(selectedType.value == "")
-    {
+    if (selectedType.value == "") {
         selectedType.value = "int"
     }
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(500.dp)
-            .height(90.dp)
+            .width(FunctionBlockRealW)
+            .height(FunctionBlockRealH)
             .padding(2.dp)
-            .background(Color.LightGray,)
+            .background(LightGrey)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
@@ -1138,10 +1140,10 @@ fun FunctionBlockReal(
                     style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 )
                 TextField(modifier = Modifier
-                    .width(50.dp) ,
+                    .width(50.dp),
                     value = FunctionName.value, onValueChange = { newText ->
-                    FunctionName.value = newText
-                })
+                        FunctionName.value = newText
+                    })
                 Text(
                     text = "     ",
                     style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
@@ -1153,6 +1155,7 @@ fun FunctionBlockReal(
         }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StructBlockReal(
@@ -1161,18 +1164,18 @@ fun StructBlockReal(
     isDragging: MutableState<Boolean>,
     thisID: Int,
     CardList: MutableList<CardClass>,
-    Name:MutableState<String>,
-    StrObjects:MutableState<String>,
+    Name: MutableState<String>,
+    StrObjects: MutableState<String>,
     bordersize: MutableState<Dp>,
-    ShowAllert:MutableState<Boolean>,
+    ShowAllert: MutableState<Boolean>,
 ) {
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(450.dp)
-            .height(150.dp)
+            .width(StructBlockRealW)
+            .height(StructBlockRealH)
             .padding(2.dp)
-            .background(Color.LightGray,)
+            .background(LightGrey)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
@@ -1194,7 +1197,7 @@ fun StructBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Blue)
+        border = BorderStroke(bordersize.value, Blue)
     ) {
         Column(
             modifier = Modifier
@@ -1208,7 +1211,8 @@ fun StructBlockReal(
                 TextField(
                     value = Name.value,
                     onValueChange = { newText ->
-                        Name.value = newText },
+                        Name.value = newText
+                    },
                     modifier = Modifier.weight(1f)
                 )
                 IconButton(
@@ -1220,7 +1224,8 @@ fun StructBlockReal(
             TextField(
                 value = StrObjects.value,
                 onValueChange = { newText ->
-                    StrObjects.value = newText },
+                    StrObjects.value = newText
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
@@ -1230,12 +1235,12 @@ fun StructBlockReal(
     }
     if (ShowAllert.value == true) {
         AlertDialog(
-            onDismissRequest = {ShowAllert.value = false },
+            onDismissRequest = { ShowAllert.value = false },
             title = { Text("Создание структуры") },
             text = { Text("Текст Name - название. Саму структуру пишите в одну строку, переменные внутри нее отделяйте запятой, пример: int a,string s...") },
             confirmButton = {
                 Button(
-                    onClick = { ShowAllert.value  = false },
+                    onClick = { ShowAllert.value = false },
                 ) {
                     Text("ОК")
                 }
@@ -1252,17 +1257,17 @@ fun StructVarBlockReal(
     isDragging: MutableState<Boolean>,
     thisID: Int,
     CardList: MutableList<CardClass>,
-    Name:MutableState<String>,
-    Type:MutableState<String>,
+    Name: MutableState<String>,
+    Type: MutableState<String>,
     bordersize: MutableState<Dp>,
 ) {
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(450.dp)
-            .height(130.dp)
+            .width(StructVarBlockRealW)
+            .height(StructVarBlockRealH)
             .padding(2.dp)
-            .background(Color.LightGray,)
+            .background(LightGrey)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
@@ -1284,7 +1289,7 @@ fun StructVarBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Blue)
+        border = BorderStroke(bordersize.value, Blue)
     ) {
         Column(
             modifier = Modifier
@@ -1298,7 +1303,8 @@ fun StructVarBlockReal(
                 TextField(
                     value = Type.value,
                     onValueChange = { newText ->
-                        Type.value = newText },
+                        Type.value = newText
+                    },
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -1319,6 +1325,7 @@ fun StructVarBlockReal(
         }
     }
 }
+
 @Composable
 fun BreakBlockReal(
     offsetX: MutableState<Float>,
@@ -1331,8 +1338,8 @@ fun BreakBlockReal(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(200.dp)
-            .height(45.dp)
+            .width(BreakBlockRealW)
+            .height(BreakBlockRealH)
             .padding(2.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
@@ -1355,7 +1362,7 @@ fun BreakBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Black)
+        border = BorderStroke(bordersize.value, Black)
     ) {
         Box(
             modifier = Modifier
@@ -1371,6 +1378,7 @@ fun BreakBlockReal(
         }
     }
 }
+
 @Composable
 fun ContinueBlockReal(
     offsetX: MutableState<Float>,
@@ -1383,8 +1391,8 @@ fun ContinueBlockReal(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(200.dp)
-            .height(45.dp)
+            .width(BreakBlockRealW)
+            .height(BreakBlockRealH)
             .padding(2.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
@@ -1407,7 +1415,7 @@ fun ContinueBlockReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Black)
+        border = BorderStroke(bordersize.value, Black)
     ) {
         Box(
             modifier = Modifier
@@ -1447,8 +1455,8 @@ fun OtherTypeVariableReal(
     Card(
         modifier = Modifier
             .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-            .width(500.dp)
-            .height(80.dp)
+            .width(OtherTypeVariableRealW)
+            .height(OtherTypeVariableRealH)
             .padding(2.dp)
             .pointerInput(Unit) {
                 detectDragGestures(
@@ -1471,7 +1479,7 @@ fun OtherTypeVariableReal(
                 )
             },
         shape = RoundedCornerShape(15.dp),
-        border = BorderStroke(bordersize.value,Pink80)
+        border = BorderStroke(bordersize.value, Pink80)
 
     )
     {
@@ -1524,8 +1532,10 @@ fun OtherTypeVariableReal(
                         // Изменять значение внешнего класса (имени переменной) здесь (при изменении текст филда) именно через variableName.value
                     }
                 )
-                IconButton(onClick = { NeedClear.IdToClear = thisID
-                    NeedClear.WhatList = 1})
+                IconButton(onClick = {
+                    NeedClear.IdToClear = thisID
+                    NeedClear.WhatList = 1
+                })
                 {
                     Icon(Icons.Filled.Close, contentDescription = null)
                 }

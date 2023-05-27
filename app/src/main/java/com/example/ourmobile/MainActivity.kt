@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
@@ -32,17 +31,20 @@ import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.Dialog
 import com.example.ourmobile.ui.theme.*
 import java.io.*
+import kotlin.math.abs
 
 var cardIdCounter = 0
 var NextStep = false;
 var GlobalDebugMod = false;
 var DebugID = 0;
 var WaitConsole = false;
+
 data class needClear(
-    var IdToClear:Int,
-    var WhatList:Int,
+    var IdToClear: Int,
+    var WhatList: Int,
 )
-var NeedClear = needClear(-1,0)
+
+var NeedClear = needClear(-1, 0)
 
 //1- TypeVarible
 //2- VariableAssignment
@@ -126,7 +128,7 @@ data class TypeVaribleClass(
     var offsetX: MutableState<Float> = mutableStateOf(0f),
     var offsetY: MutableState<Float> = mutableStateOf(0f),
     var isDragging: MutableState<Boolean> = mutableStateOf(false),
-    var expanded:  MutableState<Boolean> = mutableStateOf(false),
+    var expanded: MutableState<Boolean> = mutableStateOf(false),
     var variableName: MutableState<String> = mutableStateOf(""),
     var selectedType: MutableState<String> = mutableStateOf(""),
     var thisID: Int,
@@ -138,7 +140,7 @@ data class OtherTypeVaribleClass(
     var offsetX: MutableState<Float> = mutableStateOf(0f),
     var offsetY: MutableState<Float> = mutableStateOf(0f),
     var isDragging: MutableState<Boolean> = mutableStateOf(false),
-    var expanded:  MutableState<Boolean> = mutableStateOf(false),
+    var expanded: MutableState<Boolean> = mutableStateOf(false),
     var variableName: MutableState<String> = mutableStateOf(""),
     var selectedType: MutableState<String> = mutableStateOf(""),
     var thisID: Int,
@@ -150,7 +152,7 @@ data class ArrayVaribleClass(
     var offsetX: MutableState<Float> = mutableStateOf(0f),
     var offsetY: MutableState<Float> = mutableStateOf(0f),
     var isDragging: MutableState<Boolean> = mutableStateOf(false),
-    var expanded:  MutableState<Boolean> = mutableStateOf(false),
+    var expanded: MutableState<Boolean> = mutableStateOf(false),
     var variableName: MutableState<String> = mutableStateOf(""),
     var selectedType: MutableState<String> = mutableStateOf(""),
     var count: MutableState<String> = mutableStateOf(""),
@@ -195,6 +197,7 @@ data class BeginBlockClass(
     var childId: MutableState<Int> = mutableStateOf(-1),
     var bordersize: MutableState<Dp> = mutableStateOf(0.dp),
 )
+
 data class EndBlockClass(
     var offsetX: MutableState<Float> = mutableStateOf(0f),
     var offsetY: MutableState<Float> = mutableStateOf(0f),
@@ -210,8 +213,8 @@ data class FunctionBlockClass(
     var thisID: Int,
     var isDragging: MutableState<Boolean> = mutableStateOf(false),
     var childId: MutableState<Int> = mutableStateOf(-1),
-    var FunctionName:MutableState<String> = mutableStateOf(""),
-    var FunctionParams:MutableState<String> = mutableStateOf(""),
+    var FunctionName: MutableState<String> = mutableStateOf(""),
+    var FunctionParams: MutableState<String> = mutableStateOf(""),
     var selectedType: MutableState<String> = mutableStateOf(""),
     var expanded: MutableState<Boolean> = mutableStateOf(false),
     var bordersize: MutableState<Dp> = mutableStateOf(0.dp),
@@ -223,8 +226,8 @@ data class DoFunctionBlockClass(
     var thisID: Int,
     var isDragging: MutableState<Boolean> = mutableStateOf(false),
     var childId: MutableState<Int> = mutableStateOf(-1),
-    var FunctionName:MutableState<String> = mutableStateOf(""),
-    var FunctionParams:MutableState<String> = mutableStateOf(""),
+    var FunctionName: MutableState<String> = mutableStateOf(""),
+    var FunctionParams: MutableState<String> = mutableStateOf(""),
     var bordersize: MutableState<Dp> = mutableStateOf(0.dp),
 )
 
@@ -234,7 +237,7 @@ data class ReturnBlockClass(
     var thisID: Int,
     var isDragging: MutableState<Boolean> = mutableStateOf(false),
     var childId: MutableState<Int> = mutableStateOf(-1),
-    var ReturnString:MutableState<String> = mutableStateOf(""),
+    var ReturnString: MutableState<String> = mutableStateOf(""),
     var bordersize: MutableState<Dp> = mutableStateOf(0.dp),
 )
 
@@ -247,6 +250,7 @@ data class BreakBlockClass(
 
     var bordersize: MutableState<Dp> = mutableStateOf(0.dp),
 )
+
 data class ContinueBlockClass(
     var offsetX: MutableState<Float> = mutableStateOf(0f),
     var offsetY: MutableState<Float> = mutableStateOf(0f),
@@ -258,8 +262,8 @@ data class ContinueBlockClass(
 )
 
 data class TablePair(
-    var key:MutableState<String> = mutableStateOf(""),
-    var value:MutableState<String> = mutableStateOf(""),
+    var key: MutableState<String> = mutableStateOf(""),
+    var value: MutableState<String> = mutableStateOf(""),
 )
 
 
@@ -309,7 +313,8 @@ fun TableScreen() {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(4.dp)) {
+                    .padding(4.dp)
+            ) {
                 TextField(
                     value = DebugList[rowIndex].key.value,
                     onValueChange = { DebugList[rowIndex].key.value = it },
@@ -363,118 +368,309 @@ fun MyScreen(pixelsPerDp: Float) {
     val showDialog = remember { mutableStateOf(false) }
     val saveButtonClicked = remember { mutableStateOf(false) }
     val openButtonClicked = remember { mutableStateOf(false) }
+
     // методы для добавления новой карточки в список
     fun TypeVaribleListAddCard() {
         TypeVaribleList.add(TypeVaribleClass(thisID = cardIdCounter))
         TypeVaribleList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = TypeVaribleList.last().childId,isDragging = TypeVaribleList.last().isDragging, offsetX = TypeVaribleList.last().offsetX, offsetY = TypeVaribleList.last().offsetY,thisID = cardIdCounter, width = 500.dp, height = 80.dp, bordersize = TypeVaribleList.last().bordersize))
+        CardList.add(
+            CardClass(
+                childId = TypeVaribleList.last().childId,
+                isDragging = TypeVaribleList.last().isDragging,
+                offsetX = TypeVaribleList.last().offsetX,
+                offsetY = TypeVaribleList.last().offsetY,
+                thisID = cardIdCounter,
+                width = TypeVariableRealW,
+                height = TypeVariableRealH,
+                bordersize = TypeVaribleList.last().bordersize
+            )
+        )
         cardIdCounter++;
     }
+
     fun OtherTypeVaribleListAddCard() {
         OtherTypeVaribleList.add(OtherTypeVaribleClass(thisID = cardIdCounter))
         OtherTypeVaribleList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = OtherTypeVaribleList.last().childId,isDragging = OtherTypeVaribleList.last().isDragging, offsetX = OtherTypeVaribleList.last().offsetX, offsetY = OtherTypeVaribleList.last().offsetY,thisID = cardIdCounter, width = 500.dp, height = 80.dp, bordersize = OtherTypeVaribleList.last().bordersize))
+        CardList.add(
+            CardClass(
+                childId = OtherTypeVaribleList.last().childId,
+                isDragging = OtherTypeVaribleList.last().isDragging,
+                offsetX = OtherTypeVaribleList.last().offsetX,
+                offsetY = OtherTypeVaribleList.last().offsetY,
+                thisID = cardIdCounter,
+                width = OtherTypeVariableRealW,
+                height = OtherTypeVariableRealH,
+                bordersize = OtherTypeVaribleList.last().bordersize
+            )
+        )
         cardIdCounter++;
     }
+
     fun ArrayVaribleListAddCard() {
         ArrayVaribleList.add(ArrayVaribleClass(thisID = cardIdCounter))
         ArrayVaribleList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = ArrayVaribleList.last().childId,isDragging = ArrayVaribleList.last().isDragging, offsetX = ArrayVaribleList.last().offsetX, offsetY = ArrayVaribleList.last().offsetY,thisID = cardIdCounter, width = 250.dp, height = 200.dp, bordersize = ArrayVaribleList.last().bordersize))
+        CardList.add(
+            CardClass(
+                childId = ArrayVaribleList.last().childId,
+                isDragging = ArrayVaribleList.last().isDragging,
+                offsetX = ArrayVaribleList.last().offsetX,
+                offsetY = ArrayVaribleList.last().offsetY,
+                thisID = cardIdCounter,
+                width = ArrayVariableRealW,
+                height = ArrayVariableRealH,
+                bordersize = ArrayVaribleList.last().bordersize
+            )
+        )
         cardIdCounter++;
     }
 
     fun VariableAssignmentListAddCard() {
         VariableAssignmentList.add(VariableAssignmentClass(thisID = cardIdCounter))
         VariableAssignmentList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = VariableAssignmentList.last().childId,isDragging = VariableAssignmentList.last().isDragging, offsetX = VariableAssignmentList.last().offsetX, offsetY = VariableAssignmentList.last().offsetY,thisID = cardIdCounter,  width = 500.dp, height = 80.dp,  bordersize = VariableAssignmentList.last().bordersize))
+        CardList.add(
+            CardClass(
+                childId = VariableAssignmentList.last().childId,
+                isDragging = VariableAssignmentList.last().isDragging,
+                offsetX = VariableAssignmentList.last().offsetX,
+                offsetY = VariableAssignmentList.last().offsetY,
+                thisID = cardIdCounter,
+                width = VariableAssignmentRealW,
+                height = VariableAssignmentRealH,
+                bordersize = VariableAssignmentList.last().bordersize
+            )
+        )
         cardIdCounter++;
     }
+
     fun IfBlockListAddCard() {
         IfBlockList.add(IfBlockClass(thisID = cardIdCounter))
         IfBlockList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = IfBlockList.last().childId,isDragging = IfBlockList.last().isDragging, offsetX = IfBlockList.last().offsetX, offsetY = IfBlockList.last().offsetY,thisID = cardIdCounter,width = 500.dp, height = 150.dp,bordersize = IfBlockList.last().bordersize))
+        CardList.add(
+            CardClass(
+                childId = IfBlockList.last().childId,
+                isDragging = IfBlockList.last().isDragging,
+                offsetX = IfBlockList.last().offsetX,
+                offsetY = IfBlockList.last().offsetY,
+                thisID = cardIdCounter,
+                width = IfBlockRealW,
+                height = IfBlockRealH,
+                bordersize = IfBlockList.last().bordersize
+            )
+        )
         cardIdCounter++;
         //BeginBlockList.add(BeginBlockClass(thisID = cardIdCounter))
         //CardList.add(CardClass(childId = BeginBlockList.last().childId,isDragging = BeginBlockList.last().isDragging, offsetX = BeginBlockList.last().offsetX, offsetY = BeginBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
         //cardIdCounter++;
         EndBlockList.add(EndBlockClass(thisID = cardIdCounter))
         EndBlockList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = EndBlockList.last().childId,isDragging = EndBlockList.last().isDragging, offsetX = EndBlockList.last().offsetX, offsetY = EndBlockList.last().offsetY,thisID = cardIdCounter,width = 200.dp, height = 45.dp, bordersize = EndBlockList.last().bordersize))
+        CardList.add(
+            CardClass(
+                childId = EndBlockList.last().childId,
+                isDragging = EndBlockList.last().isDragging,
+                offsetX = EndBlockList.last().offsetX,
+                offsetY = EndBlockList.last().offsetY,
+                thisID = cardIdCounter,
+                width = EndBLockW,
+                height = EndBlockH,
+                bordersize = EndBlockList.last().bordersize
+            )
+        )
         cardIdCounter++;
     }
+
     fun ForBlockListAddCard() {
         ForBlockList.add(ForBlockClass(thisID = cardIdCounter))
         ForBlockList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = ForBlockList.last().childId,isDragging = ForBlockList.last().isDragging, offsetX = ForBlockList.last().offsetX, offsetY = ForBlockList.last().offsetY,thisID = cardIdCounter,width = 250.dp, height = 225.dp, bordersize = ForBlockList.last().bordersize))
+        CardList.add(
+            CardClass(
+                childId = ForBlockList.last().childId,
+                isDragging = ForBlockList.last().isDragging,
+                offsetX = ForBlockList.last().offsetX,
+                offsetY = ForBlockList.last().offsetY,
+                thisID = cardIdCounter,
+                width = ForBlockRealW,
+                height = ForBlockRealH,
+                bordersize = ForBlockList.last().bordersize
+            )
+        )
         cardIdCounter++;
         //BeginBlockList.add(BeginBlockClass(thisID = cardIdCounter))
         //CardList.add(CardClass(childId = BeginBlockList.last().childId,isDragging = BeginBlockList.last().isDragging, offsetX = BeginBlockList.last().offsetX, offsetY = BeginBlockList.last().offsetY,thisID = cardIdCounter,width = 500, height = 80.dp))
         //cardIdCounter++;
         EndBlockList.add(EndBlockClass(thisID = cardIdCounter))
         EndBlockList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = EndBlockList.last().childId,isDragging = EndBlockList.last().isDragging, offsetX = EndBlockList.last().offsetX, offsetY = EndBlockList.last().offsetY,thisID = cardIdCounter,width = 200.dp, height = 45.dp, bordersize = EndBlockList.last().bordersize))
+        CardList.add(
+            CardClass(
+                childId = EndBlockList.last().childId,
+                isDragging = EndBlockList.last().isDragging,
+                offsetX = EndBlockList.last().offsetX,
+                offsetY = EndBlockList.last().offsetY,
+                thisID = cardIdCounter,
+                width = EndBLockW,
+                height = EndBlockH,
+                bordersize = EndBlockList.last().bordersize
+            )
+        )
         cardIdCounter++;
     }
 
     fun CinBlockListAddCard() {
         CinBlockList.add(CinBlockClass(thisID = cardIdCounter))
         CinBlockList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = CinBlockList.last().childId,isDragging = CinBlockList.last().isDragging, offsetX = CinBlockList.last().offsetX, offsetY = CinBlockList.last().offsetY,thisID = cardIdCounter,width = 300.dp, height = 80.dp,bordersize = CinBlockList.last().bordersize))
+        CardList.add(
+            CardClass(
+                childId = CinBlockList.last().childId,
+                isDragging = CinBlockList.last().isDragging,
+                offsetX = CinBlockList.last().offsetX,
+                offsetY = CinBlockList.last().offsetY,
+                thisID = cardIdCounter,
+                width = CinBlockRealW,
+                height = CinBlockRealH,
+                bordersize = CinBlockList.last().bordersize
+            )
+        )
         cardIdCounter++;
     }
 
     fun CoutBlockListAddCard() {
         CoutBlockList.add(CoutBlockClass(thisID = cardIdCounter))
         CoutBlockList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = CoutBlockList.last().childId,isDragging = CoutBlockList.last().isDragging, offsetX = CoutBlockList.last().offsetX, offsetY = CoutBlockList.last().offsetY,thisID = cardIdCounter,width = 300.dp, height = 80.dp, bordersize = CoutBlockList.last().bordersize))
+        CardList.add(
+            CardClass(
+                childId = CoutBlockList.last().childId,
+                isDragging = CoutBlockList.last().isDragging,
+                offsetX = CoutBlockList.last().offsetX,
+                offsetY = CoutBlockList.last().offsetY,
+                thisID = cardIdCounter,
+                width = CinBlockRealW,
+                height = CinBlockRealH,
+                bordersize = CoutBlockList.last().bordersize
+            )
+        )
         cardIdCounter++;
 
     }
-    fun FunctionBlockListAddCard()
-    {
+
+    fun FunctionBlockListAddCard() {
         FunctionBlockList.add(FunctionBlockClass(thisID = cardIdCounter))
         FunctionBlockList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = FunctionBlockList.last().childId,isDragging =  FunctionBlockList.last().isDragging, offsetX =  FunctionBlockList.last().offsetX, offsetY =  FunctionBlockList.last().offsetY,thisID = cardIdCounter,width = 500.dp, height = 90.dp, bordersize = FunctionBlockList.last().bordersize))
+        CardList.add(
+            CardClass(
+                childId = FunctionBlockList.last().childId,
+                isDragging = FunctionBlockList.last().isDragging,
+                offsetX = FunctionBlockList.last().offsetX,
+                offsetY = FunctionBlockList.last().offsetY,
+                thisID = cardIdCounter,
+                width = FunctionBlockRealW,
+                height = FunctionBlockRealH,
+                bordersize = FunctionBlockList.last().bordersize
+            )
+        )
         cardIdCounter++;
         ReturnBlockList.add(ReturnBlockClass(thisID = cardIdCounter))
         ReturnBlockList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = ReturnBlockList.last().childId,isDragging = ReturnBlockList.last().isDragging, offsetX = ReturnBlockList.last().offsetX, offsetY =ReturnBlockList.last().offsetY,thisID = cardIdCounter,width = 200.dp, height = 80.dp, bordersize =ReturnBlockList.last().bordersize))
-        cardIdCounter++;
-    }
-    fun DoFunctionBlockListAddCard()
-    {
-        DoFunctionBlockList.add(DoFunctionBlockClass(thisID = cardIdCounter))
-        DoFunctionBlockList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = DoFunctionBlockList.last().childId,isDragging =  DoFunctionBlockList.last().isDragging, offsetX =  DoFunctionBlockList.last().offsetX, offsetY =  DoFunctionBlockList.last().offsetY,thisID = cardIdCounter,width = 350.dp, height = 90.dp, bordersize =DoFunctionBlockList.last().bordersize))
-        cardIdCounter++;
-    }
-    fun StructBlockListAddCard()
-    {
-        StructBlockList.add(StructBlockClass(thisID = cardIdCounter))
-        StructBlockList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = StructBlockList.last().childId,isDragging =  StructBlockList.last().isDragging, offsetX =  StructBlockList.last().offsetX, offsetY =  StructBlockList.last().offsetY,thisID = cardIdCounter,width = 350.dp, height = 150.dp, bordersize = StructBlockList.last().bordersize))
-        cardIdCounter++;
-    }
-    fun StructVarBlockListAddCard()
-    {
-        StructVarBlockList.add(StructVarBlockClass(thisID = cardIdCounter))
-        StructVarBlockList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = StructVarBlockList.last().childId,isDragging =  StructVarBlockList.last().isDragging, offsetX =  StructVarBlockList.last().offsetX, offsetY =  StructVarBlockList.last().offsetY,thisID = cardIdCounter,width = 350.dp, height = 130.dp, bordersize = StructVarBlockList.last().bordersize))
-        cardIdCounter++;
-    }
-    fun BreakBlockListAddCard()
-    {
-        BreakBlockList.add(BreakBlockClass(thisID = cardIdCounter))
-        BreakBlockList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = BreakBlockList.last().childId,isDragging =  BreakBlockList.last().isDragging, offsetX =  BreakBlockList.last().offsetX, offsetY =  BreakBlockList.last().offsetY,thisID = cardIdCounter,width = 200.dp, height = 45.dp, bordersize = BreakBlockList.last().bordersize))
+        CardList.add(
+            CardClass(
+                childId = ReturnBlockList.last().childId,
+                isDragging = ReturnBlockList.last().isDragging,
+                offsetX = ReturnBlockList.last().offsetX,
+                offsetY = ReturnBlockList.last().offsetY,
+                thisID = cardIdCounter,
+                width = ReturnBlockRealW,
+                height = ReturnBlockRealH,
+                bordersize = ReturnBlockList.last().bordersize
+            )
+        )
         cardIdCounter++;
     }
 
-    fun ContinieBlockListAddCard()
-    {
+    fun DoFunctionBlockListAddCard() {
+        DoFunctionBlockList.add(DoFunctionBlockClass(thisID = cardIdCounter))
+        DoFunctionBlockList.last().offsetY.value = 300f;
+        CardList.add(
+            CardClass(
+                childId = DoFunctionBlockList.last().childId,
+                isDragging = DoFunctionBlockList.last().isDragging,
+                offsetX = DoFunctionBlockList.last().offsetX,
+                offsetY = DoFunctionBlockList.last().offsetY,
+                thisID = cardIdCounter,
+                width = DoFunctionBlockRealW,
+                height = DoFunctionBlockRealH,
+                bordersize = DoFunctionBlockList.last().bordersize
+            )
+        )
+        cardIdCounter++;
+    }
+
+    fun StructBlockListAddCard() {
+        StructBlockList.add(StructBlockClass(thisID = cardIdCounter))
+        StructBlockList.last().offsetY.value = 300f;
+        CardList.add(
+            CardClass(
+                childId = StructBlockList.last().childId,
+                isDragging = StructBlockList.last().isDragging,
+                offsetX = StructBlockList.last().offsetX,
+                offsetY = StructBlockList.last().offsetY,
+                thisID = cardIdCounter,
+                width = StructBlockRealW,
+                height = StructBlockRealH,
+                bordersize = StructBlockList.last().bordersize
+            )
+        )
+        cardIdCounter++;
+    }
+
+    fun StructVarBlockListAddCard() {
+        StructVarBlockList.add(StructVarBlockClass(thisID = cardIdCounter))
+        StructVarBlockList.last().offsetY.value = 300f;
+        CardList.add(
+            CardClass(
+                childId = StructVarBlockList.last().childId,
+                isDragging = StructVarBlockList.last().isDragging,
+                offsetX = StructVarBlockList.last().offsetX,
+                offsetY = StructVarBlockList.last().offsetY,
+                thisID = cardIdCounter,
+                width = StructVarBlockRealW,
+                height = StructVarBlockRealH,
+                bordersize = StructVarBlockList.last().bordersize
+            )
+        )
+        cardIdCounter++;
+    }
+
+    fun BreakBlockListAddCard() {
+        BreakBlockList.add(BreakBlockClass(thisID = cardIdCounter))
+        BreakBlockList.last().offsetY.value = 300f;
+        CardList.add(
+            CardClass(
+                childId = BreakBlockList.last().childId,
+                isDragging = BreakBlockList.last().isDragging,
+                offsetX = BreakBlockList.last().offsetX,
+                offsetY = BreakBlockList.last().offsetY,
+                thisID = cardIdCounter,
+                width = BreakBlockRealW,
+                height = BreakBlockRealH,
+                bordersize = BreakBlockList.last().bordersize
+            )
+        )
+        cardIdCounter++;
+    }
+
+    fun ContinieBlockListAddCard() {
         ContinueBlockList.add(ContinueBlockClass(thisID = cardIdCounter))
         ContinueBlockList.last().offsetY.value = 300f;
-        CardList.add(CardClass(childId = ContinueBlockList.last().childId,isDragging =  ContinueBlockList.last().isDragging, offsetX =  ContinueBlockList.last().offsetX, offsetY =  ContinueBlockList.last().offsetY,thisID = cardIdCounter,width = 200.dp, height = 45.dp, bordersize = ContinueBlockList.last().bordersize))
+        CardList.add(
+            CardClass(
+                childId = ContinueBlockList.last().childId,
+                isDragging = ContinueBlockList.last().isDragging,
+                offsetX = ContinueBlockList.last().offsetX,
+                offsetY = ContinueBlockList.last().offsetY,
+                thisID = cardIdCounter,
+                width = BreakBlockRealW,
+                height = BreakBlockRealH,
+                bordersize = ContinueBlockList.last().bordersize
+            )
+        )
         cardIdCounter++;
     }
 
@@ -488,27 +684,33 @@ fun MyScreen(pixelsPerDp: Float) {
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column {
-                Text(text = title,color = White, fontWeight = FontWeight.Bold)
+                Text(text = title, color = White, fontWeight = FontWeight.Bold)
                 Text(text = description, color = White)
             }
         }
     }
+
     @Composable
     fun ButtonInfoDialog(onDismiss: () -> Unit) {
         Dialog(
             onDismissRequest = onDismiss,
             content = {
-                Box(modifier = Modifier
-                    .padding(16.dp)
-                    ) {
+                Box(
+                    modifier = Modifier
+                        .padding(16.dp)
+                ) {
                     Column {
                         Text(text = "Функции кнопок", fontWeight = FontWeight.Bold, color = White)
                         Spacer(modifier = Modifier.height(16.dp))
-                        ButtonInfoRow(Icons.Default.PlayArrow, "Запуск", "Запуск приложения.",)
+                        ButtonInfoRow(Icons.Default.PlayArrow, "Запуск", "Запуск приложения.")
                         ButtonInfoRow(Icons.Default.List, "Консоль", "Открыть консоль.")
                         ButtonInfoRow(Icons.Default.Delete, "Удалить", "Очистка проекта")
                         ButtonInfoRow(Icons.Default.Add, "Отладка", "Открыть панель отладки")
-                        ButtonInfoRow(Icons.Default.KeyboardArrowDown, "Шаг", "В режиме отладки - шаг")
+                        ButtonInfoRow(
+                            Icons.Default.KeyboardArrowDown,
+                            "Шаг",
+                            "В режиме отладки - шаг"
+                        )
                         Button(
                             onClick = onDismiss,
                         ) {
@@ -521,50 +723,50 @@ fun MyScreen(pixelsPerDp: Float) {
             }
         )
     }
-    fun saveData()
-    {
 
-            SaveTypeVaribleList.clear()
-            SaveTypeVaribleList.addAll(TypeVaribleList)
+    fun saveData() {
 
-            SaveArrayVaribleList.clear()
-            SaveArrayVaribleList.addAll(ArrayVaribleList)
+        SaveTypeVaribleList.clear()
+        SaveTypeVaribleList.addAll(TypeVaribleList)
 
-            SaveVariableAssignmentList.clear()
-            SaveVariableAssignmentList.addAll(VariableAssignmentList)
+        SaveArrayVaribleList.clear()
+        SaveArrayVaribleList.addAll(ArrayVaribleList)
 
-            SaveIfBlockList.clear()
-            SaveIfBlockList.addAll(IfBlockList)
+        SaveVariableAssignmentList.clear()
+        SaveVariableAssignmentList.addAll(VariableAssignmentList)
 
-            SaveCardList.clear()
-            SaveCardList.addAll(CardList)
+        SaveIfBlockList.clear()
+        SaveIfBlockList.addAll(IfBlockList)
 
-            SaveForBlockList.clear()
-            SaveForBlockList.addAll(ForBlockList)
+        SaveCardList.clear()
+        SaveCardList.addAll(CardList)
 
-            SaveCinBlockList.clear()
-            SaveCinBlockList.addAll(CinBlockList)
+        SaveForBlockList.clear()
+        SaveForBlockList.addAll(ForBlockList)
 
-            SaveCoutBlockList.clear()
-            SaveCoutBlockList.addAll(CoutBlockList)
+        SaveCinBlockList.clear()
+        SaveCinBlockList.addAll(CinBlockList)
 
-            SaveBeginBlockList.clear()
-            SaveBeginBlockList.addAll(BeginBlockList)
+        SaveCoutBlockList.clear()
+        SaveCoutBlockList.addAll(CoutBlockList)
 
-            SaveEndBlockList.clear()
-            SaveEndBlockList.addAll(EndBlockList)
+        SaveBeginBlockList.clear()
+        SaveBeginBlockList.addAll(BeginBlockList)
 
-            SaveEndBeginBlockList.clear()
-            SaveEndBeginBlockList.addAll(EndBeginBlockList)
+        SaveEndBlockList.clear()
+        SaveEndBlockList.addAll(EndBlockList)
 
-            SaveFunctionBlockList.clear()
-            SaveFunctionBlockList.addAll(FunctionBlockList)
+        SaveEndBeginBlockList.clear()
+        SaveEndBeginBlockList.addAll(EndBeginBlockList)
 
-            SaveDoFunctionBlockList.clear()
-            SaveDoFunctionBlockList.addAll(DoFunctionBlockList)
+        SaveFunctionBlockList.clear()
+        SaveFunctionBlockList.addAll(FunctionBlockList)
 
-            SaveReturnBlockList.clear()
-            SaveReturnBlockList.addAll(ReturnBlockList)
+        SaveDoFunctionBlockList.clear()
+        SaveDoFunctionBlockList.addAll(DoFunctionBlockList)
+
+        SaveReturnBlockList.clear()
+        SaveReturnBlockList.addAll(ReturnBlockList)
     }
 
 
@@ -572,8 +774,7 @@ fun MyScreen(pixelsPerDp: Float) {
         showDialog.value = false
     }
 
-    fun DeleteAll()
-    {
+    fun DeleteAll() {
         TypeVaribleList.clear()
         ArrayVaribleList.clear()
         VariableAssignmentList.clear()
@@ -647,10 +848,8 @@ fun MyScreen(pixelsPerDp: Float) {
 
 
                 if (!showNewScreen) {
-                    if(myGlobalNumber != 0)
-                    {
-                        for(card in CardList)
-                        {
+                    if (myGlobalNumber != 0) {
+                        for (card in CardList) {
                             card.offsetY.value -= 1500f;
                         }
                     }
@@ -682,38 +881,31 @@ fun MyScreen(pixelsPerDp: Float) {
                         ArrayVaribleListAddCard()
                         myGlobalNumber = 0;
                     }
-                    if(myGlobalNumber == 8)
-                    {
+                    if (myGlobalNumber == 8) {
                         FunctionBlockListAddCard()
                         myGlobalNumber = 0;
                     }
-                    if(myGlobalNumber == 9)
-                    {
+                    if (myGlobalNumber == 9) {
                         DoFunctionBlockListAddCard()
                         myGlobalNumber = 0;
                     }
-                    if(myGlobalNumber == 10)
-                    {
+                    if (myGlobalNumber == 10) {
                         StructBlockListAddCard()
                         myGlobalNumber = 0;
                     }
-                    if(myGlobalNumber == 11)
-                    {
+                    if (myGlobalNumber == 11) {
                         StructVarBlockListAddCard()
                         myGlobalNumber = 0;
                     }
-                    if(myGlobalNumber == 12)
-                    {
+                    if (myGlobalNumber == 12) {
                         BreakBlockListAddCard()
                         myGlobalNumber = 0;
                     }
-                    if(myGlobalNumber == 13)
-                    {
+                    if (myGlobalNumber == 13) {
                         ContinieBlockListAddCard()
                         myGlobalNumber = 0;
                     }
-                    if(myGlobalNumber == 14)
-                    {
+                    if (myGlobalNumber == 14) {
                         OtherTypeVaribleListAddCard()
                         myGlobalNumber = 0;
                     }
@@ -753,7 +945,7 @@ fun MyScreen(pixelsPerDp: Float) {
                         }
                         FirstTime = false
                     }
-                    Box(modifier = Modifier.fillMaxWidth(),contentAlignment = Alignment.Center)
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center)
                     {
                         Column(verticalArrangement = Arrangement.Center)
                         {
@@ -812,6 +1004,8 @@ fun MyScreen(pixelsPerDp: Float) {
 
                                     ReturnBlockList.clear()
                                     ReturnBlockList.addAll(SaveReturnBlockList)
+                                    openButtonClicked.value = true;
+                                    openButtonClicked.value = false;
                                 })
                                 {
                                     Icon(Icons.Filled.Favorite, contentDescription = null)
@@ -833,17 +1027,12 @@ fun MyScreen(pixelsPerDp: Float) {
                                     Icon(Icons.Filled.PlayArrow, contentDescription = null)
                                 }
                                 IconButton(onClick = {
-                                    if(ConsoleIsVisible == true)
-                                    {
-                                        for(card in CardList)
-                                        {
+                                    if (ConsoleIsVisible == true) {
+                                        for (card in CardList) {
                                             card.offsetY.value -= 600f;
                                         }
-                                    }
-                                    else
-                                    {
-                                        for(card in CardList)
-                                        {
+                                    } else {
+                                        for (card in CardList) {
                                             card.offsetY.value += 600f;
                                         }
                                     }
@@ -858,22 +1047,17 @@ fun MyScreen(pixelsPerDp: Float) {
                                 {
                                     Icon(Icons.Filled.Delete, contentDescription = null)
                                 }
-                                IconButton(onClick = {saveButtonClicked.value = true })
+                                IconButton(onClick = { saveButtonClicked.value = true })
                                 {
                                     Icon(Icons.Filled.Check, contentDescription = null)
                                 }
                                 IconButton(onClick = {
-                                    if(DebugMode == true)
-                                    {
-                                        for(card in CardList)
-                                        {
+                                    if (DebugMode == true) {
+                                        for (card in CardList) {
                                             card.offsetY.value -= 900f;
                                         }
-                                    }
-                                    else
-                                    {
-                                        for(card in CardList)
-                                        {
+                                    } else {
+                                        for (card in CardList) {
                                             card.offsetY.value += 900f;
                                         }
                                     }
@@ -885,7 +1069,7 @@ fun MyScreen(pixelsPerDp: Float) {
                                     Icon(Icons.Filled.Add, contentDescription = null)
                                 }
                                 IconButton(onClick = {
-                                    if(DebugID < commandListID.size) {
+                                    if (DebugID < commandListID.size) {
                                         CardList[commandListID[DebugID]].bordersize.value = 3.dp
                                         if (DebugID != 0) {
                                             CardList[commandListID[DebugID - 1]].bordersize.value =
@@ -907,8 +1091,7 @@ fun MyScreen(pixelsPerDp: Float) {
                                     saveButtonClicked.value = false
                                 }
                             }
-                            if(ConsoleIsVisible)
-                            {
+                            if (ConsoleIsVisible) {
                                 Card(
                                     modifier = Modifier
                                         .padding(16.dp)
@@ -920,19 +1103,19 @@ fun MyScreen(pixelsPerDp: Float) {
                                         modifier = Modifier
                                             .width(500.dp)
                                             .height(200.dp)
-                                            .background(Color.Black)
+                                            .background(Black)
                                     )
                                     {
                                         Column(
                                             modifier = Modifier
                                                 .width(500.dp)
-                                                .background(Color.Black)
+                                                .background(Black)
                                         )
                                         {
                                             LazyColumn(
                                                 modifier = Modifier
                                                     .width(500.dp)
-                                                    .background(Color.Black)
+                                                    .background(Black)
                                             ) {
                                                 itemsIndexed(messagesCout) { _, item ->
                                                     Text(
@@ -954,7 +1137,7 @@ fun MyScreen(pixelsPerDp: Float) {
                                                         fromConsole = newText
                                                     },
                                                     colors = TextFieldDefaults.textFieldColors(
-                                                        containerColor = Color.Black,
+                                                        containerColor = Black,
                                                         textColor = White
                                                     )
                                                 )
@@ -963,15 +1146,18 @@ fun MyScreen(pixelsPerDp: Float) {
                                                     WaitConsole = true;
                                                 })
                                                 {
-                                                    Icon(Icons.Filled.Check, tint = Color.Green,contentDescription = null)
+                                                    Icon(
+                                                        Icons.Filled.Check,
+                                                        tint = Green,
+                                                        contentDescription = null
+                                                    )
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
-                            if(DebugMode)
-                            {
+                            if (DebugMode) {
                                 TableScreen()
                             }
                         }
@@ -1218,6 +1404,7 @@ fun MyScreen(pixelsPerDp: Float) {
                     }
                 }
                 val MagnitRange = 80;
+                val MagnitRangeX = 600;
                 var cardHeightInPixels = 0
                 var cardWidthInPixels = 0
                 var center = 0f;
@@ -1232,7 +1419,10 @@ fun MyScreen(pixelsPerDp: Float) {
                         cardWidthInPixels =
                             LocalDensity.current.run { CardList[i].width.toPx() }.toInt()
                         for (j in 0 until CardList.size) {
-                            if (i != j && CardList[i].offsetY.value < CardList[j].offsetY.value && CardList[j].offsetY.value - (CardList[i].offsetY.value + cardHeightInPixels) < MagnitRange) {
+                            if (i != j && CardList[i].offsetY.value < CardList[j].offsetY.value && CardList[j].offsetY.value - (CardList[i].offsetY.value + cardHeightInPixels) < MagnitRange && abs(
+                                    CardList[i].offsetX.value - CardList[j].offsetX.value
+                                ) < MagnitRangeX
+                            ) {
                                 CardList[j].offsetY.value -= CardList[j].offsetY.value - (CardList[i].offsetY.value + cardHeightInPixels)
                                 center = CardList[i].offsetX.value + (cardWidthInPixels / 2)
                                 cardWidthInPixels =
@@ -1254,8 +1444,6 @@ fun MyScreen(pixelsPerDp: Float) {
         }
     }
 }
-
-
 
 
 class MainActivity : ComponentActivity() {

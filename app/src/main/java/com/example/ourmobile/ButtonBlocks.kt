@@ -156,10 +156,9 @@ class SmallYellowCard {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VariableItem()
-{
-    val VariableType = remember{mutableStateOf("")}
-    val VariableName = remember{mutableStateOf("")}
+fun VariableItem() {
+    val VariableType = remember { mutableStateOf("") }
+    val VariableName = remember { mutableStateOf("") }
     val offsetX = remember { mutableStateOf(0f) }
     val offsetY = remember { mutableStateOf(0f) }
     val isDragging = remember { mutableStateOf(false) }
@@ -183,15 +182,15 @@ fun VariableItem()
                 )
             },
         shape = RoundedCornerShape(15.dp),
-    ){
-        Box(){
+    ) {
+        Box() {
             Row()
             {
                 TextField(
                     modifier = Modifier.width(200.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
                     value = VariableType.value,
-                    onValueChange = {newText -> VariableType.value = newText}
+                    onValueChange = { newText -> VariableType.value = newText }
                 )
                 Text(
                     text = "   ",
@@ -201,7 +200,7 @@ fun VariableItem()
                     modifier = Modifier.width(200.dp),
                     textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
                     value = VariableName.value,
-                    onValueChange = {newText -> VariableName.value = newText}
+                    onValueChange = { newText -> VariableName.value = newText }
                 )
                 Button(
                     onClick = {}
@@ -291,7 +290,7 @@ fun TypeVariable(onCloseClicked: () -> Unit) {
             },
         shape = RoundedCornerShape(15.dp),
 
-    )
+        )
     {
         Column {
             Row()
@@ -435,7 +434,7 @@ fun ArrayVariable(onCloseClicked: () -> Unit) {
 @Composable
 fun IfBlock(onCloseClicked: () -> Unit) {
     var expanded by remember { mutableStateOf(false) }
-    val conditionFirst= remember { mutableStateOf("") }
+    val conditionFirst = remember { mutableStateOf("") }
     val conditionSecond = remember { mutableStateOf("") }
     var selectedSign by remember { mutableStateOf("") }
     Card(
@@ -539,7 +538,6 @@ fun IfBlock(onCloseClicked: () -> Unit) {
         }
     }
 }
-
 
 
 //Кард для фора
@@ -681,8 +679,10 @@ fun CoutBlock(onCloseClicked: () -> Unit) {
             },
         shape = RoundedCornerShape(15.dp),
     ) {
-        Row(            modifier = Modifier.padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically)
+        Row(
+            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        )
         {
             Text(
                 text = "Cout",
@@ -706,7 +706,8 @@ fun CoutBlock(onCloseClicked: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FunctionBlock(onCloseClicked: () -> Unit
+fun FunctionBlock(
+    onCloseClicked: () -> Unit
 ) {
     val FunctionName = remember { mutableStateOf("") }
     val FunctionParams = remember { mutableStateOf("") }
@@ -714,8 +715,7 @@ fun FunctionBlock(onCloseClicked: () -> Unit
     var expanded by remember {
         mutableStateOf(false)
     }
-    if(FunctionParams.value == "")
-    {
+    if (FunctionParams.value == "") {
         FunctionParams.value = "<>";
     }
     Card(
@@ -723,7 +723,7 @@ fun FunctionBlock(onCloseClicked: () -> Unit
             .width(500.dp)
             .height(90.dp)
             .padding(2.dp)
-            .background(Color.LightGray,)
+            .background(Color.LightGray)
             .clickable {
                 myGlobalNumber = 8;
                 onCloseClicked();
@@ -775,7 +775,7 @@ fun FunctionBlock(onCloseClicked: () -> Unit
                     style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 )
                 TextField(modifier = Modifier
-                    .width(50.dp) ,
+                    .width(50.dp),
                     value = FunctionName.value, onValueChange = { newText ->
                         FunctionName.value = newText
                     })
@@ -793,12 +793,12 @@ fun FunctionBlock(onCloseClicked: () -> Unit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DoFunctionBlock(onCloseClicked: () -> Unit
+fun DoFunctionBlock(
+    onCloseClicked: () -> Unit
 ) {
     val FunctionName = remember { mutableStateOf("") }
     val FunctionParams = remember { mutableStateOf("") }
-    if(FunctionParams.value == "")
-    {
+    if (FunctionParams.value == "") {
         FunctionParams.value = "<>";
     }
     Card(
@@ -806,7 +806,7 @@ fun DoFunctionBlock(onCloseClicked: () -> Unit
             .width(350.dp)
             .height(90.dp)
             .padding(2.dp)
-            .background(Color.LightGray,)
+            .background(Color.LightGray)
             .clickable {
                 myGlobalNumber = 9;
                 onCloseClicked();
@@ -827,7 +827,7 @@ fun DoFunctionBlock(onCloseClicked: () -> Unit
                     style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 )
                 TextField(modifier = Modifier
-                    .width(50.dp) ,
+                    .width(50.dp),
                     value = FunctionName.value, onValueChange = { newText ->
                         FunctionName.value = newText
                     })
@@ -870,7 +870,8 @@ fun StructBlock(onCloseClicked: () -> Unit) {
                 TextField(
                     value = "",
                     onValueChange = { newText ->
-                        Name = newText },
+                        Name = newText
+                    },
                     modifier = Modifier.weight(1f)
                 )
                 IconButton(
@@ -882,7 +883,8 @@ fun StructBlock(onCloseClicked: () -> Unit) {
             TextField(
                 value = "",
                 onValueChange = { newText ->
-                    StrObjects = newText },
+                    StrObjects = newText
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
@@ -919,7 +921,8 @@ fun StructVarBlock(onCloseClicked: () -> Unit) {
                 TextField(
                     value = Type,
                     onValueChange = { newText ->
-                        Type = newText },
+                        Type = newText
+                    },
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -939,8 +942,9 @@ fun StructVarBlock(onCloseClicked: () -> Unit) {
         }
     }
 }
+
 @Composable
-fun BreakBlock(onCloseClicked: () -> Unit){
+fun BreakBlock(onCloseClicked: () -> Unit) {
     Card(
         modifier = Modifier
             .width(200.dp)
@@ -966,8 +970,9 @@ fun BreakBlock(onCloseClicked: () -> Unit){
         }
     }
 }
+
 @Composable
-fun ContinueBlock(onCloseClicked: () -> Unit){
+fun ContinueBlock(onCloseClicked: () -> Unit) {
     Card(
         modifier = Modifier
             .width(200.dp)
@@ -1017,7 +1022,7 @@ fun OtherTypeVariableReal(onCloseClicked: () -> Unit) {
             },
         shape = RoundedCornerShape(15.dp),
 
-    )
+        )
     {
         Column {
             Row()
@@ -1091,19 +1096,19 @@ fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             ) {
-                    Button(
-                        onClick = {
-                            if (selectedButton == 1) {
-                                selectedButton = -1
-                            } else {
-                                selectedButton = 1
-                            }
-                        },
-                        modifier = Modifier
-                            .padding(vertical = 8.dp)
-                    ) {
-                        Text("Переменные")
-                    }
+                Button(
+                    onClick = {
+                        if (selectedButton == 1) {
+                            selectedButton = -1
+                        } else {
+                            selectedButton = 1
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                ) {
+                    Text("Переменные")
+                }
                 if (selectedButton == 1) {
                     TypeVariable(onCloseClicked = onCloseClicked)
                     VariableAssignment(onCloseClicked = onCloseClicked)
@@ -1142,7 +1147,7 @@ fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
                 if (selectedButton == 3) {
                     ForBlock(onCloseClicked = onCloseClicked)
                     BreakBlock(onCloseClicked = onCloseClicked)
-                    ContinueBlock (onCloseClicked = onCloseClicked)
+                    ContinueBlock(onCloseClicked = onCloseClicked)
                 }
                 Button(
                     onClick = {
@@ -1159,7 +1164,7 @@ fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
                 }
                 if (selectedButton == 4) {
                     StructBlock(onCloseClicked = onCloseClicked)
-                    StructVarBlock (onCloseClicked = onCloseClicked)
+                    StructVarBlock(onCloseClicked = onCloseClicked)
                 }
                 Button(
                     onClick = {
@@ -1183,8 +1188,7 @@ fun NewScreen(showNewScreen: Boolean, onCloseClicked: () -> Unit) {
                 Button(
 
                     onClick = {
-                        for(card in CardList)
-                        {
+                        for (card in CardList) {
                             card.offsetY.value -= 1500f;
                         }
                         onCloseClicked()

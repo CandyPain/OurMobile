@@ -15,3 +15,4 @@ val Black = Color.Black;
 val Green = Color.Green;
 val Blue = Color.Blue;
 val White = Color.White
+val LightGrey = Color.LightGray
