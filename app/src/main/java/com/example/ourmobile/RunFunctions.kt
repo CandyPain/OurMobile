@@ -140,6 +140,72 @@ fun createCommandList(): MutableList<String> {
             }
 
             if (!hasChild) {
+                for (j in 0 until OtherTypeVaribleList.size) {
+                    if (OtherTypeVaribleList[j].thisID == childId) {
+                        hasChild = true
+                        commandList.add("<cast:${OtherTypeVaribleList[j].variableName},${OtherTypeVaribleList[j].selectedType}>")
+                        childId = OtherTypeVaribleList[j].childId.value
+                    }
+                }
+            }
+
+            if (!hasChild) {
+                for (j in 0 until StructVarBlockList.size) {
+                    if (StructVarBlockList[j].thisID == childId) {
+                        hasChild = true
+                        var checkType: Boolean = false
+                        for (h in 0 until structList.size) {
+                            if (StructVarBlockList[j].Type.value == structList[h].structName) {
+                                checkType = true
+                            }
+                        }
+                        if (checkType) {
+                            commandList.add("<structobject:${StructVarBlockList[j].Name.value},${StructVarBlockList[j].Type.value}>")
+                            commandListID.add(StructVarBlockList[j].thisID)
+                            for (h in 0 until structList.size) {
+                                if (StructVarBlockList[j].Type.value == structList[h].structName) {
+                                    for (k in 0 until structList[h].usageOfTypes.size) {
+                                        var temp = structList[h].usageOfParams[k]
+                                        temp = ":".toRegex().replaceFirst(temp, "")
+                                        variablesList.add(
+                                            Variables(
+                                                StructVarBlockList[j].Name.value + "." + temp,
+                                                structList[h].usageOfTypes[k]
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+                        } else {
+                            doRun = false
+                        }
+                        childId = StructVarBlockList[j].childId.value
+                    }
+                }
+            }
+
+            if (!hasChild) {
+                for (j in 0 until BreakBlockList.size) {
+                    if (BreakBlockList[j].thisID == childId) {
+                        hasChild = true
+                        commandList.add("<break>")
+                        childId = BreakBlockList[j].childId.value
+                    }
+                }
+            }
+
+            if (!hasChild) {
+                for (j in 0 until ContinueBlockList.size) {
+                    if (ContinueBlockList[j].thisID == childId) {
+                        hasChild = true
+                        commandList.add("<continue>")
+                        commandListID.add(ContinueBlockList[j].thisID)
+                        childId = ContinueBlockList[j].childId.value
+                    }
+                }
+            }
+
+            if (!hasChild) {
                 for (j in 0 until VariableAssignmentList.size) {
                     if (VariableAssignmentList[j].thisID == childId) {
                         hasChild = true
@@ -350,7 +416,7 @@ fun createCommandList(): MutableList<String> {
                         }
                     }
                     if (checkType) {
-                        commandList.add("<structobject:${StructVarBlockList[j].Type.value},${StructVarBlockList[j].Name.value}>")
+                        commandList.add("<structobject:${StructVarBlockList[j].Name.value},${StructVarBlockList[j].Type.value}>")
                         commandListID.add(StructVarBlockList[j].thisID)
                         for (h in 0 until structList.size) {
                             if (StructVarBlockList[j].Type.value == structList[h].structName) {
@@ -380,6 +446,15 @@ fun createCommandList(): MutableList<String> {
                     hasChild = true
                     commandList.add("<break>")
                     childId = BreakBlockList[j].childId.value
+                }
+            }
+        }
+        if (!hasChild) {
+            for (j in 0 until OtherTypeVaribleList.size) {
+                if (OtherTypeVaribleList[j].thisID == childId) {
+                    hasChild = true
+                    commandList.add("<cast:${OtherTypeVaribleList[j].variableName},${OtherTypeVaribleList[j].selectedType}>")
+                    childId = OtherTypeVaribleList[j].childId.value
                 }
             }
         }
@@ -415,7 +490,7 @@ fun createCommandList(): MutableList<String> {
                             if (underType == "ElementOfArray") {
                                 name = normalizationElementOfArray(name)
                             }
-                            if (type == "String") {
+                            if (type == "string") {
                                 commandList.add(
                                     "<equals:" + name + ",<stringexpression:" + normalizationOfExpression(
                                         VariableAssignmentList[j].variableValue.value
