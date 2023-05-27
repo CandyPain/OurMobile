@@ -51,6 +51,7 @@ class CelestialElysiaInterpreter(var varHashMap: HashMap<String, Any>,
 
     var inputValue: String = "0"
     fun interprete(){
+        stringPoint = 0
         variableVisibilityStack.clear()
         variableVisibilityStack.addFirst(mutableListOf<String>())
 
