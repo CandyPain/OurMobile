@@ -53,6 +53,7 @@ class CelestialElysiaInterpreter(var varHashMap: HashMap<String, Any>,
     fun interprete(){
         variableVisibilityStack.clear()
         variableVisibilityStack.addFirst(mutableListOf<String>())
+        stringPoint = 0
 
         var tokenRegex = Regex("<\\w+")
         while(stringPoint<commandList.size){
